@@ -30,7 +30,7 @@ contract SingleDexProtocol is Test {
     address constant UNISWAP_V3_FACTORY = 0x1F98431c8aD98523631AE4a59f267346ea31F984;
     uint24 constant UNISWAP_V3_FEE = 3000; // 0.3% fee tier
     address constant BALANCER_VAULT = 0xBA12222222228d8Ba445958a75a0704d566BF2C8;
-    address constant CURVE_POOL = 0x4eBdF703948ddCEA3B11f675B4D1Fba9d2414A14; // USDC/USDT pool
+    address constant CURVE_POOL = 0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7; // Curve 3Pool (USDC/USDT/DAI)
 
     // Common token addresses for testing
     address constant WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
@@ -41,6 +41,7 @@ contract SingleDexProtocol is Test {
     // Real whale addresses
     address constant WETH_WHALE = 0x2F0b23f53734252Bda2277357e97e1517d6B042A;
     address constant USDC_WHALE = 0x55FE002aefF02F77364de339a1292923A15844B8;
+    address constant USDT_WHALE = 0x47aC0FCbF2F8022C2867dd2C6C3c9aC07B15e8ef; // Binance hot wallet
 
     // The single DEX fetcher and router to be used
     address public dexFetcher;

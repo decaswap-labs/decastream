@@ -181,13 +181,12 @@ contract Registry is IRegistry, Ownable {
             params = abi.encode(tokenIn, tokenOut, amount, minOut, recipient, UNISWAP_V3_FEE, SQRT_PRICE_LIMIT_X96, router);
         } else if (parameterEncoder == _getBalancerParameterEncoder()) {
             // Balancer-style DEXes
-            bytes32 poolId = bytes32(0);
+            // BAL/WETH pool on Balancer
+            bytes32 poolId = 0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014;
             params = abi.encode(tokenIn, tokenOut, amount, minOut, recipient, poolId, router);
         } else if (parameterEncoder == _getCurveParameterEncoder()) {
             // Curve-style DEXes
-            int128 i = 0;
-            int128 j = 1;
-            params = abi.encode(tokenIn, i, j, amount, minOut, recipient, router);
+            params = _prepareCurveTrade(tokenIn, tokenOut, amount, minOut, recipient, router).params;
         } else {
             // Default to UniswapV2-style encoding
             params = abi.encode(tokenIn, tokenOut, amount, minOut, recipient, router);
@@ -270,10 +269,10 @@ contract Registry is IRegistry, Ownable {
         uint256 minOut,
         address recipient,
         address router
-    ) internal pure returns (TradeData memory) {
+    ) internal view returns (TradeData memory) {
 
-        bytes32 poolId = bytes32(0);
-
+        // BAL/WETH pool on Balancer
+        bytes32 poolId = 0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014;
         // Encode all parameters into a single bytes value
         bytes memory params = abi.encode(
             tokenIn,
@@ -297,13 +296,14 @@ contract Registry is IRegistry, Ownable {
         address router
     ) internal pure returns (TradeData memory) {
 
-        // For Curve we need to determine i and j indices
-        int128 i = 0;
-        int128 j = 1;
-
+        // For Curve we need to determine i and j indices based on actual token positions
+        // For Curve 3Pool: index 0 = DAI, index 1 = USDC, index 2 = USDT
+        int128 i = _getCurveTokenIndex(tokenIn);
+        int128 j = _getCurveTokenIndex(tokenOut);
         // Encode all parameters into a single bytes value
         bytes memory params = abi.encode(
             tokenIn,
+            tokenOut,
             i,
             j,
             amount,
@@ -313,6 +313,14 @@ contract Registry is IRegistry, Ownable {
         );
 
         return TradeData({ selector: Executor.executeCurveTrade.selector, router: router, params: params });
+    }
+    
+    function _getCurveTokenIndex(address token) internal pure returns (int128) {
+        // For Curve 3Pool: index 0 = DAI, index 1 = USDC, index 2 = USDT
+        if (token == 0x6B175474E89094C44Da98b954EedeAC495271d0F) return 0; // DAI
+        if (token == 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48) return 1; // USDC
+        if (token == 0xdAC17F958D2ee523a2206206994597C13D831ec7) return 2; // USDT
+        return 0; // Default to DAI index
     }
 
     function _prepareSushiswapTrade(

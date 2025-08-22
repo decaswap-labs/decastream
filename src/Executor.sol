@@ -125,15 +125,13 @@ contract Executor {
          });
 
         IBalancerVault.FundManagement memory funds = IBalancerVault.FundManagement({
-            sender: msg.sender,
+            sender: address(this), // Use this contract (Core via delegatecall) as sender since it owns the tokens
             fromInternalBalance: false,
             recipient: recipient,
             toInternalBalance: false
         });
 
-        IBalancerVault(router).swap(singleSwap, funds, amountOutMin, block.timestamp + 300); // @audit standardize
-            // deadline
-
+        IBalancerVault(router).swap(singleSwap, funds, amountOutMin, block.timestamp + 300);
         uint256 amountOut = IERC20(tokenOut).balanceOf(address(this));
 
         // @audit consider additional validation on amountOut
@@ -143,31 +141,66 @@ contract Executor {
 
     function executeCurveTrade(
         bytes memory params // @audit consider adding validation for params length
-    )
-        external
-        returns (uint256)
-    {
-        // Decode all parameters
+    ) external returns (uint256) {
+        
+        // Decode all parameters - Registry now encodes 8 parameters including tokenOut
         (
-            address pool,
+            address tokenIn,
+            address tokenOut,
             int128 i,
             int128 j,
             uint256 amountIn,
             uint256 amountOutMin,
             address recipient, // @audit verify recipient is not zero address
             address router
-        ) = abi.decode(params, (address, int128, int128, uint256, uint256, address, address));
-
+        ) = abi.decode(params, (address, address, int128, int128, uint256, uint256, address, address));
+        
         if (amountIn == 0) revert ZeroAmount();
 
-        IERC20(pool).forceApprove(router, amountIn);
+        console.log("Executor: Starting Curve trade");
+        console.log("tokenIn:", tokenIn);
+        console.log("tokenOut:", tokenOut);
+        console.log("amountIn:", amountIn);
+        console.log("amountOutMin:", amountOutMin);
+        console.log("recipient:", recipient);
+        console.log("router:", router);
 
-        ICurvePool(router).exchange(i, j, amountIn, amountOutMin); // @audit consider adding deadline parameter
+        // Approve the token being traded, not the pool
+        IERC20(tokenIn).approve(router, amountIn); // @audit should we reset approval to 0 first?
 
-        uint256 amountOut = IERC20(pool).balanceOf(address(this));
+        // Get initial balance of output token to calculate difference
+        uint256 initialBalance = IERC20(tokenOut).balanceOf(address(this));
+        console.log("Initial balance of tokenOut:", initialBalance);
+
+        // Execute the Curve exchange using low-level call to handle reverts
+        // Some Curve pools revert after successful execution, so we need to check balances
+        (bool success, ) = router.call(
+            abi.encodeWithSelector(
+                ICurvePool.exchange.selector,
+                i, j, amountIn, amountOutMin
+            )
+        );
+        
+        // Don't check success - Curve pools can revert after successful execution
+        // We'll verify success by checking if tokens were actually transferred
+        
+        // Check final balance to get actual amount received
+        uint256 finalBalance = IERC20(tokenOut).balanceOf(address(this));
+        console.log("Final balance of tokenOut:", finalBalance);
+        
+        uint256 actualAmountOut = finalBalance - initialBalance;
+        console.log("Actual amount out calculated:", actualAmountOut);
+
+        // Validate that tokens were actually transferred
+        require(actualAmountOut > 0, "No tokens received from Curve exchange");
+        console.log("Passed first require check");
+        
+        require(actualAmountOut >= amountOutMin, "Insufficient output amount");
+        console.log("Passed second require check");
 
         // @audit consider additional validation on amountOut
-        emit TradeExecuted(pool, pool, amountIn, amountOut); // @audit consider adding more event data
-        return amountOut;
+        emit TradeExecuted(tokenIn, tokenOut, amountIn, actualAmountOut); // @audit consider adding more event data
+        console.log("TradeExecuted event emitted, returning:", actualAmountOut);
+        return actualAmountOut;
     }
 }

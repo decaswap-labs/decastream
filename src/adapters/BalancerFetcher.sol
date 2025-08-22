@@ -2,10 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "../interfaces/IUniversalDexInterface.sol";
-
-interface IBalancerVault {
-    function getPoolTokens(bytes32 poolId) external view returns (address[] memory, uint256[] memory, uint256);
-}
+import "../interfaces/dex/IBalancerVault.sol";
 
 interface IBalancerPool {
     function getPoolId() external view returns (bytes32);

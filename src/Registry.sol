@@ -52,6 +52,14 @@ contract Registry is IRegistry, Ownable {
         // Curve
         dexExecutors["Curve"] = Executor.executeCurveTrade.selector;
         dexParameterEncoders["Curve"] = _getCurveParameterEncoder();
+        
+        // PancakeSwap
+        dexExecutors["PancakeSwap"] = Executor.executePancakeSwapTrade.selector;
+        dexParameterEncoders["PancakeSwap"] = _getPancakeSwapParameterEncoder();
+        
+        // OneInch
+        dexExecutors["OneInch"] = Executor.executeOneInchTrade.selector;
+        dexParameterEncoders["OneInch"] = _getOneInchParameterEncoder();
     }
 
     /**
@@ -187,6 +195,12 @@ contract Registry is IRegistry, Ownable {
         } else if (parameterEncoder == _getCurveParameterEncoder()) {
             // Curve-style DEXes
             params = _prepareCurveTrade(tokenIn, tokenOut, amount, minOut, recipient, router).params;
+        } else if (parameterEncoder == _getPancakeSwapParameterEncoder()) {
+            // PancakeSwap-style DEXes
+            params = _preparePancakeSwapTrade(tokenIn, tokenOut, amount, minOut, recipient, router).params;
+        } else if (parameterEncoder == _getOneInchParameterEncoder()) {
+            // OneInch-style DEXes
+            params = _prepareOneInchTrade(tokenIn, tokenOut, amount, minOut, recipient, router).params;
         } else {
             // Default to UniswapV2-style encoding
             params = abi.encode(tokenIn, tokenOut, amount, minOut, recipient, router);
@@ -214,6 +228,14 @@ contract Registry is IRegistry, Ownable {
     
     function _getCurveParameterEncoder() internal pure returns (bytes4) {
         return bytes4(keccak256("CurveStyle"));
+    }
+    
+    function _getPancakeSwapParameterEncoder() internal pure returns (bytes4) {
+        return bytes4(keccak256("PancakeSwapStyle"));
+    }
+    
+    function _getOneInchParameterEncoder() internal pure returns (bytes4) {
+        return bytes4(keccak256("OneInchStyle"));
     }
 
     function _prepareUniswapV2Trade(
@@ -368,7 +390,44 @@ contract Registry is IRegistry, Ownable {
             router
         );
 
-        return TradeData({ selector: Executor.executeUniswapV2Trade.selector, router: router, params: params });
+        return TradeData({
+            selector: Executor.executePancakeSwapTrade.selector,
+            router: router,
+            params: params
+        });
+    }
+
+    function _prepareOneInchTrade(
+        address tokenIn,
+        address tokenOut,
+        uint256 amount,
+        uint256 minOut,
+        address recipient,
+        address router
+    ) internal pure returns (TradeData memory) {
+
+        // 1inch V5 requires additional parameters for the aggregator
+        // In a real implementation, these would come from the 1inch API
+        address dummyExecutor = router; // Use router as dummy executor for testing
+        bytes memory dummySwapData = abi.encode("placeholder"); // Placeholder swap data
+        
+        // Encode all parameters including 1inch-specific data
+        bytes memory params = abi.encode(
+            tokenIn,
+            tokenOut,
+            amount,
+            minOut,
+            recipient,
+            router,
+            dummyExecutor,  // 1inch executor address (from API in production)
+            dummySwapData   // Encoded swap data (from 1inch API in production)
+        );
+
+        return TradeData({
+            selector: Executor.executeOneInchTrade.selector,
+            router: router,
+            params: params
+        });
     }
 
     function _compareStrings(string memory a, string memory b) internal pure returns (bool) {

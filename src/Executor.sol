@@ -9,6 +9,7 @@ import "./interfaces/dex/IUniswapV2Router.sol";
 import "./interfaces/dex/IUniswapV3Router.sol";
 import "./interfaces/dex/IBalancerVault.sol";
 import "./interfaces/dex/ICurvePool.sol";
+import "./interfaces/dex/IOneInchV5Router.sol";
 import "forge-std/console.sol";
 
 contract Executor {
@@ -202,5 +203,96 @@ contract Executor {
         emit TradeExecuted(tokenIn, tokenOut, amountIn, actualAmountOut); // @audit consider adding more event data
         console.log("TradeExecuted event emitted, returning:", actualAmountOut);
         return actualAmountOut;
+    }
+
+    function executePancakeSwapTrade(
+        bytes memory params // @audit consider adding validation for params length
+    ) external returns (uint256) {
+        
+        // Decode all parameters
+        (
+            address tokenIn,
+            address tokenOut,
+            uint256 amountIn,
+            uint256 amountOutMin,
+            address recipient,
+            address router
+        ) = abi.decode(params, (address, address, uint256, uint256, address, address));
+        
+        if (amountIn == 0) revert ZeroAmount();
+        
+        IERC20(tokenIn).approve(router, amountIn);
+
+        address[] memory path = new address[](2);
+        path[0] = tokenIn;
+        path[1] = tokenOut;
+
+        uint256[] memory amounts = IUniswapV2Router(router).swapExactTokensForTokens(
+            amountIn,
+            amountOutMin,
+            path,
+            recipient,
+            block.timestamp + 300
+        );
+
+        emit TradeExecuted(tokenIn, tokenOut, amountIn, amounts[amounts.length - 1]);
+        return amounts[amounts.length - 1];
+    }
+
+    function executeOneInchTrade(
+        bytes memory params // @audit consider adding validation for params length
+    ) external returns (uint256) {
+        
+        // Decode all parameters - now including 1inch-specific data
+        (
+            address tokenIn,
+            address tokenOut,
+            uint256 amountIn,
+            uint256 amountOutMin,
+            address recipient,
+            address router,
+            address executor,
+            bytes memory swapData
+        ) = abi.decode(params, (address, address, uint256, uint256, address, address, address, bytes));
+        
+        if (amountIn == 0) revert ZeroAmount();
+
+        // Approve the token being traded to the 1inch router
+        IERC20(tokenIn).approve(router, amountIn);
+
+        // Get initial balance of output token to calculate difference
+        uint256 initialBalance = IERC20(tokenOut).balanceOf(address(this));
+
+        // Prepare 1inch swap description
+        IOneInchV5Router.SwapDescription memory desc = IOneInchV5Router.SwapDescription({
+            srcToken: tokenIn,
+            dstToken: tokenOut,
+            srcReceiver: address(this), // This contract receives the source tokens
+            dstReceiver: recipient,     // Recipient receives the output tokens
+            amount: amountIn,
+            minReturnAmount: amountOutMin,
+            flags: 0 // Default flags
+        });
+
+        // Execute the 1inch swap
+        // Note: In a real implementation, the swapData would come from the 1inch API
+        // For testing purposes, we'll use a simplified approach
+        try IOneInchV5Router(router).swap(
+            executor,   // 1inch executor address (would come from API)
+            desc,       // Swap description
+            "",         // No permit data
+            swapData    // Encoded swap data (would come from 1inch API)
+        ) returns (uint256 returnAmount, uint256 spentAmount) {
+            
+            // Check that we received the expected amount
+            require(returnAmount >= amountOutMin, "Insufficient output amount");
+            
+            emit TradeExecuted(tokenIn, tokenOut, spentAmount, returnAmount);
+            return returnAmount;
+            
+        } catch {
+            // Fallback: If 1inch swap fails, we can't proceed
+            revert("OneInch swap failed - invalid executor or swap data");
+        }
     }
 }

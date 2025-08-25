@@ -10,6 +10,27 @@ This guide explains how to retroactively add new DEXs to decastream.
 ✅ **Owner Controlled Config**  
 ✅ **Gas Efficient: ~420k Gas Per New DEX**
 
+## 🚀 **Initial Mainnet Deployment Strategy**
+
+For the initial mainnet launch, we are deploying with only **3 core DEXs**:
+
+- **UniswapV2** - Ethereum's most established DEX
+- **Sushiswap** - High liquidity alternative
+- **PancakeSwap** - Popular DEX with unique features
+
+**Why this approach?**
+
+- ✅ **Reduced Risk**: Fewer integration points for initial launch
+- ✅ **Faster Time to Market**: Focus on core functionality
+- ✅ **Easier Testing**: Simpler deployment and verification
+- ✅ **Modular Growth**: Additional DEXs can be added post-launch
+
+**Post-Launch DEX Addition Plan:**
+
+1. **Phase 1**: UniswapV3, Balancer, Curve (Q2 2024)
+2. **Phase 2**: 1inch, 0x Protocol, other aggregators (Q3 2024)
+3. **Phase 3**: Layer 2 DEXs and cross-chain bridges (Q4 2024)
+
 ## 🏗️ **Architecture Overview**
 
 ```
@@ -20,13 +41,16 @@ Storage    DEX Management   Reserve Fetching   Router Config   Trade Execution
 
 ## 📋 **Current Supported DEXes**
 
-| DEX       | Fetcher | Router | Status |
-| --------- | ------- | ------ | ------ |
-| UniswapV2 | ✅      | ✅     | Active |
-| UniswapV3 | ✅      | ✅     | Active |
-| Sushiswap | ✅      | ✅     | Active |
-| Balancer  | ✅      | ✅     | Active |
-| Curve     | ✅      | ✅     | Active |
+| DEX         | Fetcher | Router | Status                             |
+| ----------- | ------- | ------ | ---------------------------------- |
+| UniswapV2   | ✅      | ✅     | Active                             |
+| Sushiswap   | ✅      | ✅     | Active                             |
+| PancakeSwap | ✅      | ✅     | Active                             |
+| UniswapV3   | 🔧      | 🔧     | Available (not in initial mainnet) |
+| Balancer    | 🔧      | 🔧     | Available (not in initial mainnet) |
+| Curve       | 🔧      | 🔧     | Available (not in initial mainnet) |
+
+**Legend**: ✅ = Initial Mainnet Deployment, 🔧 = Available for Retroactive Addition
 
 ## 🚀 **Adding New DEXs**
 
@@ -245,7 +269,9 @@ registry.setRouter("OldDEX", address(0));
 - Use events for off-chain monitoring
 - Consider DEX prioritization for gas efficiency
 
-## 🎯 **Example: Adding PancakeSwap**
+## 🎯 **Example: Adding PancakeSwap (Post-Launch)**
+
+**Note**: PancakeSwap is included in the initial mainnet deployment. This example shows how to add it if it wasn't included initially.
 
 ```bash
 # 1. Deploy Fetcher
@@ -265,6 +291,30 @@ cast send $STREAM_DAEMON_ADDRESS "registerDex(address)" $PANCAKESWAP_FETCHER \
 
 # 4. Configure Router
 cast send $REGISTRY_ADDRESS "setRouter(string,address)" "PancakeSwap" $PANCAKESWAP_ROUTER \
+    --rpc-url $MAINNET_RPC_URL \
+    --private-key $PRIVATE_KEY
+```
+
+## 🎯 **Example: Adding UniswapV3 (Post-Launch)**
+
+```bash
+# 1. Deploy Fetcher
+forge create src/adapters/UniswapV3Fetcher.sol:UniswapV3Fetcher \
+    --rpc-url $MAINNET_RPC_URL \
+    --private-key $PRIVATE_KEY \
+    --constructor-args 0xE592427A0AEce92De3Edee1F18E0157C05861564
+
+# 2. Set environment variables
+export UNISWAPV3_FETCHER=0x... # Deployed address
+export UNISWAPV3_ROUTER=0xE592427A0AEce92De3Edee1F18E0157C05861564
+
+# 3. Register DEX
+cast send $STREAM_DAEMON_ADDRESS "registerDex(address)" $UNISWAPV3_FETCHER \
+    --rpc-url $MAINNET_RPC_URL \
+    --private-key $PRIVATE_KEY
+
+# 4. Configure Router
+cast send $REGISTRY_ADDRESS "setRouter(string,address)" "UniswapV3" $UNISWAPV3_ROUTER \
     --rpc-url $MAINNET_RPC_URL \
     --private-key $PRIVATE_KEY
 ```

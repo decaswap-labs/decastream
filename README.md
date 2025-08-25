@@ -16,6 +16,30 @@ One click and the **1SLiquidity Protocol** will route your trade across the DEX 
 
 Built using Foundry for smart contracts.
 
+## Deployment Strategy
+
+### Initial Mainnet Launch
+
+The protocol will be deployed with **3 core DEXs** for the initial mainnet launch:
+
+- **UniswapV2** - Ethereum's most established DEX
+- **Sushiswap** - High liquidity alternative
+- **PancakeSwap** - Popular DEX with unique features
+
+### Deployment Scripts
+
+- `DeployBarebones.s.sol` - Initial mainnet deployment (3 DEXs)
+- `DeployMainnet.s.sol` - Full deployment with all DEXs (for future use)
+
+### Adding DEXs Post-Launch
+
+Additional DEXs can be added without redeploying core contracts:
+
+- Deploy new fetcher contracts
+- Register with StreamDaemon
+- Configure Registry routers
+- See [DEX Integration Guide](DEX_INTEGRATION_GUIDE.md) for details
+
 ### Build
 
 ```shell

@@ -85,7 +85,7 @@ contract TestReservesScript is Script {
             address token1 = tokenPairs[i][1];
 
             (uint256 sweetSpot, address bestFetcher,) =
-                streamDaemon.evaluateSweetSpotAndDex(token0, token1, testVolume, effectiveGasInDollars);
+                streamDaemon.evaluateSweetSpotAndDex(token0, token1, testVolume, effectiveGasInDollars, false);
 
             console.log(string(abi.encodePacked("Token Pair: ", getTokenSymbol(token0), "-", getTokenSymbol(token1))));
             console.log("Best DEX:", bestFetcher);

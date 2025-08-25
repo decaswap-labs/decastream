@@ -33,7 +33,8 @@ contract UniswapV3TradePlacement is SingleDexProtocol {
             USDC,
             amountIn,
             amountOutMin,
-            false
+            false,
+            false  // usePriceBased - set to false for backward compatibility
         );
 
         core.placeTrade(tradeData);

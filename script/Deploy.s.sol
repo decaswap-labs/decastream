@@ -98,21 +98,21 @@ contract DeployScript is Script {
 
         // Test sweet spot for WETH-USDC
         (uint256 sweetSpot, address sweetSpotDex, address router) =
-            streamDaemon.evaluateSweetSpotAndDex(WETH, USDC, testVolume, effectiveGasInDollars);
+            streamDaemon.evaluateSweetSpotAndDex(WETH, USDC, testVolume, effectiveGasInDollars, false);
         console.log("WETH-USDC Sweet Spot:");
         console.log("Best DEX:", sweetSpotDex);
         console.log("Sweet Spot Value:", sweetSpot);
 
         // Test sweet spot for WETH-WBTC
         (sweetSpot, sweetSpotDex, router) =
-            streamDaemon.evaluateSweetSpotAndDex(WETH, WBTC, testVolume, effectiveGasInDollars);
+            streamDaemon.evaluateSweetSpotAndDex(WETH, WBTC, testVolume, effectiveGasInDollars, false);
         console.log("WETH-WBTC Sweet Spot:");
         console.log("Best DEX:", sweetSpotDex);
         console.log("Sweet Spot Value:", sweetSpot);
 
         // Test sweet spot for WETH-DAI
         (sweetSpot, sweetSpotDex, router) =
-            streamDaemon.evaluateSweetSpotAndDex(WETH, DAI, testVolume, effectiveGasInDollars);
+            streamDaemon.evaluateSweetSpotAndDex(WETH, DAI, testVolume, effectiveGasInDollars, false);
         console.log("WETH-DAI Sweet Spot:");
         console.log("Best DEX:", sweetSpotDex);
         console.log("Sweet Spot Value:", sweetSpot);

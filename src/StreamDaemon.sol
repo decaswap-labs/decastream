@@ -49,16 +49,30 @@ contract StreamDaemon is Ownable {
         address tokenIn,
         address tokenOut,
         uint256 volume,
-        uint256 effectiveGas
+        uint256 effectiveGas,
+        bool usePriceBased
     )
         public
         view
         returns (uint256 sweetSpot, address bestFetcher, address router)
     {
-        (address identifiedFetcher, uint256 maxReserveIn, uint256 maxReserveOut) =
-            findHighestReservesForTokenPair(tokenIn, tokenOut);
-        bestFetcher = identifiedFetcher;
-        router = dexToRouters[bestFetcher];
+        address identifiedFetcher;
+        uint256 maxReserveIn;
+        uint256 maxReserveOut;
+        
+        if (usePriceBased) {
+            // Price-based DEX selection
+            (identifiedFetcher, maxReserveIn, maxReserveOut) =
+                findBestPriceForTokenPair(tokenIn, tokenOut, volume);
+            bestFetcher = identifiedFetcher;
+            router = dexToRouters[bestFetcher];
+        } else {
+            // Reserve-based DEX selection
+            (identifiedFetcher, maxReserveIn, maxReserveOut) =
+                findHighestReservesForTokenPair(tokenIn, tokenOut);
+            bestFetcher = identifiedFetcher;
+            router = dexToRouters[bestFetcher];
+        }
 
         // Ensure effective gas is at least the minimum
         if (effectiveGas < MIN_EFFECTIVE_GAS_DOLLARS) {
@@ -66,6 +80,36 @@ contract StreamDaemon is Ownable {
         }
 
         sweetSpot = _sweetSpotAlgo(tokenIn, tokenOut, volume, maxReserveIn, maxReserveOut, effectiveGas);
+    }
+
+    function findLowestPriceForTokenPair(address tokenIn, address tokenOut) public view returns (uint256 lowestPrice) {}
+
+    function findBestPriceForTokenPair(address tokenIn, address tokenOut, uint256 volume) 
+        public view returns (address bestFetcher, uint256 maxReserveIn, uint256 maxReserveOut) {
+        
+        uint256 bestPrice = type(uint256).max;
+        
+        for (uint256 i = 0; i < dexs.length; i++) {
+            IUniversalDexInterface fetcher = IUniversalDexInterface(dexs[i]);
+            
+            try fetcher.getPrice(tokenIn, tokenOut, volume) returns (uint256 price) {
+                if (price < bestPrice) {
+                    bestPrice = price;
+                    bestFetcher = address(fetcher);
+                    
+                    // Get reserves for sweet spot calculation
+                    try fetcher.getReserves(tokenIn, tokenOut) returns (uint256 reserveIn, uint256 reserveOut) {
+                        maxReserveIn = reserveIn;
+                        maxReserveOut = reserveOut;
+                    } catch {
+                        // If getReserves fails, we still have the best price
+                    }
+                }
+            } catch {
+                // Skip if price fetch fails
+            }
+        }
+        require(bestFetcher != address(0), "No DEX found for token pair");
     }
 
     /**

@@ -104,4 +104,17 @@ contract UniswapV3Fetcher is IUniversalDexInterface {
     function getDexVersion() external pure override returns (string memory) {
         return "V3";
     }
+
+    function getPrice(address tokenIn, address tokenOut, uint256 amountIn) external view override returns (uint256) {
+        // For UniswapV3, calculate price based on reserves
+        (uint256 reserveIn, uint256 reserveOut) = this.getReserves(tokenIn, tokenOut);
+        
+        if (reserveIn == 0 || reserveOut == 0) {
+            return 0;
+        }
+        
+        // Simple price calculation based on reserves ratio
+        // This is a simplified version - UniswapV3 has more complex pricing with concentrated liquidity
+        return (amountIn * reserveOut) / reserveIn;
+    }
 }

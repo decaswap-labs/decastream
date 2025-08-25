@@ -35,7 +35,14 @@ contract SushiswapTradePlacement is SingleDexProtocol {
 
         approveToken(WETH, address(core), amountIn);
 
-        bytes memory tradeData = abi.encode(WETH, USDC, amountIn, amountOutMin, false);
+        bytes memory tradeData = abi.encode(
+            WETH,
+            USDC,
+            amountIn,
+            amountOutMin,
+            false,
+            false  // usePriceBased - set to false for backward compatibility
+        );
 
         core.placeTrade(tradeData);
 

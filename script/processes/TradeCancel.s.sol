@@ -32,7 +32,8 @@ contract TradeCancel is TradePlacement {
             USDC,
             amountIn,
             amountOutMin,
-            false // isInstasettlable
+            false, // isInstasettlable
+            false  // usePriceBased - set to false for backward compatibility
         );
         core.placeTrade(tradeData);
 
@@ -93,7 +94,8 @@ contract TradeCancel is TradePlacement {
             USDC,
             amountIn,
             amountOutMin,
-            false // isInstasettlable
+            false, // isInstasettlable
+            false  // usePriceBased - set to false for backward compatibility
         );
 
         // Place trade

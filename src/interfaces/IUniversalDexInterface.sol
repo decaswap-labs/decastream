@@ -6,4 +6,5 @@ interface IUniversalDexInterface {
     function getPoolAddress(address tokenIn, address tokenOut) external view returns (address pool);
     function getDexType() external pure returns (string memory);
     function getDexVersion() external pure returns (string memory);
+    function getPrice(address tokenIn, address tokenOut, uint256 amountIn) external view returns (uint256);
 }

@@ -77,7 +77,8 @@ contract BalancerTradePlacement is SingleDexProtocol {
             BAL,
             amountIn,
             amountOutMin,
-            false
+            false,
+            false  // usePriceBased - set to false for backward compatibility
         );
 
         core.placeTrade(tradeData);
@@ -126,7 +127,8 @@ contract BalancerTradePlacement is SingleDexProtocol {
             WETH,
             amountIn,
             amountOutMin,
-            false
+            false,
+            false  // usePriceBased - set to false for backward compatibility
         );
 
         try core.placeTrade(tradeData) {

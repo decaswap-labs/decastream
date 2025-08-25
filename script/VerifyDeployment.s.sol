@@ -157,7 +157,7 @@ contract VerifyDeployment is Script {
         console.log("Testing sweet spot calculation...");
         uint256 testVolume = 1000 * 1e18; // 1000 WETH
         (uint256 sweetSpot, address sweetSpotDex, address router) = 
-            streamDaemon.evaluateSweetSpotAndDex(WETH, USDC, testVolume, 0);
+            streamDaemon.evaluateSweetSpotAndDex(WETH, USDC, testVolume, 0, false);
         
         require(sweetSpot > 0, "Sweet spot calculation failed");
         require(sweetSpotDex != address(0), "Sweet spot DEX not found");

@@ -54,4 +54,21 @@ contract UniswapV2Fetcher is IUniversalDexInterface {
     function getDexVersion() external pure override returns (string memory) {
         return "V2";
     }
+
+    function getPrice(address tokenIn, address tokenOut, uint256 amountIn) external view override returns (uint256) {
+        // For UniswapV2, calculate price based on reserves
+        (uint256 reserveIn, uint256 reserveOut) = this.getReserves(tokenIn, tokenOut);
+        
+        if (reserveIn == 0 || reserveOut == 0) {
+            return 0;
+        }
+        
+        // Calculate output amount using constant product formula
+        // amountOut = (amountIn * 997 * reserveOut) / (reserveIn * 1000 + amountIn * 997)
+        uint256 amountInWithFee = amountIn * 997;
+        uint256 numerator = amountInWithFee * reserveOut;
+        uint256 denominator = (reserveIn * 1000) + amountInWithFee;
+        
+        return numerator / denominator;
+    }
 }

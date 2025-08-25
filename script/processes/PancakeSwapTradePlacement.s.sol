@@ -107,7 +107,8 @@ contract PancakeSwapTradePlacement is SingleDexProtocol {
             USDC,
             tradeAmount,
             minOut,
-            false // isInstasettlable
+            false, // isInstasettlable
+            false  // usePriceBased - set to false for backward compatibility
         );
         
         core.placeTrade(coreTradeData);

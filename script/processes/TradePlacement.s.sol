@@ -31,7 +31,14 @@ contract TradePlacement is Protocol {
 
         approveToken(WETH, address(core), amountIn);
 
-        bytes memory tradeData = abi.encode(WETH, USDC, amountIn, amountOutMin, false);
+        bytes memory tradeData = abi.encode(
+            WETH,
+            USDC,
+            amountIn,
+            amountOutMin,
+            false,
+            false  // usePriceBased - set to false for backward compatibility
+        );
 
         core.placeTrade(tradeData);
 
@@ -114,7 +121,7 @@ contract TradePlacement is Protocol {
             amountIn, // amountIn
             amountOutMin, // amountOutMin
             isInstasettlable ? true : false, // isInstasettlable
-            botGasAllowance // botGasAllowance
+            false  // usePriceBased - set to false for backward compatibility
         );
 
         // Place trade
@@ -196,7 +203,7 @@ contract TradePlacement is Protocol {
         // Don't approve tokens
 
         vm.expectRevert();
-        core.placeTrade(abi.encode(WETH, USDC, amountIn, amountOutMin, false, 0.1 ether));
+        core.placeTrade(abi.encode(WETH, USDC, amountIn, amountOutMin, false, false));
     }
 
     function test_RevertWhen_InsufficientBalance() public {
@@ -206,7 +213,7 @@ contract TradePlacement is Protocol {
         approveToken(WETH, address(core), amountIn);
 
         vm.expectRevert();
-        core.placeTrade(abi.encode(WETH, USDC, amountIn, amountOutMin, false, 0.1 ether));
+        core.placeTrade(abi.encode(WETH, USDC, amountIn, amountOutMin, false, false));
     }
 
     // function test_RevertWhen_ToxicTrade() public {

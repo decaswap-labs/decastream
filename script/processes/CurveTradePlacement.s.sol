@@ -189,7 +189,8 @@ contract CurveTradePlacement is SingleDexProtocol {
             DAI,
             tradeAmount,
             minOut,
-            false // isInstasettlable
+            false, // isInstasettlable
+            false  // usePriceBased - set to false for backward compatibility
         );
         
         core.placeTrade(coreTradeData);
@@ -273,7 +274,8 @@ contract CurveTradePlacement is SingleDexProtocol {
             USDC,
             tradeAmount,
             minOut,
-            false // isInstasettlable
+            false, // isInstasettlable
+            false  // usePriceBased - set to false for backward compatibility
         );
         
         core.placeTrade(coreTradeData);

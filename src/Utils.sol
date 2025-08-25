@@ -16,5 +16,6 @@ library Utils {
         uint256 instasettleBps; //c
         uint256 lastSweetSpot; //v
         bool isInstasettlable; //c
+        bool usePriceBased; //c - NEW FIELD for price-based vs reserve-based DEX selection
     }
 }

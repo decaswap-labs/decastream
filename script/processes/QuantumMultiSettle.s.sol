@@ -177,7 +177,8 @@ contract MultiSettle is Protocol {
             USDC, // tokenOut
             amountIn, // amountIn
             amountOutMin, // amountOutMin
-            false // isInstasettlable
+            false, // isInstasettlable
+            false  // usePriceBased - set to false for backward compatibility
         );
 
         // Place trade

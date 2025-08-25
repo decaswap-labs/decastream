@@ -33,7 +33,8 @@ contract Core is Ownable /*, UUPSUpgradeable */ {
         uint256 realisedAmountOut,
         bool isInstasettlable,
         uint256 instasettleBps,
-        uint256 lastSweetSpot
+        uint256 lastSweetSpot,
+        bool usePriceBased
     );
 
     event TradeStreamExecuted(
@@ -151,15 +152,18 @@ contract Core is Ownable /*, UUPSUpgradeable */ {
     }
 
     function placeTrade(bytes calldata tradeData) public payable {
-        (address tokenIn, address tokenOut, uint256 amountIn, uint256 amountOutMin, bool isInstasettlable) =
-            abi.decode(tradeData, (address, address, uint256, uint256, bool));
-        // @audit may be better to abstract sweetSpot algo to here and pass the value along, since small (<0.001% pool
-        // depth) trades shouldn't be split at all and would save hefty logic
-        // @audit edge cases wrt pool depths (specifically extremely small volume to volume reserves) create anomalies
-        // in the algo output
-        // @audit similarly for the sake of OPTIMISTIC and DETERMINISTIC placement patterns, we should abstract the
-        // calculation of sweetSpot nad the definition of appropriate DEX into seperated, off contract functions
-        IERC20(tokenIn).safeTransferFrom(msg.sender, address(this), amountIn);
+        (
+            address tokenIn,
+            address tokenOut,
+            uint256 amountIn,
+            uint256 amountOutMin,
+            bool isInstasettlable,
+            bool usePriceBased
+        ) = abi.decode(tradeData, (address, address, uint256, uint256, bool, bool));
+        // @audit may be better to abstract sweetSpot algo to here and pass the value along, since small (<0.001% pool depth) trades shouldn't be split at all and would save hefty logic
+        // @audit edge cases wrt pool depths (specifically extremely small volume to volume reserves) create anomalies in the algo output
+        // @audit similarly for the sake of OPTIMISTIC and DETERMINISTIC placement patterns, we should abstract the calculation of sweetSpot nad the definition of appropriate DEX into seperated, off contract functions
+        IERC20(tokenIn).transferFrom(msg.sender, address(this), amountIn);
 
         uint256 tradeId = lastTradeId++;
         bytes32 pairId = keccak256(abi.encode(tokenIn, tokenOut)); //@audit optimise this
@@ -177,7 +181,8 @@ contract Core is Ownable /*, UUPSUpgradeable */ {
             tradeId: tradeId,
             instasettleBps: 100,
             lastSweetSpot: 0, // @audit check that we need to speficially evaluate this here
-            isInstasettlable: isInstasettlable
+            isInstasettlable: isInstasettlable,
+            usePriceBased: usePriceBased
         });
 
         pairIdTradeIds[pairId].push(tradeId);
@@ -193,7 +198,8 @@ contract Core is Ownable /*, UUPSUpgradeable */ {
             0, // realisedAmountOut starts at 0
             isInstasettlable,
             100, // instasettleBps default
-            4 // lastSweetSpot default
+            4, // lastSweetSpot default
+            usePriceBased
         );
 
         Utils.Trade storage trade = trades[tradeId];
@@ -295,8 +301,8 @@ contract Core is Ownable /*, UUPSUpgradeable */ {
         //     revert ToxicTrade(trade.tradeId);
         // }
 
-        (uint256 sweetSpot, address bestDex, address router) =
-            streamDaemon.evaluateSweetSpotAndDex(trade.tokenIn, trade.tokenOut, trade.amountRemaining, 0);
+        (uint256 sweetSpot, address bestDex, address router) = 
+            streamDaemon.evaluateSweetSpotAndDex(trade.tokenIn, trade.tokenOut, trade.amountRemaining, 0, trade.usePriceBased);
 
         if (
             trade.lastSweetSpot == 1 || trade.lastSweetSpot == 2 || trade.lastSweetSpot == 3 || trade.lastSweetSpot == 4

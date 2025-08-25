@@ -21,7 +21,7 @@ abstract contract AMockFetcher is IUniversalDexInterface {
         return address(0);
     }
 
-    function getPrice(address tokenIn, address tokenOut, uint256 amountIn) pure view override returns (uint256) {
+    function getPrice(address tokenIn, address tokenOut, uint256 amountIn) external pure override returns (uint256) {
         // Return a mock price - simple 1:1 ratio for testing
         return amountIn;
     }

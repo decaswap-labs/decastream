@@ -1,91 +1,276 @@
-# 1SLiquidity Protocol
+# DECAStream Protocol
 
-This repo contains the code for the **1SLiquidity Protocol**. It is a work in progress and will be updated as it's developed.
+[![Foundry](https://img.shields.io/badge/foundry-0.2.0+-blue.svg)](https://getfoundry.sh/)
+[![Solidity](https://img.shields.io/badge/solidity-^0.8.13-green.svg)](https://soliditylang.org/)
+[![License](https://img.shields.io/badge/license-UNLICENSED-red.svg)](LICENSE)
 
-Currently the project is in the _Specification_ sprint, where docs and diagrams are being created to outline the project and serve for the team of engineers that will be building the protocol.
+This repository contains the smart contract implementation for the **DECAStream Protocol** - a revolutionary DeFi protocol that automatically routes trades across multiple DEXs and executes them in optimal chunks to minimize slippage and maximize efficiency.
 
-## Boilerplate
+## 🚀 Overview
 
 Ever gone through the laborious process of checking each DEX to get the best trade? What if you don't care and just send it on whichever DEX you happen to be used to? This exposure to front running, pool manipulation and unpredictable slippage rates will be a thing of the past.
 
-One click and the **1SLiquidity Protocol** will route your trade across the DEX with the optimum trade conditions and '**Stream**' it out chunk by chunk, block by block. As market conditions change, we adapt, finding the best performing DEX on this stream by stream basis. When your trade is fully settled, you receive your tokens in precisely the threshold you defined. Taking too long? **Cancel** the trade at any time and return tokens exchanged to that point.
+One click and the **DECAStream Protocol** will route your trade across the DEX with the optimum trade conditions and '**Stream**' it out chunk by chunk, block by block. As market conditions change, we adapt, finding the best performing DEX on this stream by stream basis. When your trade is fully settled, you receive your tokens in precisely the threshold you defined. Taking too long? **Cancel** the trade at any time and return tokens exchanged to that point.
 
 **Instasettle** furthermore allows anyone to instantly settle a trade across the contract in full. Users get to define thresholds in BPS and viewing traders can settle at these rates in one click. Both maker and taker get instant (block) settling.
 
-## Foundry
+- **Automated DEX Routing**: Automatically finds the best DEX for each trade based on price, liquidity, and gas costs
+- **Stream Execution**: Breaks large trades into optimal chunks executed block-by-block
+- **Dynamic Adaptation**: Continuously monitors market conditions and adjusts execution strategy
+- **Instasettle**: Allows instant settlement of trades at predefined thresholds
+- **Cancellation**: Enables trade cancellation at any time with partial token returns
 
-Built using Foundry for smart contracts.
+## ✨ Key Features
 
-## Deployment Strategy
+### 🎯 Smart Trade Routing
 
-### Initial Mainnet Launch
+- **Multi-DEX Support**: Integrates with UniswapV2, UniswapV3, Sushiswap, PancakeSwap, Balancer, Curve, and 1inch
+- **Price Optimization**: Automatically selects the DEX offering the best price for each trade
+- **Liquidity Analysis**: Evaluates pool depths to determine optimal trade sizes
 
-The protocol will be deployed with **3 core DEXs** for the initial mainnet launch:
+### 🔄 Stream Execution
 
-- **UniswapV2** - Ethereum's most established DEX
-- **Sushiswap** - High liquidity alternative
-- **PancakeSwap** - Popular DEX with unique features
+- **Chunked Trading**: Breaks large trades into smaller, optimal chunks
+- **Block-by-Block**: Executes trades across multiple blocks to minimize market impact
+- **Sweet Spot Algorithm**: Proprietary algorithm determines optimal chunk sizes based on pool reserves and gas costs
 
-### Deployment Scripts
+### ⚡ Instasettle
 
-- `DeployBarebones.s.sol` - Initial mainnet deployment (3 DEXs)
-- `DeployMainnet.s.sol` - Full deployment with all DEXs (for future use)
+- **Instant Settlement**: Anyone can instantly settle a trade at predefined BPS thresholds
+- **Maker-Taker Benefits**: Both parties benefit from instant, predictable settlement
+- **Fee Optimization**: Reduces overall trading costs through efficient execution
 
-### Adding DEXs Post-Launch
+### 🛡️ Security & Control
 
-Additional DEXs can be added without redeploying core contracts:
+- **Trade Cancellation**: Cancel trades at any time and receive tokens exchanged to that point
+- **Owner Controls**: Configurable fee rates and DEX registrations
+- **Audit Ready**: Comprehensive testing and security measures
 
-- Deploy new fetcher contracts
-- Register with StreamDaemon
-- Configure Registry routers
-- See [DEX Integration Guide](DEX_INTEGRATION_GUIDE.md) for details
+## 🏗️ Architecture
+
+### Core Contracts
+
+- **`Core.sol`**: Main protocol contract handling trade execution, fee management, and user interactions
+- **`StreamDaemon.sol`**: Manages DEX selection and sweet spot calculations
+- **`Executor.sol`**: Executes trades on various DEXs through standardized interfaces
+- **`Registry.sol`**: Maintains DEX configurations and parameter encodings
+- **`Utils.sol`**: Shared utilities and data structures
+
+### DEX Integration
+
+- **Fetcher Contracts**: Interface with specific DEXs to get prices and reserves
+- **Router Management**: Configurable router addresses for each DEX type
+- **Parameter Encoding**: Standardized parameter encoding for cross-DEX compatibility
+
+### Fee Structure
+
+- **Stream Fees**: 10 bps for protocol + 10 bps for bots (configurable)
+- **Instasettle Fees**: 10 bps for protocol (configurable)
+- **Maximum Cap**: 100 bps (1%) for all fee types
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- [Foundry](https://getfoundry.sh/) (latest version)
+- Node.js 16+ (for additional tooling)
+- Git
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/your-org/DECAStream.git
+cd DECAStream
+
+# Install Foundry dependencies
+forge install
+
+# Build contracts
+forge build
+```
+
+### Environment Setup
+
+```bash
+# Copy environment template
+cp .env.example .env
+
+# Fill in your configuration
+# MAINNET_RPC_URL=your_mainnet_rpc
+# ETHERSCAN_API_KEY=your_etherscan_key
+# DEPLOYER_PRIVATE_KEY=your_private_key
+```
+
+## 🧪 Testing
+
+### Run All Tests
+
+```bash
+# Run all tests
+forge test
+
+# Run with verbose output
+forge test -vvv
+
+# Run specific test file
+forge test --match-path test/Core.t.sol
+
+# Run with gas reporting
+forge test --gas-report
+```
+
+### Fork Testing
+
+```bash
+# Test against mainnet fork
+forge test --fork-url $MAINNET_RPC_URL
+
+# Test with specific block number
+forge test --fork-url $MAINNET_RPC_URL --fork-block-number 18000000
+```
+
+### Anvil Testing
+
+```bash
+# Start local anvil instance
+anvil
+
+# Run tests against anvil
+forge test --fork-url http://localhost:8545
+```
+
+## 🚀 Deployment
+
+### Mainnet Deployment
+
+The protocol supports two deployment strategies:
+
+#### 1. Barebones Deployment (Recommended for Initial Launch)
+
+```bash
+# Deploy with 3 core DEXs
+npm run deploy:barebones:create2:complete
+
+# Or run step by step
+npm run deploy:barebones:create2
+npm run extract:addresses
+```
+
+#### 2. Full Deployment (All DEXs)
+
+```bash
+# Deploy with all supported DEXs
+npm run deploy:mainnet:create2:complete
+```
+
+### Dry Run (Recommended First)
+
+```bash
+# Test deployment without broadcasting
+npm run deploy:barebones:dry-run
+```
+
+### Address Computation
+
+```bash
+# Compute expected CREATE2 addresses
+npm run compute:addresses
+```
+
+## 🔧 Development
 
 ### Build
 
-```shell
-$ forge build
+```bash
+forge build
 ```
 
-### Test
+### Format Code
 
-```shell
-$ forge test
+```bash
+forge fmt
 ```
 
-### Format
+### Gas Optimization
 
-```shell
-$ forge fmt
+```bash
+# Generate gas snapshots
+forge snapshot
+
+# Compare gas usage
+forge snapshot --diff
 ```
 
-### Gas Snapshots
+### Coverage
 
-```shell
-$ forge snapshot
+```bash
+# Generate coverage report
+forge coverage
 ```
 
-### Anvil
+## 🛡️ Security
 
-```shell
-$ anvil
-```
+### Audit Status
 
-### Deploy
+- **Status**: Pre-audit
+- **Scope**: Core contracts, DEX integrations, fee mechanisms
+- **Timeline**: Q1 2024
 
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
+### Security Features
 
-### Cast
+- **Access Control**: Owner-only functions for critical operations
+- **Fee Caps**: Maximum fee limits to prevent excessive charges
+- **Input Validation**: Comprehensive parameter validation
+- **Emergency Controls**: Ability to pause or update critical functions
 
-```shell
-$ cast <subcommand>
-```
+### Known Limitations
 
-### Help
+- **Centralization Risk**: Owner controls for fee updates and DEX registration
+- **DEX Dependencies**: Relies on external DEX contracts and oracles
+- **Gas Price Volatility**: Execution costs may vary significantly
 
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+## 📚 Documentation
+
+- **[Protocol Overview](docs/PROTOCOL_OVERVIEW.md)**: Detailed protocol mechanics
+- **[DEX Integration Guide](docs/DEX_INTEGRATION_GUIDE.md)**: How to add new DEXs
+- **[Maintenance Guide](docs/PROTOCOL_MAINTENANCE_GUIDE.md)**: Contract upgrade procedures
+- **[API Reference](docs/API_REFERENCE.md)**: Contract function documentation
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+### Development Workflow
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+### Code Standards
+
+- Follow Solidity style guide
+- Include comprehensive tests
+- Update documentation as needed
+- Ensure all tests pass
+
+## 📄 License
+
+This project is licensed under the UNLICENSED License - see the [LICENSE](LICENSE) file for details.
+
+## ⚠️ Disclaimer
+
+This software is provided "as is", without warranty of any kind. Use at your own risk. The authors are not responsible for any financial losses incurred through the use of this protocol.
+
+## 🙏 Acknowledgments
+
+- **Foundry Team**: For the excellent development framework
+- **OpenZeppelin**: For secure contract libraries
+- **DEX Communities**: For building the infrastructure we integrate with
+- **Early Contributors**: For helping shape the protocol
+
+---
+
+**Built with ❤️ by the DECAStream Team**

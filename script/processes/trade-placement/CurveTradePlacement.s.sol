@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import "../SingleDexProtocol.s.sol";
-import "../../src/Utils.sol";
-import "../../src/adapters/CurveFetcher.sol";
-import "../../src/interfaces/dex/ICurvePool.sol";
+import "../../SingleDexProtocol.s.sol";
+import "../../../src/Utils.sol";
+import "../../../src/adapters/CurveFetcher.sol";
+import "../../../src/interfaces/dex/ICurvePool.sol";
 
 contract CurveTradePlacement is SingleDexProtocol {
     // Use the CURVE_POOL constant from SingleDexProtocol

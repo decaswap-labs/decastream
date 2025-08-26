@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import "../SingleDexProtocol.s.sol";
-import "../../src/Utils.sol";
-import "../../src/adapters/PancakeSwapFetcher.sol";
-import "../../src/interfaces/dex/IUniswapV2Router.sol";
+import "../../SingleDexProtocol.s.sol";
+import "../../../src/Utils.sol";
+import "../../../src/adapters/PancakeSwapFetcher.sol";
+import "../../../src/interfaces/dex/IUniswapV2Router.sol";
 
 contract PancakeSwapTradePlacement is SingleDexProtocol {
     // Use UniswapV2 router for testing since we're on Ethereum mainnet fork

@@ -28,5 +28,13 @@ deployment.env.example
 DeployMainnet.s.sol
 DeployBarebones.s.sol
 Deploy.s.sol
+DeployCrossChain.s.sol
 VerifyDeployment.s.sol
 AddPancakeSwap.s.sol
+
+script/processes/deployment/DeployMainnet.s.sol
+script/processes/deployment/DeployBarebones.s.sol
+script/processes/deployment/Deploy.s.sol
+script/processes/deployment/DeployCrossChain.s.sol
+script/processes/deployment/VerifyDeployment.s.sol
+script/processes/deployment/AddPancakeSwap.s.sol

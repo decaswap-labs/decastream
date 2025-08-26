@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import "../SingleDexProtocol.s.sol";
-import "../../src/Utils.sol";
-import "../../src/adapters/OneInchFetcher.sol";
+import "../../SingleDexProtocol.s.sol";
+import "../../../src/Utils.sol";
+import "../../../src/adapters/OneInchFetcher.sol";
 
 contract OneInchTradePlacement is SingleDexProtocol {
     // Use UniswapV2 router for testing since we're on Ethereum mainnet fork

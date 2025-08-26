@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import "../SingleDexProtocol.s.sol";
-import "../../src/Utils.sol";
-import "../../src/adapters/BalancerFetcher.sol";
-import "../../src/interfaces/dex/IBalancerVault.sol";
+import "../../SingleDexProtocol.s.sol";
+import "../../../src/Utils.sol";
+import "../../../src/adapters/BalancerFetcher.sol";
+import "../../../src/interfaces/dex/IBalancerVault.sol";
 
 contract BalancerTradePlacement is SingleDexProtocol {
     // Balancer pool address for BAL/WETH

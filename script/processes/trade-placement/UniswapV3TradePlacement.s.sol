@@ -1,26 +1,17 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import "../SingleDexProtocol.s.sol";
-import "../../src/Utils.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "../../SingleDexProtocol.s.sol";
+import "../../../src/Utils.sol";
+import "../../../src/adapters/UniswapV3Fetcher.sol";
 
-contract SushiswapTradePlacement is SingleDexProtocol {
-    using SafeERC20 for IERC20;
-
+contract UniswapV3TradePlacement is SingleDexProtocol {
     function setUp() public {
-        SushiswapFetcher sushiswapFetcher = new SushiswapFetcher(SUSHISWAP_FACTORY);
-        setUpSingleDex(address(sushiswapFetcher), SUSHISWAP_ROUTER);
-        vm.startPrank(WETH_WHALE);
-        IERC20(WETH).transfer(address(this), 100 * 1e18);
-        vm.stopPrank();
-
-        vm.startPrank(USDC_WHALE);
-        IERC20(USDC).transfer(address(this), 200_000 * 1e6);
-        vm.stopPrank();
-
-        IERC20(WETH).forceApprove(address(core), type(uint256).max);
-        IERC20(USDC).forceApprove(address(core), type(uint256).max);
+        console.log("UniswapV3TradePlacement: Starting setup");
+        UniswapV3Fetcher uniswapV3Fetcher = new UniswapV3Fetcher(UNISWAP_V3_FACTORY, UNISWAP_V3_FEE);
+        console.log("UniswapV3TradePlacement: Created fetcher at", address(uniswapV3Fetcher));
+        setUpSingleDex(address(uniswapV3Fetcher), UNISWAP_V3_ROUTER);
+        console.log("UniswapV3TradePlacement: Setup complete");
     }
 
     function run() external {
@@ -28,8 +19,10 @@ contract SushiswapTradePlacement is SingleDexProtocol {
     }
 
     function testPlaceTradeWETHUSDC() public {
-        console.log("Starting Sushiswap trade test");
-
+        console.log("UniswapV3TradePlacement: Starting trade test");
+        console.log("UniswapV3TradePlacement: Using fetcher at", dexFetcher);
+        console.log("UniswapV3TradePlacement: Using router at", dexRouter);
+        
         uint256 amountIn = formatTokenAmount(WETH, 1);
         uint256 amountOutMin = formatTokenAmount(USDC, 1800);
 
@@ -58,9 +51,7 @@ contract SushiswapTradePlacement is SingleDexProtocol {
         assertEq(trade.tokenIn, WETH, "Token in should be WETH");
         assertEq(trade.tokenOut, USDC, "Token out should be USDC");
         assertEq(trade.amountIn, amountIn, "Amount in should match");
-        assertTrue(
-            trade.amountRemaining < amountIn, "Amount remaining should be less than amount in after initial execution"
-        );
+        assertTrue(trade.amountRemaining < amountIn, "Amount remaining should be less than amount in after initial execution");
         assertEq(trade.targetAmountOut, amountOutMin, "Target amount out should match");
         assertTrue(trade.realisedAmountOut > 0, "Realised amount out should be greater than 0 after initial execution");
         assertEq(trade.attempts, 1, "Attempts should be 1 initially");

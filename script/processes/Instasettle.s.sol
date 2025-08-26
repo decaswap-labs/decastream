@@ -3,7 +3,7 @@
 pragma solidity ^0.8.0;
 
 import "../Protocol.s.sol";
-import "../processes/TradePlacement.s.sol";
+import "./trade-placement/TradePlacement.s.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 contract Instasettle is TradePlacement {

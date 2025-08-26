@@ -1,25 +1,22 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import "../SingleDexProtocol.s.sol";
-import "../../src/Utils.sol";
+import "../../SingleDexProtocol.s.sol";
+import "../../../src/Utils.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
-contract UniswapV2TradePlacement is SingleDexProtocol {
+contract SushiswapTradePlacement is SingleDexProtocol {
     using SafeERC20 for IERC20;
 
     function setUp() public {
-        UniswapV2Fetcher uniswapV2Fetcher = new UniswapV2Fetcher(UNISWAP_V2_FACTORY);
-
-        // set up protocol with only UniswapV2
-        setUpSingleDex(address(uniswapV2Fetcher), UNISWAP_V2_ROUTER);
-
+        SushiswapFetcher sushiswapFetcher = new SushiswapFetcher(SUSHISWAP_FACTORY);
+        setUpSingleDex(address(sushiswapFetcher), SUSHISWAP_ROUTER);
         vm.startPrank(WETH_WHALE);
-        IERC20(WETH).transfer(address(this), 100 * 1e18); // 100 WETH
+        IERC20(WETH).transfer(address(this), 100 * 1e18);
         vm.stopPrank();
 
         vm.startPrank(USDC_WHALE);
-        IERC20(USDC).transfer(address(this), 200_000 * 1e6); // 200,000 USDC
+        IERC20(USDC).transfer(address(this), 200_000 * 1e6);
         vm.stopPrank();
 
         IERC20(WETH).forceApprove(address(core), type(uint256).max);
@@ -31,7 +28,7 @@ contract UniswapV2TradePlacement is SingleDexProtocol {
     }
 
     function testPlaceTradeWETHUSDC() public {
-        console.log("Starting UniswapV2 trade test");
+        console.log("Starting Sushiswap trade test");
 
         uint256 amountIn = formatTokenAmount(WETH, 1);
         uint256 amountOutMin = formatTokenAmount(USDC, 1800);

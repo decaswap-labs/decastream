@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 import "forge-std/Test.sol";
-import "./TradePlacement.s.sol";
+import "./trade-placement/TradePlacement.s.sol";
 
 contract TradeCancel is TradePlacement {
     function run() external override {

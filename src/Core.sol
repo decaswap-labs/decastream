@@ -90,56 +90,6 @@ contract Core is Ownable /*, UUPSUpgradeable */ {
 
     // function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
 
-    // =========================
-    // Fees admin
-    // =========================
-    function setStreamProtocolFeeBps(uint16 bps) external onlyOwner {
-        require(bps <= MAX_FEE_CAP_BPS, "fee cap");
-        streamProtocolFeeBps = bps;
-        emit FeeRatesUpdated(streamProtocolFeeBps, streamBotFeeBps, instasettleProtocolFeeBps);
-    }
-
-    function setStreamBotFeeBps(uint16 bps) external onlyOwner {
-        require(bps <= MAX_FEE_CAP_BPS, "fee cap");
-        streamBotFeeBps = bps;
-        emit FeeRatesUpdated(streamProtocolFeeBps, streamBotFeeBps, instasettleProtocolFeeBps);
-    }
-
-    function setInstasettleProtocolFeeBps(uint16 bps) external onlyOwner {
-        require(bps <= MAX_FEE_CAP_BPS, "fee cap");
-        instasettleProtocolFeeBps = bps;
-        emit FeeRatesUpdated(streamProtocolFeeBps, streamBotFeeBps, instasettleProtocolFeeBps);
-    }
-
-    function claimProtocolFees(address token) external onlyOwner {
-        uint256 amount = protocolFees[token];
-        require(amount > 0, "no fees");
-        protocolFees[token] = 0;
-        IERC20(token).safeTransfer(owner(), amount);
-        emit FeesClaimed(owner(), token, amount, true);
-    }
-
-    // =========================
-    // Periphery contract updates
-    // =========================
-    function setStreamDaemon(address _streamDaemon) external onlyOwner {
-        require(_streamDaemon != address(0), "Invalid address");
-        streamDaemon = StreamDaemon(_streamDaemon);
-    }
-
-    function setExecutor(address _executor) external onlyOwner {
-        require(_executor != address(0), "Invalid address");
-        executor = Executor(_executor);
-    }
-
-    function setRegistry(address _registry) external onlyOwner {
-        require(_registry != address(0), "Invalid address");
-        registry = IRegistry(_registry);
-    }
-
-    // =========================
-    // Fees helpers
-    // =========================
     function _computeFee(uint256 amount, uint16 bps) internal pure returns (uint256) {
         return (amount * bps) / MAX_BPS;
     }
@@ -167,6 +117,120 @@ contract Core is Ownable /*, UUPSUpgradeable */ {
         require(botFee * MAX_BPS <= deltaOut * 100, "bot fee guard");
         protocolFees[tokenOut] += protocolFee;
         emit StreamFeesTaken(tradeId, bot, tokenOut, protocolFee, botFee);
+    }
+
+    function _removeTradeIdFromArray(bytes32 pairId, uint256 tradeId) internal {
+        uint256[] storage tradeIds = pairIdTradeIds[pairId];
+        for (uint256 i = 0; i < tradeIds.length; i++) {
+            if (tradeIds[i] == tradeId) {
+                // Remove the trade ID by moving the last element to this position and popping
+                if (i < tradeIds.length - 1) {
+                    tradeIds[i] = tradeIds[tradeIds.length - 1];
+                }
+                tradeIds.pop();
+                break;
+            }
+        }
+    }
+
+    function setStreamProtocolFeeBps(uint16 bps) external onlyOwner {
+        require(bps <= MAX_FEE_CAP_BPS, "fee cap");
+        streamProtocolFeeBps = bps;
+        emit FeeRatesUpdated(streamProtocolFeeBps, streamBotFeeBps, instasettleProtocolFeeBps);
+    }
+
+    function setStreamBotFeeBps(uint16 bps) external onlyOwner {
+        require(bps <= MAX_FEE_CAP_BPS, "fee cap");
+        streamBotFeeBps = bps;
+        emit FeeRatesUpdated(streamProtocolFeeBps, streamBotFeeBps, instasettleProtocolFeeBps);
+    }
+
+    function setInstasettleProtocolFeeBps(uint16 bps) external onlyOwner {
+        require(bps <= MAX_FEE_CAP_BPS, "fee cap");
+        instasettleProtocolFeeBps = bps;
+        emit FeeRatesUpdated(streamProtocolFeeBps, streamBotFeeBps, instasettleProtocolFeeBps);
+    }
+
+    function claimProtocolFees(address token) external onlyOwner {
+        uint256 amount = protocolFees[token];
+        require(amount > 0, "no fees");
+        protocolFees[token] = 0;
+        IERC20(token).safeTransfer(owner(), amount);
+        emit FeesClaimed(owner(), token, amount, true);
+    }
+
+    function setStreamDaemon(address _streamDaemon) external onlyOwner {
+        require(_streamDaemon != address(0), "Invalid address");
+        streamDaemon = StreamDaemon(_streamDaemon);
+    }
+
+    function setExecutor(address _executor) external onlyOwner {
+        require(_executor != address(0), "Invalid address");
+        executor = Executor(_executor);
+    }
+
+    function setRegistry(address _registry) external onlyOwner {
+        require(_registry != address(0), "Invalid address");
+        registry = IRegistry(_registry);
+    }
+
+    function instasettle(uint256 tradeId) external {
+        Utils.Trade memory trade = trades[tradeId];
+        require(trade.owner != address(0), "Trade not found");
+        require(trade.isInstasettlable, "Trade not instasettlable");
+
+        // If lastSweetSpot == 1, just settle the amountRemaining
+        if (trade.lastSweetSpot == 1) {
+            delete trades[tradeId];
+            IERC20(trade.tokenOut).safeTransferFrom(msg.sender, trade.owner, trade.realisedAmountOut);
+            IERC20(trade.tokenIn).safeTransfer(msg.sender, trade.amountRemaining);
+            emit TradeSettled(
+                trade.tradeId,
+                msg.sender,
+                trade.amountRemaining,
+                trade.realisedAmountOut,
+                0 // totalFees is 0 in this case
+            );
+            return;
+        }
+
+        // Calculate remaining amount that needs to be settled
+        uint256 remainingAmountOut = trade.targetAmountOut - trade.realisedAmountOut;
+        require(remainingAmountOut > 0, "No remaining amount to settle");
+
+        // Calculate how much the settler should pay
+        // targetAmountOut - (realisedAmountOut * (1 - instasettleBps/10000))
+        uint256 settlerPayment =
+            ((trade.targetAmountOut - trade.realisedAmountOut) * (10_000 - trade.instasettleBps)) / 10_000;
+
+        // Take protocol fee from settler on instasettle
+        uint256 protocolFee = _computeFee(settlerPayment, instasettleProtocolFeeBps);
+        if (protocolFee > 0) {
+            IERC20(trade.tokenOut).safeTransferFrom(msg.sender, address(this), protocolFee);
+            protocolFees[trade.tokenOut] += protocolFee;
+            emit InstasettleFeeTaken(trade.tradeId, msg.sender, trade.tokenOut, protocolFee);
+        }
+
+        delete trades[tradeId];
+        IERC20(trade.tokenOut).safeTransferFrom(msg.sender, trade.owner, settlerPayment);
+        IERC20(trade.tokenIn).safeTransfer(msg.sender, trade.amountRemaining);
+        emit TradeSettled(
+            trade.tradeId,
+            msg.sender,
+            trade.amountRemaining,
+            settlerPayment,
+            remainingAmountOut - settlerPayment // totalFees is the difference (logical fee notion)
+        );
+    }
+
+    function getPairIdTradeIds(bytes32 pairId) external view returns (uint256[] memory) {
+        return pairIdTradeIds[pairId];
+    }
+
+    function getTrade(uint256 tradeId) external view returns (Utils.Trade memory) {
+        Utils.Trade memory trade = trades[tradeId];
+        require(trade.owner != address(0), "Trade not found");
+        return trade;
     }
 
     function placeTrade(bytes calldata tradeData) public payable {
@@ -227,20 +291,6 @@ contract Core is Ownable /*, UUPSUpgradeable */ {
         if (delta > 0) {
             (uint256 protocolFee, uint256 botFee) = _applyStreamFees(tradeId, tokenOut, delta, true, address(0));
             trades[tradeId].realisedAmountOut = trade.realisedAmountOut - (protocolFee + botFee);
-        }
-    }
-
-    function _removeTradeIdFromArray(bytes32 pairId, uint256 tradeId) internal {
-        uint256[] storage tradeIds = pairIdTradeIds[pairId];
-        for (uint256 i = 0; i < tradeIds.length; i++) {
-            if (tradeIds[i] == tradeId) {
-                // Remove the trade ID by moving the last element to this position and popping
-                if (i < tradeIds.length - 1) {
-                    tradeIds[i] = tradeIds[tradeIds.length - 1];
-                }
-                tradeIds.pop();
-                break;
-            }
         }
     }
 
@@ -369,64 +419,5 @@ contract Core is Ownable /*, UUPSUpgradeable */ {
         emit TradeStreamExecuted(trade.tradeId, streamVolume, amountOut, sweetSpot);
 
         return storageTrade;
-    }
-
-    function instasettle(uint256 tradeId) external {
-        Utils.Trade memory trade = trades[tradeId];
-        require(trade.owner != address(0), "Trade not found");
-        require(trade.isInstasettlable, "Trade not instasettlable");
-
-        // If lastSweetSpot == 1, just settle the amountRemaining
-        if (trade.lastSweetSpot == 1) {
-            delete trades[tradeId];
-            IERC20(trade.tokenOut).safeTransferFrom(msg.sender, trade.owner, trade.realisedAmountOut);
-            IERC20(trade.tokenIn).safeTransfer(msg.sender, trade.amountRemaining);
-            emit TradeSettled(
-                trade.tradeId,
-                msg.sender,
-                trade.amountRemaining,
-                trade.realisedAmountOut,
-                0 // totalFees is 0 in this case
-            );
-            return;
-        }
-
-        // Calculate remaining amount that needs to be settled
-        uint256 remainingAmountOut = trade.targetAmountOut - trade.realisedAmountOut;
-        require(remainingAmountOut > 0, "No remaining amount to settle");
-
-        // Calculate how much the settler should pay
-        // targetAmountOut - (realisedAmountOut * (1 - instasettleBps/10000))
-        uint256 settlerPayment =
-            ((trade.targetAmountOut - trade.realisedAmountOut) * (10_000 - trade.instasettleBps)) / 10_000;
-
-        // Take protocol fee from settler on instasettle
-        uint256 protocolFee = _computeFee(settlerPayment, instasettleProtocolFeeBps);
-        if (protocolFee > 0) {
-            IERC20(trade.tokenOut).safeTransferFrom(msg.sender, address(this), protocolFee);
-            protocolFees[trade.tokenOut] += protocolFee;
-            emit InstasettleFeeTaken(trade.tradeId, msg.sender, trade.tokenOut, protocolFee);
-        }
-
-        delete trades[tradeId];
-        IERC20(trade.tokenOut).safeTransferFrom(msg.sender, trade.owner, settlerPayment);
-        IERC20(trade.tokenIn).safeTransfer(msg.sender, trade.amountRemaining);
-        emit TradeSettled(
-            trade.tradeId,
-            msg.sender,
-            trade.amountRemaining,
-            settlerPayment,
-            remainingAmountOut - settlerPayment // totalFees is the difference (logical fee notion)
-        );
-    }
-
-    function getPairIdTradeIds(bytes32 pairId) external view returns (uint256[] memory) {
-        return pairIdTradeIds[pairId];
-    }
-
-    function getTrade(uint256 tradeId) external view returns (Utils.Trade memory) {
-        Utils.Trade memory trade = trades[tradeId];
-        require(trade.owner != address(0), "Trade not found");
-        return trade;
     }
 }

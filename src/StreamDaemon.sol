@@ -11,7 +11,6 @@ contract StreamDaemon is Ownable {
     mapping(address => address) public dexToRouters; // goes to Core.sol
 
     event DEXRouteAdded(address indexed dex);
-
     event DEXRouteRemoved(address indexed dex);
 
     // temporarily efine a constant for minimum effective gas in dollars
@@ -25,6 +24,31 @@ contract StreamDaemon is Ownable {
         for (uint256 i = 0; i < _routers.length; i++) {
             dexToRouters[_dexs[i]] = _routers[i];
         } // @audit make sure to pass the routers in the appropriate order wrt how the dex's are inputted on deployment
+    }
+
+    function computeAlpha(uint256 scaledReserveIn, uint256 scaledReserveOut) internal pure returns (uint256 alpha) {
+        // alpha = reserveOut / (reserveIn^2)
+        require(scaledReserveIn > 0, "Invalid reserve");
+        require(scaledReserveOut > 0, "Invalid reserve");
+
+        if (scaledReserveIn >= scaledReserveOut) {
+            alpha = (scaledReserveIn * 1e24) / (scaledReserveOut * scaledReserveOut);
+        } else {
+            alpha = (scaledReserveOut * 1e24) / (scaledReserveIn * scaledReserveIn);
+        }
+    }
+
+    function sqrt(uint256 y) internal pure returns (uint256 z) {
+        if (y > 3) {
+            z = y;
+            uint256 x = y / 2 + 1;
+            while (x < z) {
+                z = x;
+                x = (y / x + x) / 2;
+            }
+        } else if (y != 0) {
+            z = 1;
+        }
     }
 
     function registerDex(address _fetcher) external onlyOwner {
@@ -219,18 +243,5 @@ contract StreamDaemon is Ownable {
 
     function _sweetSpotAlgo_v2(uint256 scaledVolume, uint256 scaledReserveIn) public pure returns (uint256 sweetSpot) {
         sweetSpot = (scaledVolume) / sqrt(scaledReserveIn);
-    }
-
-    function sqrt(uint256 y) internal pure returns (uint256 z) {
-        if (y > 3) {
-            z = y;
-            uint256 x = y / 2 + 1;
-            while (x < z) {
-                z = x;
-                x = (y / x + x) / 2;
-            }
-        } else if (y != 0) {
-            z = 1;
-        }
     }
 }

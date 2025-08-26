@@ -120,6 +120,24 @@ contract Core is Ownable /*, UUPSUpgradeable */ {
     }
 
     // =========================
+    // Periphery contract updates
+    // =========================
+    function setStreamDaemon(address _streamDaemon) external onlyOwner {
+        require(_streamDaemon != address(0), "Invalid address");
+        streamDaemon = StreamDaemon(_streamDaemon);
+    }
+
+    function setExecutor(address _executor) external onlyOwner {
+        require(_executor != address(0), "Invalid address");
+        executor = Executor(_executor);
+    }
+
+    function setRegistry(address _registry) external onlyOwner {
+        require(_registry != address(0), "Invalid address");
+        registry = IRegistry(_registry);
+    }
+
+    // =========================
     // Fees helpers
     // =========================
     function _computeFee(uint256 amount, uint16 bps) internal pure returns (uint256) {

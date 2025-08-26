@@ -4,6 +4,7 @@ pragma solidity ^0.8.13;
 import {Script, console} from "../lib/forge-std/src/Script.sol";
 import {Create2Factory} from "../src/Create2Factory.sol";
 import {StreamDaemon} from "../src/StreamDaemon.sol";
+import {Core} from "../src/Core.sol";
 import {UniswapV2Fetcher} from "../src/adapters/UniswapV2Fetcher.sol";
 import {SushiswapFetcher} from "../src/adapters/SushiswapFetcher.sol";
 import {PancakeSwapFetcher} from "../src/adapters/PancakeSwapFetcher.sol";
@@ -19,6 +20,7 @@ contract UpdateStreamDaemon is Script {
     // Contract addresses
     address public currentStreamDaemon;
     address public newStreamDaemon;
+    address public core; // Add Core address for updating
     
     // DEX Fetchers
     address public uniswapV2Fetcher;
@@ -37,6 +39,7 @@ contract UpdateStreamDaemon is Script {
         uniswapV2Fetcher = vm.envAddress("UNISWAP_V2_FETCHER_ADDRESS");
         sushiswapFetcher = vm.envAddress("SUSHISWAP_FETCHER_ADDRESS");
         pancakeswapFetcher = vm.envAddress("PANCAKESWAP_FETCHER_ADDRESS");
+        core = vm.envAddress("CORE_ADDRESS"); // Load Core address
     }
     
     function run() public {
@@ -80,6 +83,11 @@ contract UpdateStreamDaemon is Script {
         _updateVersionHistory();
         console.log("");
         
+        // Step 7: Update Core's StreamDaemon address
+        console.log("Step 7: Updating Core's StreamDaemon address...");
+        _updateCoreStreamDaemonAddress();
+        console.log("");
+        
         vm.stopBroadcast();
         
         _displayUpdateSummary();
@@ -94,6 +102,7 @@ contract UpdateStreamDaemon is Script {
         require(Address.isContract(uniswapV2Fetcher), "UniswapV2Fetcher not found");
         require(Address.isContract(sushiswapFetcher), "SushiswapFetcher not found");
         require(Address.isContract(pancakeswapFetcher), "PancakeSwapFetcher not found");
+        require(Address.isContract(core), "Core contract not found"); // Verify Core exists
         
         // Test current StreamDaemon functionality
         StreamDaemon streamDaemon = StreamDaemon(currentStreamDaemon);
@@ -146,6 +155,7 @@ contract UpdateStreamDaemon is Script {
         console.log("  SushiswapFetcher:", sushiswapFetcher);
         console.log("  PancakeSwapFetcher:", pancakeswapFetcher);
         console.log("  CREATE2 Factory:", address(factory));
+        console.log("  Core:", core); // Add Core to backup
         
         // Note: State backup is handled by version history
         console.log("  State backup complete");
@@ -275,6 +285,16 @@ contract UpdateStreamDaemon is Script {
         versionData = string(abi.encodePacked(versionData, "}\n"));
         
         return versionData;
+    }
+
+    function _updateCoreStreamDaemonAddress() internal {
+        console.log("Updating Core contract's StreamDaemon address...");
+        
+        // Call Core's setStreamDaemon function to update the address
+        Core coreContract = Core(core);
+        coreContract.setStreamDaemon(newStreamDaemon);
+        
+        console.log("Core StreamDaemon address updated to:", newStreamDaemon);
     }
     
     function _displayUpdateSummary() internal view {

@@ -160,77 +160,76 @@ contract UpdateCore is Script {
     }
     
     function _deployNewCore() internal {
-        bytes32 baseSalt = keccak256(abi.encodePacked(
-            "1SLiquidity",
-            "Barebones",
-            block.chainid,
-            "v1.0.0"
-        ));
+        console.log("Updating Core contract periphery addresses:");
+        console.log("  Updating StreamDaemon address...");
+        console.log("  Updating Executor address...");
+        console.log("  Updating Registry address...");
         
-        bytes32 coreSalt = keccak256(abi.encodePacked(baseSalt, "Core"));
+        // Use Core's setter functions instead of redeployment
+        Core core = Core(currentCore);
         
-        // Deploy new Core with same dependencies
-        newCore = factory.deployWithName(
-            0, // No ETH sent
-            coreSalt,
-            type(Core).creationCode,
-            abi.encode(streamDaemon, executor, registry),
-            "Core"
-        );
+        // Update periphery contract addresses
+        core.setStreamDaemon(streamDaemon);
+        core.setExecutor(executor);
+        core.setRegistry(registry);
         
-        console.log("New Core deployed at:", newCore);
+        // Set newCore to currentCore since we're not deploying new contract
+        newCore = currentCore;
+        
+        console.log("Core periphery addresses updated successfully");
+        console.log("Core remains at:", newCore);
     }
     
     function _verifyNewCore() internal view {
-        console.log("Verifying new Core contract:");
+        console.log("Verifying Core contract periphery address updates:");
         
-        Core newCoreContract = Core(newCore);
+        Core coreContract = Core(newCore);
         
-        // Verify constructor parameters
-        require(address(newCoreContract.streamDaemon()) == streamDaemon, "New Core streamDaemon mismatch");
-        require(address(newCoreContract.executor()) == executor, "New Core executor mismatch");
-        require(address(newCoreContract.registry()) == registry, "New Core registry mismatch");
+        // Verify periphery addresses have been updated
+        require(address(coreContract.streamDaemon()) == streamDaemon, "Core streamDaemon not updated");
+        require(address(coreContract.executor()) == executor, "Core executor not updated");
+        require(address(coreContract.registry()) == registry, "Core registry not updated");
         
         // Test basic functionality
-        try newCoreContract.getStreamDaemon() {
-            console.log("  Constructor parameters verified");
+        try coreContract.getStreamDaemon() {
+            console.log("  Periphery addresses updated successfully");
             console.log("  Dependencies correctly set");
             console.log("  Basic getters functional");
         } catch {
-            revert("New Core basic functionality test failed");
+            revert("Core periphery address update verification failed");
         }
         
         // Test integration with dependencies
-        _testNewCoreIntegration(newCoreContract);
+        _testNewCoreIntegration(coreContract);
         
-        console.log("  New Core is functional");
+        console.log("  Core periphery addresses verified");
     }
     
-    function _testNewCoreIntegration(Core newCoreContract) internal view {
-        console.log("  Testing new Core integration:");
+    function _testNewCoreIntegration(Core coreContract) internal view {
+        console.log("  Testing updated Core integration:");
         
         // Test StreamDaemon integration
-        try newCoreContract.getStreamDaemon() {
-            address streamDaemonAddr = newCoreContract.getStreamDaemon();
-            require(streamDaemonAddr == streamDaemon, "New Core StreamDaemon address mismatch");
+        try coreContract.getStreamDaemon() {
+            address streamDaemonAddr = coreContract.getStreamDaemon();
+            require(streamDaemonAddr == streamDaemon, "Updated Core StreamDaemon address mismatch");
             console.log("    StreamDaemon integration verified");
         } catch {
             console.log("    Warning: StreamDaemon integration test failed");
         }
         
         // Test Executor integration
-        try newCoreContract.getExecutor() {
-            address executorAddr = newCoreContract.getExecutor();
-            require(executorAddr == executor, "New Core Executor address mismatch");
+        try coreContract.getExecutor() {
+            address executorAddr = coreContract.getExecutor();
+            require(executorAddr == executor, "Updated Core Executor address mismatch");
             console.log("    Executor integration verified");
         } catch {
             console.log("    Warning: Executor integration test failed");
         }
         
         // Test Registry integration
-        try newCoreContract.getRegistry() {
-            address registryAddr = newCoreContract.getRegistry();
-            require(registryAddr == registry, "New Core Registry address mismatch");
+        try coreContract.getRegistry() {
+            address registryAddr = coreContract.getRegistry();
+            require(registryAddr == registry, "Updated Core Registry address mismatch");
             console.log("    Registry integration verified");
         } catch {
             console.log("    Warning: Registry integration test failed");
@@ -241,10 +240,11 @@ contract UpdateCore is Script {
         console.log("Validating post-update state:");
         
         // Verify all contracts still work together
-        Core newCoreContract = Core(newCore);
+        Core coreContract = Core(newCore);
         
         // Test comprehensive functionality
         console.log("  Core contract accessible");
+        console.log("  Periphery addresses updated successfully");
         console.log("  Dependencies properly linked");
         console.log("  Integration tests passed");
         console.log("  Update successful");
@@ -276,18 +276,21 @@ contract UpdateCore is Script {
     function _createNewVersionData(string memory currentHistory) internal view returns (string memory) {
         string memory versionData = "{\n";
         versionData = string(abi.encodePacked(versionData, "  \"update_date\": \"", vm.toString(block.timestamp), "\",\n"));
-        versionData = string(abi.encodePacked(versionData, "  \"update_type\": \"contract_update\",\n"));
+        versionData = string(abi.encodePacked(versionData, "  \"update_type\": \"periphery_address_update\",\n"));
         versionData = string(abi.encodePacked(versionData, "  \"updated_contract\": \"Core\",\n"));
         versionData = string(abi.encodePacked(versionData, "  \"network\": \"", vm.toString(block.chainid), "\",\n"));
         versionData = string(abi.encodePacked(versionData, "  \"contracts\": {\n"));
         
-        // Add Core with updated history
+        // Add Core with updated periphery addresses
         versionData = string(abi.encodePacked(versionData, "    \"Core\": {\n"));
-        versionData = string(abi.encodePacked(versionData, "      \"current\": \"", vm.toString(newCore), "\",\n"));
-        versionData = string(abi.encodePacked(versionData, "      \"history\": [\n"));
-        versionData = string(abi.encodePacked(versionData, "        {\"address\": \"", vm.toString(currentCore), "\", \"deployed\": \"previous\", \"version\": \"v1.0.0\"},\n"));
-        versionData = string(abi.encodePacked(versionData, "        {\"address\": \"", vm.toString(newCore), "\", \"deployed\": \"", vm.toString(block.timestamp), "\", \"version\": \"v1.1.0\"}\n"));
-        versionData = string(abi.encodePacked(versionData, "      ]\n"));
+        versionData = string(abi.encodePacked(versionData, "      \"address\": \"", vm.toString(newCore), "\",\n"));
+        versionData = string(abi.encodePacked(versionData, "      \"update_type\": \"periphery_address_update\",\n"));
+        versionData = string(abi.encodePacked(versionData, "      \"timestamp\": \"", vm.toString(block.timestamp), "\",\n"));
+        versionData = string(abi.encodePacked(versionData, "      \"periphery_addresses\": {\n"));
+        versionData = string(abi.encodePacked(versionData, "        \"StreamDaemon\": \"", vm.toString(streamDaemon), "\",\n"));
+        versionData = string(abi.encodePacked(versionData, "        \"Executor\": \"", vm.toString(executor), "\",\n"));
+        versionData = string(abi.encodePacked(versionData, "        \"Registry\": \"", vm.toString(registry), "\"\n"));
+        versionData = string(abi.encodePacked(versionData, "      }\n"));
         versionData = string(abi.encodePacked(versionData, "    }\n"));
         
         versionData = string(abi.encodePacked(versionData, "  }\n"));
@@ -297,27 +300,28 @@ contract UpdateCore is Script {
     }
     
     function _displayUpdateSummary() internal view {
-        console.log("CORE UPDATE COMPLETE!");
-        console.log("=====================");
+        console.log("CORE PERIPHERY ADDRESS UPDATE COMPLETE!");
+        console.log("=======================================");
         console.log("Network:", block.chainid);
         console.log("");
-        console.log("Updated Contracts:");
+        console.log("Updated Contract:");
         console.log("  Core:", newCore);
-        console.log("  Previous Version:", currentCore);
+        console.log("  (Same address - periphery addresses updated)");
         console.log("");
-        console.log("Dependencies:");
+        console.log("Updated Periphery Addresses:");
         console.log("  StreamDaemon:", streamDaemon);
         console.log("  Executor:", executor);
         console.log("  Registry:", registry);
         console.log("");
         console.log("Next Steps:");
-        console.log("  1. Test Core functionality");
-        console.log("  2. Verify all integrations work");
+        console.log("  1. Test Core functionality with new periphery addresses");
+        console.log("  2. Verify all integrations work correctly");
         console.log("  3. Monitor for any issues");
         console.log("  4. Update frontend/UI if needed");
         console.log("");
-        console.log("IMPORTANT: Update your environment variables:");
+        console.log("IMPORTANT: Core address remains the same:");
         console.log("  CORE_ADDRESS=", newCore);
+        console.log("  (Periphery addresses have been updated within Core)");
     }
 }
 

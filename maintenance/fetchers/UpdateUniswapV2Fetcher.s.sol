@@ -5,6 +5,7 @@ import {Script, console} from "../../lib/forge-std/src/Script.sol";
 import {Create2Factory} from "../../src/Create2Factory.sol";
 import {UniswapV2Fetcher} from "../../src/adapters/UniswapV2Fetcher.sol";
 import {Registry} from "../../src/Registry.sol";
+import {StreamDaemon} from "../../src/StreamDaemon.sol";
 
 /**
  * @title UpdateUniswapV2Fetcher
@@ -18,6 +19,7 @@ contract UpdateUniswapV2Fetcher is Script {
     address public registry;
     address public currentFetcher;
     address public newFetcher;
+    address public streamDaemon; // Add StreamDaemon address for updating
     
     // DEX Factory
     address constant UNISWAP_V2_FACTORY = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
@@ -27,6 +29,7 @@ contract UpdateUniswapV2Fetcher is Script {
         factory = Create2Factory(vm.envAddress("CREATE2_FACTORY_ADDRESS"));
         registry = vm.envAddress("REGISTRY_ADDRESS");
         currentFetcher = vm.envAddress("UNISWAP_V2_FETCHER_ADDRESS");
+        streamDaemon = vm.envAddress("STREAMDAEMON_ADDRESS"); // Load StreamDaemon address
     }
     
     function run() public {
@@ -57,14 +60,19 @@ contract UpdateUniswapV2Fetcher is Script {
         console.log("Step 4: Verifying new fetcher...");
         _verifyNewFetcher();
         console.log("");
+
+        // Step 5: Update StreamDaemon's DEX fetcher
+        console.log("Step 5: Updating StreamDaemon's DEX fetcher...");
+        _updateStreamDaemonFetcher();
+        console.log("");
         
-        // Step 5: Post-update validation
-        console.log("Step 5: Post-update validation...");
+        // Step 6: Post-update validation
+        console.log("Step 6: Post-update validation...");
         _validatePostUpdate();
         console.log("");
         
-        // Step 6: Update version history
-        console.log("Step 6: Updating version history...");
+        // Step 7: Update version history
+        console.log("Step 7: Updating version history...");
         _updateVersionHistory();
         console.log("");
         
@@ -80,6 +88,7 @@ contract UpdateUniswapV2Fetcher is Script {
         require(Address.isContract(registry), "Registry not found");
         require(Address.isContract(currentFetcher), "Current UniswapV2Fetcher not found");
         require(Address.isContract(address(factory)), "CREATE2 Factory not found");
+        require(Address.isContract(streamDaemon), "StreamDaemon contract not found"); // Verify StreamDaemon exists
         
         // Verify current fetcher functionality
         UniswapV2Fetcher fetcher = UniswapV2Fetcher(currentFetcher);
@@ -102,6 +111,7 @@ contract UpdateUniswapV2Fetcher is Script {
         console.log("  Current UniswapV2Fetcher:", currentFetcher);
         console.log("  Registry:", registry);
         console.log("  CREATE2 Factory:", address(factory));
+        console.log("  StreamDaemon:", streamDaemon); // Add StreamDaemon to backup
         
         // Note: State backup is handled by version history
         console.log("  State backup complete");
@@ -145,6 +155,16 @@ contract UpdateUniswapV2Fetcher is Script {
         } catch {
             revert("New fetcher functionality test failed");
         }
+    }
+
+    function _updateStreamDaemonFetcher() internal {
+        console.log("Updating StreamDaemon's DEX fetcher...");
+        
+        // Call StreamDaemon's registerDex function to add the new fetcher
+        StreamDaemon streamDaemonContract = StreamDaemon(streamDaemon);
+        streamDaemonContract.registerDex(newFetcher);
+        
+        console.log("StreamDaemon's DEX fetcher updated to:", newFetcher);
     }
     
     function _validatePostUpdate() internal view {

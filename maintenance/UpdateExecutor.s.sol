@@ -4,6 +4,7 @@ pragma solidity ^0.8.13;
 import {Script, console} from "../lib/forge-std/src/Script.sol";
 import {Create2Factory} from "../src/Create2Factory.sol";
 import {Executor} from "../src/Executor.sol";
+import {Core} from "../src/Core.sol";
 
 /**
  * @title UpdateExecutor
@@ -16,11 +17,13 @@ contract UpdateExecutor is Script {
     // Contract addresses
     address public currentExecutor;
     address public newExecutor;
+    address public core; // Add Core address for updating
     
     function setUp() public {
         // Load existing contract addresses from environment
         factory = Create2Factory(vm.envAddress("CREATE2_FACTORY_ADDRESS"));
         currentExecutor = vm.envAddress("EXECUTOR_ADDRESS");
+        core = vm.envAddress("CORE_ADDRESS"); // Load Core address
     }
     
     function run() public {
@@ -61,6 +64,11 @@ contract UpdateExecutor is Script {
         _updateVersionHistory();
         console.log("");
         
+        // Step 7: Update Core's Executor address
+        console.log("Step 7: Updating Core's Executor address...");
+        _updateCoreExecutorAddress();
+        console.log("");
+        
         vm.stopBroadcast();
         
         _displayUpdateSummary();
@@ -72,6 +80,7 @@ contract UpdateExecutor is Script {
         // Verify contracts exist
         require(Address.isContract(currentExecutor), "Current Executor not found");
         require(Address.isContract(address(factory)), "CREATE2 Factory not found");
+        require(Address.isContract(core), "Core contract not found"); // Verify Core exists
         
         // Test current Executor functionality
         Executor executor = Executor(currentExecutor);
@@ -92,6 +101,7 @@ contract UpdateExecutor is Script {
         console.log("Backing up current state:");
         console.log("  Current Executor:", currentExecutor);
         console.log("  CREATE2 Factory:", address(factory));
+        console.log("  Core Contract:", core); // Add Core address to backup
         
         // Note: State backup is handled by version history
         console.log("  State backup complete");
@@ -189,6 +199,16 @@ contract UpdateExecutor is Script {
         versionData = string(abi.encodePacked(versionData, "}\n"));
         
         return versionData;
+    }
+    
+    function _updateCoreExecutorAddress() internal {
+        console.log("Updating Core contract's Executor address...");
+        
+        // Call Core's setExecutor function to update the address
+        Core coreContract = Core(core);
+        coreContract.setExecutor(newExecutor);
+        
+        console.log("Core's Executor address updated to:", newExecutor);
     }
     
     function _displayUpdateSummary() internal view {

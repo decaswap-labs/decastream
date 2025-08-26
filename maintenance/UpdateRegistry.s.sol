@@ -4,6 +4,7 @@ pragma solidity ^0.8.13;
 import {Script, console} from "../lib/forge-std/src/Script.sol";
 import {Create2Factory} from "../src/Create2Factory.sol";
 import {Registry} from "../src/Registry.sol";
+import {Core} from "../src/Core.sol";
 
 /**
  * @title UpdateRegistry
@@ -16,11 +17,13 @@ contract UpdateRegistry is Script {
     // Contract addresses
     address public currentRegistry;
     address public newRegistry;
+    address public core; // Add Core address for updating
     
     function setUp() public {
         // Load existing contract addresses from environment
         factory = Create2Factory(vm.envAddress("CREATE2_FACTORY_ADDRESS"));
         currentRegistry = vm.envAddress("REGISTRY_ADDRESS");
+        core = vm.envAddress("CORE_ADDRESS"); // Load Core address
     }
     
     function run() public {
@@ -61,6 +64,11 @@ contract UpdateRegistry is Script {
         _updateVersionHistory();
         console.log("");
         
+        // Step 7: Update Core's Registry address
+        console.log("Step 7: Updating Core's Registry address...");
+        _updateCoreRegistryAddress();
+        console.log("");
+        
         vm.stopBroadcast();
         
         _displayUpdateSummary();
@@ -72,6 +80,7 @@ contract UpdateRegistry is Script {
         // Verify contracts exist
         require(Address.isContract(currentRegistry), "Current Registry not found");
         require(Address.isContract(address(factory)), "CREATE2 Factory not found");
+        require(Address.isContract(core), "Core contract not found"); // Verify Core exists
         
         // Test current Registry functionality
         Registry registry = Registry(currentRegistry);
@@ -92,6 +101,7 @@ contract UpdateRegistry is Script {
         console.log("Backing up current state:");
         console.log("  Current Registry:", currentRegistry);
         console.log("  CREATE2 Factory:", address(factory));
+        console.log("  Core Contract:", core); // Add Core address to backup
         
         // Note: State backup is handled by version history
         console.log("  State backup complete");
@@ -189,6 +199,16 @@ contract UpdateRegistry is Script {
         versionData = string(abi.encodePacked(versionData, "}\n"));
         
         return versionData;
+    }
+
+    function _updateCoreRegistryAddress() internal {
+        console.log("Updating Core contract's Registry address...");
+        
+        // Call Core's setRegistry function to update the address
+        Core coreContract = Core(core);
+        coreContract.setRegistry(newRegistry);
+        
+        console.log("Core's Registry address updated to:", newRegistry);
     }
     
     function _displayUpdateSummary() internal view {

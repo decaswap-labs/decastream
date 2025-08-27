@@ -1,0 +1,44 @@
+name: DECA Bot
+
+on:
+  schedule:
+    # Run every 24 seconds (as close as GitHub Actions allows - minimum is 1 minute)
+    - cron: "* * * * *"
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+          cache-dependency-path: decabot/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          cd decabot
+          npm ci
+
+      - name: Build bot
+        run: |
+          cd decabot
+          npm run build
+
+      - name: Run bot
+        run: |
+          cd decabot
+          npm start
+        env:
+          INFURA_WS_URL: ${{ secrets.INFURA_WS_URL }}
+          CORE_CONTRACT_ADDRESS: ${{ secrets.CORE_CONTRACT_ADDRESS }}
+          BOT_PRIVATE_KEY: ${{ secrets.BOT_PRIVATE_KEY }}
+          LOG_LEVEL: info
+          NODE_ENV: production
+        timeout-minutes: 5 # Bot runs for 5 minutes then stops

@@ -269,29 +269,30 @@ contract Core is Ownable /*, UUPSUpgradeable */ {
 
         pairIdTradeIds[pairId].push(tradeId);
 
+        Utils.Trade storage trade = trades[tradeId];
+        uint256 realisedBefore = trade.realisedAmountOut;
+        Utils.Trade memory updatedTrade = _executeStream(trade);
+        uint256 delta = updatedTrade.realisedAmountOut - realisedBefore; // initial delta = realised
+        if (delta > 0) {
+            (uint256 protocolFee, uint256 botFee) = _applyStreamFees(tradeId, tokenOut, delta, true, address(0));
+            trades[tradeId].realisedAmountOut = updatedTrade.realisedAmountOut - (protocolFee + botFee);
+        }
+
+        // Emit TradeCreated event after stream execution with actual values
         emit TradeCreated(
             tradeId,
             msg.sender,
             tokenIn,
             tokenOut,
             amountIn,
-            amountIn, // amountRemaining starts as full amountIn
+            updatedTrade.amountRemaining, // Use actual remaining amount after stream
             amountOutMin,
-            0, // realisedAmountOut starts at 0
+            updatedTrade.realisedAmountOut, // Use actual realised amount after stream
             isInstasettlable,
             100, // instasettleBps default
-            4, // lastSweetSpot default
+            updatedTrade.lastSweetSpot, // Use actual sweet spot utilized
             usePriceBased
         );
-
-        Utils.Trade storage trade = trades[tradeId];
-        uint256 realisedBefore = trade.realisedAmountOut;
-        _executeStream(trade);
-        uint256 delta = trade.realisedAmountOut - realisedBefore; // initial delta = realised
-        if (delta > 0) {
-            (uint256 protocolFee, uint256 botFee) = _applyStreamFees(tradeId, tokenOut, delta, true, address(0));
-            trades[tradeId].realisedAmountOut = trade.realisedAmountOut - (protocolFee + botFee);
-        }
     }
 
     function _cancelTrade(uint256 tradeId) public returns (bool) {

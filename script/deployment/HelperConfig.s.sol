@@ -29,34 +29,35 @@ contract HelperConfig is Script {
             address CURVE_POOL = 0x4eBdF703948ddCEA3B11f675B4D1Fba9d2414A14;
 
             activeDexTypesRouters.push(DexTypeRouter({ dexType: "UniswapV2", router: UNISWAP_V2_ROUTER }));
-            activeDexTypesRouters.push(DexTypeRouter({ dexType: "UniswapV3", router: UNISWAP_V3_ROUTER }));
+            // activeDexTypesRouters.push(DexTypeRouter({ dexType: "UniswapV3", router: UNISWAP_V3_ROUTER }));
             activeDexTypesRouters.push(DexTypeRouter({ dexType: "Sushiswap", router: SUSHISWAP_ROUTER }));
-            activeDexTypesRouters.push(DexTypeRouter({ dexType: "Balancer", router: BALANCER_VAULT }));
-            activeDexTypesRouters.push(DexTypeRouter({ dexType: "Curve", router: CURVE_POOL }));
+            // activeDexTypesRouters.push(DexTypeRouter({ dexType: "Balancer", router: BALANCER_VAULT }));
+            // activeDexTypesRouters.push(DexTypeRouter({ dexType: "Curve", router: CURVE_POOL }));
 
             UniswapV2Fetcher uniswapV2Fetcher = new UniswapV2Fetcher(0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f); // UniswapV2
 
             // UniswapV3 with different fee tiers
-            UniswapV3Fetcher uniswapV3Fetcher500 = new UniswapV3Fetcher(0x1F98431c8aD98523631AE4a59f267346ea31F984, 500); // UniswapV3
-                // 0.05%
-            UniswapV3Fetcher uniswapV3Fetcher3000 =
-                new UniswapV3Fetcher(0x1F98431c8aD98523631AE4a59f267346ea31F984, 3000); // UniswapV3 0.3%
-            UniswapV3Fetcher uniswapV3Fetcher10000 =
-                new UniswapV3Fetcher(0x1F98431c8aD98523631AE4a59f267346ea31F984, 10_000); // UniswapV3 1%
+            // UniswapV3Fetcher uniswapV3Fetcher500 = new UniswapV3Fetcher(0x1F98431c8aD98523631AE4a59f267346ea31F984,
+            // 500); // UniswapV3
+            //     // 0.05%
+            // UniswapV3Fetcher uniswapV3Fetcher3000 =
+            //     new UniswapV3Fetcher(0x1F98431c8aD98523631AE4a59f267346ea31F984, 3000); // UniswapV3 0.3%
+            // UniswapV3Fetcher uniswapV3Fetcher10000 =
+            //     new UniswapV3Fetcher(0x1F98431c8aD98523631AE4a59f267346ea31F984, 10_000); // UniswapV3 1%
 
             SushiswapFetcher sushiswapFetcher = new SushiswapFetcher(0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac); // Sushiswap
 
             // StreamDaemon.sol
             activeDexes.push(address(uniswapV2Fetcher));
-            activeDexes.push(address(uniswapV3Fetcher500));
-            activeDexes.push(address(uniswapV3Fetcher3000));
-            activeDexes.push(address(uniswapV3Fetcher10000));
+            // activeDexes.push(address(uniswapV3Fetcher500));
+            // activeDexes.push(address(uniswapV3Fetcher3000));
+            // activeDexes.push(address(uniswapV3Fetcher10000));
             activeDexes.push(address(sushiswapFetcher));
 
             activeRouters.push(UNISWAP_V2_ROUTER);
-            activeRouters.push(UNISWAP_V3_ROUTER); // for 500 fee tier
-            activeRouters.push(UNISWAP_V3_ROUTER); // for 3000 fee tier
-            activeRouters.push(UNISWAP_V3_ROUTER); // for 10000 fee tier
+            // activeRouters.push(UNISWAP_V3_ROUTER); // for 500 fee tier
+            // activeRouters.push(UNISWAP_V3_ROUTER); // for 3000 fee tier
+            // activeRouters.push(UNISWAP_V3_ROUTER); // for 10000 fee tier
             activeRouters.push(SUSHISWAP_ROUTER);
         } else if (block.chainid == 31_337) {
             console.log("Deploying on anvil");

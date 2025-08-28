@@ -8,6 +8,11 @@ solc = "0.8.30"
 via_ir = true
 fs_permissions = [{ access = "read", path = "./config/" }]
 
+# Fuzz configuration
+fuzz = { runs = 1000, max_local_rejects = 10000, max_global_rejects = 10000 }
+fuzz_max_local_rejects = 10000
+fuzz_max_global_rejects = 10000
+
 
 [fmt]
 bracket_spacing = true

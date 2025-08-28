@@ -1,0 +1,3052 @@
+{
+  "USDC": {
+    "uniswapV2": [],
+    "sushiswap": [],
+    "PancakeSwap": []
+  },
+  "USDT": {
+    "uniswapV2": [
+      {
+        "tokenSymbol": "usdc",
+        "tokenName": "USDC",
+        "tokenAddress": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+        "baseToken": "USDT",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "1849770781009",
+          "token1": "1851894678894"
+        },
+        "decimals": {
+          "token0": 6,
+          "token1": 6
+        },
+        "marketCap": 64674321509
+      },
+      {
+        "tokenSymbol": "wbtc",
+        "tokenName": "Wrapped Bitcoin",
+        "tokenAddress": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
+        "baseToken": "USDT",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "183987",
+          "token1": "216963440"
+        },
+        "decimals": {
+          "token0": 8,
+          "token1": 6
+        },
+        "marketCap": 15216829357
+      },
+      {
+        "tokenSymbol": "link",
+        "tokenName": "Chainlink",
+        "tokenAddress": "0x514910771af9ca656af840dff83e8264ecf986ca",
+        "baseToken": "USDT",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "17167171494151597815",
+          "token1": "304135250"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 6
+        },
+        "marketCap": 11984793411
+      },
+      {
+        "tokenSymbol": "weth",
+        "tokenName": "WETH",
+        "tokenAddress": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+        "baseToken": "USDT",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "7224724834429315543361",
+          "token1": "26007147480379"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 6
+        },
+        "marketCap": 7985996269
+      },
+      {
+        "tokenSymbol": "shib",
+        "tokenName": "Shiba Inu",
+        "tokenAddress": "0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce",
+        "baseToken": "USDT",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "401403975797992130818804619",
+          "token1": "5414199109"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 6
+        },
+        "marketCap": 7887782791
+      },
+      {
+        "tokenSymbol": "ton",
+        "tokenName": "Toncoin",
+        "tokenAddress": "0x582d872a1b094fc48f5de31d3b73f2d9be47def1",
+        "baseToken": "USDT",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "653036",
+          "token1": "2387"
+        },
+        "decimals": {
+          "token0": 9,
+          "token1": 6
+        },
+        "marketCap": 7643089461
+      },
+      {
+        "tokenSymbol": "usde",
+        "tokenName": "Ethena USDe",
+        "tokenAddress": "0x4c9edd5852cd905f086c759e8383e09bff1e68b3",
+        "baseToken": "USDT",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "100047575889260849",
+          "token1": "99953"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 6
+        },
+        "marketCap": 6950168871
+      },
+      {
+        "tokenSymbol": "uni",
+        "tokenName": "Uniswap",
+        "tokenAddress": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+        "baseToken": "USDT",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "301793012712114309896",
+          "token1": "3033759305"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 6
+        },
+        "marketCap": 5978581420
+      },
+      {
+        "tokenSymbol": "pepe",
+        "tokenName": "Pepe",
+        "tokenAddress": "0x6982508145454ce325ddbe47a25d4ec3d2311933",
+        "baseToken": "USDT",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "3219928689531333248178",
+          "token1": "43418"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 6
+        },
+        "marketCap": 5177215821
+      },
+      {
+        "tokenSymbol": "aave",
+        "tokenName": "Aave",
+        "tokenAddress": "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9",
+        "baseToken": "USDT",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "47847063706886151",
+          "token1": "14156051"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 6
+        },
+        "marketCap": 4320229612
+      },
+      {
+        "tokenSymbol": "cro",
+        "tokenName": "Cronos",
+        "tokenAddress": "0xa0b73e1ff0b80914ab6fe0444e65848c4c34450b",
+        "baseToken": "USDT",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "37053155",
+          "token1": "35697"
+        },
+        "decimals": {
+          "token0": 8,
+          "token1": 6
+        },
+        "marketCap": 4075583835
+      },
+      {
+        "tokenSymbol": "dai",
+        "tokenName": "Dai",
+        "tokenAddress": "0x6b175474e89094c44da98b954eedeac495271d0f",
+        "baseToken": "USDT",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "17177933849963319075609",
+          "token1": "17147974066"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 6
+        },
+        "marketCap": 3710291744
+      },
+      {
+        "tokenSymbol": "gt",
+        "tokenName": "Gate",
+        "tokenAddress": "0xe66747a101bff2dba3697199dcce5b743b454759",
+        "baseToken": "USDT",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "1488253496",
+          "token1": "1"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 6
+        },
+        "marketCap": 2059311947
+      },
+      {
+        "tokenSymbol": "render",
+        "tokenName": "Render",
+        "tokenAddress": "0x6de037ef9ad2725eb40118bb1702ebb27e4aeb24",
+        "baseToken": "USDT",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "575768719277565437",
+          "token1": "3255924"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 6
+        },
+        "marketCap": 2046194379
+      },
+      {
+        "tokenSymbol": "qnt",
+        "tokenName": "Quant",
+        "tokenAddress": "0x4a220e6096b25eadb88358cb44068a3248254675",
+        "baseToken": "USDT",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "6744884939",
+          "token1": "2"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 6
+        },
+        "marketCap": 1718867843
+      },
+      {
+        "tokenSymbol": "crv",
+        "tokenName": "Curve DAO",
+        "tokenAddress": "0xd533a949740bb3306d119cc777fa900ba034cd52",
+        "baseToken": "USDT",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "13122696742832082224",
+          "token1": "12398037"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 6
+        },
+        "marketCap": 1328380805
+      },
+      {
+        "tokenSymbol": "nexo",
+        "tokenName": "NEXO",
+        "tokenAddress": "0xb62132e35a6c13ee1ee0f84dc5d40bad8d815206",
+        "baseToken": "USDT",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "63649701985172186828",
+          "token1": "83387178"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 6
+        },
+        "marketCap": 1299721086
+      },
+      {
+        "tokenSymbol": "virtual",
+        "tokenName": "Virtuals Protocol",
+        "tokenAddress": "0x44ff8620b8ca30902395a7bd3f2407e1a091bf73",
+        "baseToken": "USDT",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "45958375055324474583",
+          "token1": "73066606"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 6
+        },
+        "marketCap": 1015912199
+      },
+      {
+        "tokenSymbol": "grt",
+        "tokenName": "The Graph",
+        "tokenAddress": "0xc944e90c64b2c07662a292be6244bdf05cda44a7",
+        "baseToken": "USDT",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "63816674357145533156",
+          "token1": "6789337"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 6
+        },
+        "marketCap": 997932464
+      },
+      {
+        "tokenSymbol": "paxg",
+        "tokenName": "PAX Gold",
+        "tokenAddress": "0x45804880de22913dafe09f4980848ece6ecbaf78",
+        "baseToken": "USDT",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "8624656042991",
+          "token1": "24257"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 6
+        },
+        "marketCap": 949907874
+      },
+      {
+        "tokenSymbol": "tkx",
+        "tokenName": "Tokenize Xchange",
+        "tokenAddress": "0x667102bd3413bfeaa3dffb48fa8288819e480a88",
+        "baseToken": "USDT",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "2576475410142",
+          "token1": "151841080870"
+        },
+        "decimals": {
+          "token0": 8,
+          "token1": 6
+        },
+        "marketCap": 856764581
+      },
+      {
+        "tokenSymbol": "jasmy",
+        "tokenName": "JasmyCoin",
+        "tokenAddress": "0x7420b4b9a0110cdc71fb720908340c03f9bc03ec",
+        "baseToken": "USDT",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "4137728019959356448",
+          "token1": "204356"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 6
+        },
+        "marketCap": 823123987
+      },
+      {
+        "tokenSymbol": "sand",
+        "tokenName": "The Sandbox",
+        "tokenAddress": "0x3845badade8e6dff049820680d1f14bd3903a5d0",
+        "baseToken": "USDT",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "94298586042744032",
+          "token1": "1"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 6
+        },
+        "marketCap": 718515537
+      },
+      {
+        "tokenSymbol": "mana",
+        "tokenName": "Decentraland",
+        "tokenAddress": "0x0f5d2fb29fb7d3cfee444a200298f468908cc942",
+        "baseToken": "USDT",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "308624189566721682780",
+          "token1": "99021837"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 6
+        },
+        "marketCap": 585591062
+      },
+      {
+        "tokenSymbol": "ape",
+        "tokenName": "ApeCoin",
+        "tokenAddress": "0x4d224452801aced8b2f0aebe155379bb5d594381",
+        "baseToken": "USDT",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "51813270698553",
+          "token1": "66"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 6
+        },
+        "marketCap": 510458301
+      },
+      {
+        "tokenSymbol": "tusd",
+        "tokenName": "TrueUSD",
+        "tokenAddress": "0x0000000000085d4780b73119b644ae5ecd22b376",
+        "baseToken": "USDT",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "12733312334772387",
+          "token1": "12621"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 6
+        },
+        "marketCap": 493443354
+      },
+      {
+        "tokenSymbol": "comp",
+        "tokenName": "Compound",
+        "tokenAddress": "0xc00e94cb662c3520282e6f5717214004a7f26888",
+        "baseToken": "USDT",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "24365160219460420",
+          "token1": "1089109"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 6
+        },
+        "marketCap": 451111432
+      },
+      {
+        "tokenSymbol": "chz",
+        "tokenName": "Chiliz",
+        "tokenAddress": "0x3506424f91fd33084466f402d5d97f05f8e3b4af",
+        "baseToken": "USDT",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "1674167868880584035860",
+          "token1": "68683532"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 6
+        },
+        "marketCap": 395569457
+      },
+      {
+        "tokenSymbol": "1inch",
+        "tokenName": "1inch",
+        "tokenAddress": "0x111111111117dc0aa78b770fa6a738034120c302",
+        "baseToken": "USDT",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "31077475630425712115",
+          "token1": "10120162"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 6
+        },
+        "marketCap": 379552146
+      },
+      {
+        "tokenSymbol": "move",
+        "tokenName": "Movement",
+        "tokenAddress": "0x3073f7aaa4db83f95e9fff17424f71d4751a3073",
+        "baseToken": "USDT",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "300236",
+          "token1": "4"
+        },
+        "decimals": {
+          "token0": 8,
+          "token1": 6
+        },
+        "marketCap": 374370210
+      },
+      {
+        "tokenSymbol": "super",
+        "tokenName": "SuperVerse",
+        "tokenAddress": "0xe53ec727dbdeb9e2d5456c3be40cff031ab40a55",
+        "baseToken": "USDT",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "875520542",
+          "token1": "1"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 6
+        },
+        "marketCap": 341391220
+      },
+      {
+        "tokenSymbol": "matic",
+        "tokenName": "Polygon",
+        "tokenAddress": "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0",
+        "baseToken": "USDT",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "15534237088303513905120",
+          "token1": "3502010039"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 6
+        },
+        "marketCap": 327418713
+      },
+      {
+        "tokenSymbol": "frax",
+        "tokenName": "Frax (prev. FXS)",
+        "tokenAddress": "0x3432b6a60d23ca0dfca7761b7ab56459d9c964d0",
+        "baseToken": "USDT",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "384124273",
+          "token1": "1"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 6
+        },
+        "marketCap": 305008470
+      }
+    ],
+    "sushiswap": [
+      {
+        "tokenSymbol": "usdc",
+        "tokenName": "USDC",
+        "tokenAddress": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+        "baseToken": "USDT",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "879860408",
+          "token1": "878795024"
+        },
+        "decimals": {
+          "token0": 6,
+          "token1": 6
+        },
+        "marketCap": 64674321509
+      },
+      {
+        "tokenSymbol": "wbtc",
+        "tokenName": "Wrapped Bitcoin",
+        "tokenAddress": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
+        "baseToken": "USDT",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "789585",
+          "token1": "930073227"
+        },
+        "decimals": {
+          "token0": 8,
+          "token1": 6
+        },
+        "marketCap": 15216829357
+      },
+      {
+        "tokenSymbol": "link",
+        "tokenName": "Chainlink",
+        "tokenAddress": "0x514910771af9ca656af840dff83e8264ecf986ca",
+        "baseToken": "USDT",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "24241191666839080525",
+          "token1": "436581211"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 6
+        },
+        "marketCap": 11984793411
+      },
+      {
+        "tokenSymbol": "weth",
+        "tokenName": "WETH",
+        "tokenAddress": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+        "baseToken": "USDT",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "286968153698580289933",
+          "token1": "1033100642255"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 6
+        },
+        "marketCap": 7985996269
+      },
+      {
+        "tokenSymbol": "uni",
+        "tokenName": "Uniswap",
+        "tokenAddress": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+        "baseToken": "USDT",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "511541365024026668",
+          "token1": "4694232"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 6
+        },
+        "marketCap": 5978581420
+      },
+      {
+        "tokenSymbol": "dai",
+        "tokenName": "Dai",
+        "tokenAddress": "0x6b175474e89094c44da98b954eedeac495271d0f",
+        "baseToken": "USDT",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "185752225478285089112",
+          "token1": "186229668"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 6
+        },
+        "marketCap": 3710291744
+      },
+      {
+        "tokenSymbol": "sand",
+        "tokenName": "The Sandbox",
+        "tokenAddress": "0x3845badade8e6dff049820680d1f14bd3903a5d0",
+        "baseToken": "USDT",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "34790185527060219",
+          "token1": "11860"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 6
+        },
+        "marketCap": 718515537
+      },
+      {
+        "tokenSymbol": "ape",
+        "tokenName": "ApeCoin",
+        "tokenAddress": "0x4d224452801aced8b2f0aebe155379bb5d594381",
+        "baseToken": "USDT",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "8309282245215800032223",
+          "token1": "5337742614"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 6
+        },
+        "marketCap": 510458301
+      },
+      {
+        "tokenSymbol": "tusd",
+        "tokenName": "TrueUSD",
+        "tokenAddress": "0x0000000000085d4780b73119b644ae5ecd22b376",
+        "baseToken": "USDT",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "191841994484867",
+          "token1": "193"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 6
+        },
+        "marketCap": 493443354
+      },
+      {
+        "tokenSymbol": "1inch",
+        "tokenName": "1inch",
+        "tokenAddress": "0x111111111117dc0aa78b770fa6a738034120c302",
+        "baseToken": "USDT",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "14811575578100623066",
+          "token1": "4430846"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 6
+        },
+        "marketCap": 379552146
+      },
+      {
+        "tokenSymbol": "ohm",
+        "tokenName": "Olympus",
+        "tokenAddress": "0x64aa3364f17a4d01c6f1751fd97c2bd3d7e7f1d5",
+        "baseToken": "USDT",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "1533501",
+          "token1": "35804"
+        },
+        "decimals": {
+          "token0": 9,
+          "token1": 6
+        },
+        "marketCap": 359446063
+      }
+    ],
+    "PancakeSwap": []
+  },
+  "WBTC": {
+    "uniswapV2": [
+      {
+        "tokenSymbol": "usdt",
+        "tokenName": "Tether",
+        "tokenAddress": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+        "baseToken": "WBTC",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "216963440",
+          "token1": "183987"
+        },
+        "decimals": {
+          "token0": 6,
+          "token1": 8
+        },
+        "marketCap": 162590865312
+      },
+      {
+        "tokenSymbol": "usdc",
+        "tokenName": "USDC",
+        "tokenAddress": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+        "baseToken": "WBTC",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "75514666801",
+          "token1": "63797423"
+        },
+        "decimals": {
+          "token0": 6,
+          "token1": 8
+        },
+        "marketCap": 64674321509
+      },
+      {
+        "tokenSymbol": "steth",
+        "tokenName": "Lido Staked Ether",
+        "tokenAddress": "0xae7ab96520de3a18e5e111b5eaab095312d7fe84",
+        "baseToken": "WBTC",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "434746195",
+          "token1": "1"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 8
+        },
+        "marketCap": 32741177933
+      },
+      {
+        "tokenSymbol": "link",
+        "tokenName": "Chainlink",
+        "tokenAddress": "0x514910771af9ca656af840dff83e8264ecf986ca",
+        "baseToken": "WBTC",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "867365298114915964",
+          "token1": "13554"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 8
+        },
+        "marketCap": 11984793411
+      },
+      {
+        "tokenSymbol": "weth",
+        "tokenName": "WETH",
+        "tokenAddress": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+        "baseToken": "WBTC",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "2312949898766939277001",
+          "token1": "7068040456"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 8
+        },
+        "marketCap": 7985996269
+      },
+      {
+        "tokenSymbol": "uni",
+        "tokenName": "Uniswap",
+        "tokenAddress": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+        "baseToken": "WBTC",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "1517303737074190732",
+          "token1": "13450"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 8
+        },
+        "marketCap": 5978581420
+      },
+      {
+        "tokenSymbol": "aave",
+        "tokenName": "Aave",
+        "tokenAddress": "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9",
+        "baseToken": "WBTC",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "464461492920",
+          "token1": "1"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 8
+        },
+        "marketCap": 4320229612
+      },
+      {
+        "tokenSymbol": "cro",
+        "tokenName": "Cronos",
+        "tokenAddress": "0xa0b73e1ff0b80914ab6fe0444e65848c4c34450b",
+        "baseToken": "WBTC",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "509866",
+          "token1": "2"
+        },
+        "decimals": {
+          "token0": 8,
+          "token1": 8
+        },
+        "marketCap": 4075583835
+      },
+      {
+        "tokenSymbol": "dai",
+        "tokenName": "Dai",
+        "tokenAddress": "0x6b175474e89094c44da98b954eedeac495271d0f",
+        "baseToken": "WBTC",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "11036095891105221395185",
+          "token1": "9314040"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 8
+        },
+        "marketCap": 3710291744
+      },
+      {
+        "tokenSymbol": "solvbtc",
+        "tokenName": "Solv Protocol BTC",
+        "tokenAddress": "0x7a56e1c57c7475ccf742a1832b028f0456652f97",
+        "baseToken": "WBTC",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "255525657669450607",
+          "token1": "25438437"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 8
+        },
+        "marketCap": 1193710854
+      },
+      {
+        "tokenSymbol": "grt",
+        "tokenName": "The Graph",
+        "tokenAddress": "0xc944e90c64b2c07662a292be6244bdf05cda44a7",
+        "baseToken": "WBTC",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "3288948540421",
+          "token1": "1"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 8
+        },
+        "marketCap": 997932464
+      },
+      {
+        "tokenSymbol": "paxg",
+        "tokenName": "PAX Gold",
+        "tokenAddress": "0x45804880de22913dafe09f4980848ece6ecbaf78",
+        "baseToken": "WBTC",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "274572112386",
+          "token1": "2"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 8
+        },
+        "marketCap": 949907874
+      },
+      {
+        "tokenSymbol": "tusd",
+        "tokenName": "TrueUSD",
+        "tokenAddress": "0x0000000000085d4780b73119b644ae5ecd22b376",
+        "baseToken": "WBTC",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "14239925976731728541",
+          "token1": "12196"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 8
+        },
+        "marketCap": 493443354
+      },
+      {
+        "tokenSymbol": "chz",
+        "tokenName": "Chiliz",
+        "tokenAddress": "0x3506424f91fd33084466f402d5d97f05f8e3b4af",
+        "baseToken": "WBTC",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "47642647360978592",
+          "token1": "6"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 8
+        },
+        "marketCap": 395569457
+      },
+      {
+        "tokenSymbol": "1inch",
+        "tokenName": "1inch",
+        "tokenAddress": "0x111111111117dc0aa78b770fa6a738034120c302",
+        "baseToken": "WBTC",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "5806804095485558",
+          "token1": "1"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 8
+        },
+        "marketCap": 379552146
+      },
+      {
+        "tokenSymbol": "matic",
+        "tokenName": "Polygon",
+        "tokenAddress": "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0",
+        "baseToken": "WBTC",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "500000008737854",
+          "token1": "1"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 8
+        },
+        "marketCap": 327418713
+      }
+    ],
+    "sushiswap": [
+      {
+        "tokenSymbol": "usdt",
+        "tokenName": "Tether",
+        "tokenAddress": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+        "baseToken": "WBTC",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "930073227",
+          "token1": "789585"
+        },
+        "decimals": {
+          "token0": 6,
+          "token1": 8
+        },
+        "marketCap": 162590865312
+      },
+      {
+        "tokenSymbol": "weth",
+        "tokenName": "WETH",
+        "tokenAddress": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+        "baseToken": "WBTC",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "4992091712684850848313",
+          "token1": "15255113906"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 8
+        },
+        "marketCap": 7985996269
+      },
+      {
+        "tokenSymbol": "dai",
+        "tokenName": "Dai",
+        "tokenAddress": "0x6b175474e89094c44da98b954eedeac495271d0f",
+        "baseToken": "WBTC",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "6172548030451072",
+          "token1": "6"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 8
+        },
+        "marketCap": 3710291744
+      },
+      {
+        "tokenSymbol": "paxg",
+        "tokenName": "PAX Gold",
+        "tokenAddress": "0x45804880de22913dafe09f4980848ece6ecbaf78",
+        "baseToken": "WBTC",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "447140897",
+          "token1": "1"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 8
+        },
+        "marketCap": 949907874
+      }
+    ],
+    "PancakeSwap": []
+  },
+  "WETH": {
+    "uniswapV2": [
+      {
+        "tokenSymbol": "usdt",
+        "tokenName": "Tether",
+        "tokenAddress": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "26006930679591",
+          "token1": "7224784040267437809589"
+        },
+        "decimals": {
+          "token0": 6,
+          "token1": 18
+        },
+        "marketCap": 162590865312
+      },
+      {
+        "tokenSymbol": "bnb",
+        "tokenName": "BNB",
+        "tokenAddress": "0xb8c77482e45f1f44de1745f52c74426c631bdd52",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "6699962985683",
+          "token1": "1869945401378"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 105453347126
+      },
+      {
+        "tokenSymbol": "usdc",
+        "tokenName": "USDC",
+        "tokenAddress": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "14429939558573",
+          "token1": "4005732504209143215365"
+        },
+        "decimals": {
+          "token0": 6,
+          "token1": 18
+        },
+        "marketCap": 64674321509
+      },
+      {
+        "tokenSymbol": "steth",
+        "tokenName": "Lido Staked Ether",
+        "tokenAddress": "0xae7ab96520de3a18e5e111b5eaab095312d7fe84",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "700282306279397036288",
+          "token1": "696895469523783551038"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 32741177933
+      },
+      {
+        "tokenSymbol": "wbtc",
+        "tokenName": "Wrapped Bitcoin",
+        "tokenAddress": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "7068040456",
+          "token1": "2312949898766939277001"
+        },
+        "decimals": {
+          "token0": 8,
+          "token1": 18
+        },
+        "marketCap": 15216829357
+      },
+      {
+        "tokenSymbol": "wsteth",
+        "tokenName": "Wrapped stETH",
+        "tokenAddress": "0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "95257980920489819",
+          "token1": "115258267092577608"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 14052895401
+      },
+      {
+        "tokenSymbol": "link",
+        "tokenName": "Chainlink",
+        "tokenAddress": "0x514910771af9ca656af840dff83e8264ecf986ca",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "61283819807968674386702",
+          "token1": "301220986010064597293"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 11984793411
+      },
+      {
+        "tokenSymbol": "leo",
+        "tokenName": "LEO Token",
+        "tokenAddress": "0x2af5d2ad76741191d15dfe7bf6ac92d4bd912ca3",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "174543976913188934464",
+          "token1": "431601070325978098"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 8307719961
+      },
+      {
+        "tokenSymbol": "shib",
+        "tokenName": "Shiba Inu",
+        "tokenAddress": "0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "43142143142743596766401386823",
+          "token1": "160657576766683470407"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 7887782791
+      },
+      {
+        "tokenSymbol": "ton",
+        "tokenName": "Toncoin",
+        "tokenAddress": "0x582d872a1b094fc48f5de31d3b73f2d9be47def1",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "1651200419",
+          "token1": "1532519048274104"
+        },
+        "decimals": {
+          "token0": 9,
+          "token1": 18
+        },
+        "marketCap": 7643089461
+      },
+      {
+        "tokenSymbol": "usds",
+        "tokenName": "USDS",
+        "tokenAddress": "0xdc035d45d973e3ec169d2276ddab16f1e407384f",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "130223911980675213",
+          "token1": "4292038345"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 7439803531
+      },
+      {
+        "tokenSymbol": "uni",
+        "tokenName": "Uniswap",
+        "tokenAddress": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "278439636572217111596998",
+          "token1": "769966346279972275030"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 5978581420
+      },
+      {
+        "tokenSymbol": "pepe",
+        "tokenName": "Pepe",
+        "tokenAddress": "0x6982508145454ce325ddbe47a25d4ec3d2311933",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "2385047474273704556824301984967",
+          "token1": "8177008678889954239883"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 5177215821
+      },
+      {
+        "tokenSymbol": "bgb",
+        "tokenName": "Bitget Token",
+        "tokenAddress": "0x54d2252757e1672eead234d27b1270728ff90581",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "86747469548355370150813",
+          "token1": "109429573646058645990"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 5126592482
+      },
+      {
+        "tokenSymbol": "aave",
+        "tokenName": "Aave",
+        "tokenAddress": "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "320489701400244095116",
+          "token1": "25332140934377375045"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 4320229612
+      },
+      {
+        "tokenSymbol": "cro",
+        "tokenName": "Cronos",
+        "tokenAddress": "0xa0b73e1ff0b80914ab6fe0444e65848c4c34450b",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "7255175839120",
+          "token1": "2502112184962877596"
+        },
+        "decimals": {
+          "token0": 8,
+          "token1": 18
+        },
+        "marketCap": 4075583835
+      },
+      {
+        "tokenSymbol": "dai",
+        "tokenName": "Dai",
+        "tokenAddress": "0x6b175474e89094c44da98b954eedeac495271d0f",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "6738802623087151347299930",
+          "token1": "1863958065745418708474"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 3710291744
+      },
+      {
+        "tokenSymbol": "near",
+        "tokenName": "NEAR Protocol",
+        "tokenAddress": "0x85f17cf997934a597031b2e18a9ab6ebd4b9f6a4",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "1174302094816",
+          "token1": "1026"
+        },
+        "decimals": {
+          "token0": 24,
+          "token1": 18
+        },
+        "marketCap": 3269614320
+      },
+      {
+        "tokenSymbol": "ondo",
+        "tokenName": "Ondo",
+        "tokenAddress": "0xfaba6f8e4a5e8ab82f62fe7c39859fa577269be3",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "59602651048627055790",
+          "token1": "17050539022589802"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 3128547895
+      },
+      {
+        "tokenSymbol": "ena",
+        "tokenName": "Ethena",
+        "tokenAddress": "0x57e114b691db790c35207b2e685d4a43181e6061",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "5163449057562",
+          "token1": "568727695"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 2935211908
+      },
+      {
+        "tokenSymbol": "okb",
+        "tokenName": "OKB",
+        "tokenAddress": "0x75231f58b43240c9718dd58b4967c5114342a86c",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "102122621369693881542",
+          "token1": "1364699896990593432"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 2881392651
+      },
+      {
+        "tokenSymbol": "gt",
+        "tokenName": "Gate",
+        "tokenAddress": "0xe66747a101bff2dba3697199dcce5b743b454759",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "3599784599114525110",
+          "token1": "15092088971493327"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 2059311947
+      },
+      {
+        "tokenSymbol": "render",
+        "tokenName": "Render",
+        "tokenAddress": "0x6de037ef9ad2725eb40118bb1702ebb27e4aeb24",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "81185543266925397510583",
+          "token1": "89191794409177443141"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 2046194379
+      },
+      {
+        "tokenSymbol": "pol",
+        "tokenName": "POL (ex-MATIC)",
+        "tokenAddress": "0x455e53cbb86018ac2b8092fdcd39d8444affc3f6",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "847948680734710475",
+          "token1": "57662893222339"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 2033044328
+      },
+      {
+        "tokenSymbol": "wld",
+        "tokenName": "Worldcoin",
+        "tokenAddress": "0x163f8c2467924be0ae7b5347228cabf260318753",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "330971003650944",
+          "token1": "106894293048"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 1990787116
+      },
+      {
+        "tokenSymbol": "fet",
+        "tokenName": "Artificial Superintelligence Alliance",
+        "tokenAddress": "0xaea46a60368a7bd060eec7df8cba43b7ef41ad85",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "273688562856747797754",
+          "token1": "56696951528311669"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 1892726054
+      },
+      {
+        "tokenSymbol": "sky",
+        "tokenName": "Sky",
+        "tokenAddress": "0x56072c95faa701256059aa122697b133aded9279",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "10505769365965093420559",
+          "token1": "247632658483640104"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 1778092849
+      },
+      {
+        "tokenSymbol": "qnt",
+        "tokenName": "Quant",
+        "tokenAddress": "0x4a220e6096b25eadb88358cb44068a3248254675",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "396630925917685077251",
+          "token1": "12992228661550822766"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 1718867843
+      },
+      {
+        "tokenSymbol": "reth",
+        "tokenName": "Rocket Pool ETH",
+        "tokenAddress": "0xae78736cd615f374d3085123a210448e74fc6393",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "1125908919189599",
+          "token1": "1260633734839987"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 1693767843
+      },
+      {
+        "tokenSymbol": "spx",
+        "tokenName": "SPX6900",
+        "tokenAddress": "0xe0f63a424a4439cbe457d80e4f4b51ad25b2c56c",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "724749551604120",
+          "token1": "3519586900175479569714"
+        },
+        "decimals": {
+          "token0": 8,
+          "token1": 18
+        },
+        "marketCap": 1625852095
+      },
+      {
+        "tokenSymbol": "rseth",
+        "tokenName": "Kelp DAO Restaked ETH",
+        "tokenAddress": "0xa1290d69c65a6fe4df752f95823fae25cb99e5a7",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "81248409009113067",
+          "token1": "81715827383495749"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 1607361351
+      },
+      {
+        "tokenSymbol": "meth",
+        "tokenName": "Mantle Staked Ether",
+        "tokenAddress": "0xd5f7838f5c461feff7fe49ea5ebaf7728bb0adfa",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "976",
+          "token1": "1027"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 1335055986
+      },
+      {
+        "tokenSymbol": "crv",
+        "tokenName": "Curve DAO",
+        "tokenAddress": "0xd533a949740bb3306d119cc777fa900ba034cd52",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "200029131828408268678136",
+          "token1": "53854169356424746833"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 1328380805
+      },
+      {
+        "tokenSymbol": "inj",
+        "tokenName": "Injective",
+        "tokenAddress": "0xe28b3b32b6c345a34ff64674606124dd5aceca30",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "791179902345438937134",
+          "token1": "2925219172463791611"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 1301494977
+      },
+      {
+        "tokenSymbol": "nexo",
+        "tokenName": "NEXO",
+        "tokenAddress": "0xb62132e35a6c13ee1ee0f84dc5d40bad8d815206",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "8527888069913821784845",
+          "token1": "3071582092001067176"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 1299721086
+      },
+      {
+        "tokenSymbol": "floki",
+        "tokenName": "FLOKI",
+        "tokenAddress": "0xcf0c122c6b73ff809c693db761e7baebe62b6a2e",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "77957831910294803251",
+          "token1": "2728217326897094640946"
+        },
+        "decimals": {
+          "token0": 9,
+          "token1": 18
+        },
+        "marketCap": 1217054042
+      },
+      {
+        "tokenSymbol": "ezeth",
+        "tokenName": "Renzo Restaked ETH",
+        "tokenAddress": "0xbf5495efe5db9ce00f80364c8b423567e58d2110",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "960854286363720",
+          "token1": "874829176309677"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 1206457322
+      },
+      {
+        "tokenSymbol": "virtual",
+        "tokenName": "Virtuals Protocol",
+        "tokenAddress": "0x44ff8620b8ca30902395a7bd3f2407e1a091bf73",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "4739201045133277215025034",
+          "token1": "2049332731270953921501"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 1015912199
+      },
+      {
+        "tokenSymbol": "imx",
+        "tokenName": "Immutable",
+        "tokenAddress": "0xf57e7e7c23978c3caec3c3548e3d615c346e79ff",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "6567949955954421360631",
+          "token1": "980450928988869455"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 1011950012
+      },
+      {
+        "tokenSymbol": "grt",
+        "tokenName": "The Graph",
+        "tokenAddress": "0xc944e90c64b2c07662a292be6244bdf05cda44a7",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "1823966797829297337480702",
+          "token1": "51266653333201742432"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 997932464
+      },
+      {
+        "tokenSymbol": "ldo",
+        "tokenName": "Lido DAO",
+        "tokenAddress": "0x5a98fcbea516cf06857215779fd812ca3bef1b32",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "17596411819469726245270",
+          "token1": "5185221452060991498"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 950429023
+      },
+      {
+        "tokenSymbol": "paxg",
+        "tokenName": "PAX Gold",
+        "tokenAddress": "0x45804880de22913dafe09f4980848ece6ecbaf78",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "2028104921809073346233",
+          "token1": "1891766687146422509435"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 949907874
+      },
+      {
+        "tokenSymbol": "ens",
+        "tokenName": "Ethereum Name Service",
+        "tokenAddress": "0xc18360217d8f7ab5e7c516566761ea12ce7f9d72",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "476949691268472629810",
+          "token1": "3747207028692108072"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 931343088
+      },
+      {
+        "tokenSymbol": "tkx",
+        "tokenName": "Tokenize Xchange",
+        "tokenAddress": "0x667102bd3413bfeaa3dffb48fa8288819e480a88",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "5283910766612",
+          "token1": "86273976316768952170"
+        },
+        "decimals": {
+          "token0": 8,
+          "token1": 18
+        },
+        "marketCap": 856764581
+      },
+      {
+        "tokenSymbol": "pyusd",
+        "tokenName": "PayPal USD",
+        "tokenAddress": "0x6c3ea9036406852006290770bedfcaba0e23a0e8",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "2982351",
+          "token1": "775071381934425"
+        },
+        "decimals": {
+          "token0": 6,
+          "token1": 18
+        },
+        "marketCap": 854194008
+      },
+      {
+        "tokenSymbol": "jasmy",
+        "tokenName": "JasmyCoin",
+        "tokenAddress": "0x7420b4b9a0110cdc71fb720908340c03f9bc03ec",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "1017855009858210404",
+          "token1": "6371892109842"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 823123987
+      },
+      {
+        "tokenSymbol": "gala",
+        "tokenName": "GALA",
+        "tokenAddress": "0xd1d2eb1b1e90b638588728b4130137d262c87cae",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "63852076584238",
+          "token1": "3038610973358120270"
+        },
+        "decimals": {
+          "token0": 8,
+          "token1": 18
+        },
+        "marketCap": 770450336
+      },
+      {
+        "tokenSymbol": "sand",
+        "tokenName": "The Sandbox",
+        "tokenAddress": "0x3845badade8e6dff049820680d1f14bd3903a5d0",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "1841316633907731310305279",
+          "token1": "150850891477928609571"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 718515537
+      },
+      {
+        "tokenSymbol": "pendle",
+        "tokenName": "Pendle",
+        "tokenAddress": "0x808507121b80c02388fad14726482e061b8da827",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "82595545935680406419",
+          "token1": "100558108496469355"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 709898445
+      },
+      {
+        "tokenSymbol": "btt",
+        "tokenName": "BitTorrent",
+        "tokenAddress": "0xc669928185dbce49d2230cc9b0979be6dc797957",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "328201516216688716246517042794",
+          "token1": "61943592245398937964"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 666563225
+      },
+      {
+        "tokenSymbol": "mana",
+        "tokenName": "Decentraland",
+        "tokenAddress": "0x0f5d2fb29fb7d3cfee444a200298f468908cc942",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "365710193451112596083106",
+          "token1": "30958738316706316834"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 585591062
+      },
+      {
+        "tokenSymbol": "tel",
+        "tokenName": "Telcoin",
+        "tokenAddress": "0x467bccd9d29f223bce8043b84e8c8b282827790f",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "480654497",
+          "token1": "8434865866474573728"
+        },
+        "decimals": {
+          "token0": 2,
+          "token1": 18
+        },
+        "marketCap": 583183240
+      },
+      {
+        "tokenSymbol": "mog",
+        "tokenName": "Mog Coin",
+        "tokenAddress": "0xaaee1a9723aadb7afa2810263653a34ba2c21c7a",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "7459491717345706368586154301530",
+          "token1": "2988235351950040613857"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 553605248
+      },
+      {
+        "tokenSymbol": "xcn",
+        "tokenName": "Onyxcoin",
+        "tokenAddress": "0xa2cd3d43c775978a96bdbf12d733d5a1ed94fb18",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "111958911263499438061910655",
+          "token1": "490088009266030717273"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 540357665
+      },
+      {
+        "tokenSymbol": "cbeth",
+        "tokenName": "Coinbase Wrapped Staked ETH",
+        "tokenAddress": "0xbe9895146f7af43049ca1c1ae358b0541ea49704",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "11203846993818",
+          "token1": "8029764383177"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 518478906
+      },
+      {
+        "tokenSymbol": "ape",
+        "tokenName": "ApeCoin",
+        "tokenAddress": "0x4d224452801aced8b2f0aebe155379bb5d594381",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "28233938100538592685088",
+          "token1": "5019670133624746488"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 510458301
+      },
+      {
+        "tokenSymbol": "tusd",
+        "tokenName": "TrueUSD",
+        "tokenAddress": "0x0000000000085d4780b73119b644ae5ecd22b376",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "21601318288105406900054",
+          "token1": "5950084113592136678"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 493443354
+      },
+      {
+        "tokenSymbol": "rsr",
+        "tokenName": "Reserve Rights",
+        "tokenAddress": "0x320623b8e4ff03373931769a31fc52a4e78b5d70",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "383825557032579584878373",
+          "token1": "885739611799819702"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 488642987
+      },
+      {
+        "tokenSymbol": "aioz",
+        "tokenName": "AIOZ Network",
+        "tokenAddress": "0x626e8036deb333b408be468f951bdb42433cbf18",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "160040089587339862810",
+          "token1": "18989709518216586"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 479706550
+      },
+      {
+        "tokenSymbol": "sdai",
+        "tokenName": "Savings Dai",
+        "tokenAddress": "0x83f20f44975d03b1b09e64809b757c47f942beea",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "57215",
+          "token1": "22"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 478466083
+      },
+      {
+        "tokenSymbol": "sweth",
+        "tokenName": "Swell Ethereum",
+        "tokenAddress": "0xf951e335afb289353dc249e82926178eac7ded78",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "1021",
+          "token1": "1114"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 477236419
+      },
+      {
+        "tokenSymbol": "ethfi",
+        "tokenName": "Ether.fi",
+        "tokenAddress": "0xfe0c30065b384f05761f15d0cc899d4f9f9cc0eb",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "94188190605053361559",
+          "token1": "29333713119564457"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 458971520
+      },
+      {
+        "tokenSymbol": "comp",
+        "tokenName": "Compound",
+        "tokenAddress": "0xc00e94cb662c3520282e6f5717214004a7f26888",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "2291717409778645067973",
+          "token1": "30382143117377416900"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 451111432
+      },
+      {
+        "tokenSymbol": "nft",
+        "tokenName": "APENFT",
+        "tokenAddress": "0x198d14f2ad9ce69e76ea330b374de4957c3f850a",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "1124600",
+          "token1": "43423647261972"
+        },
+        "decimals": {
+          "token0": 6,
+          "token1": 18
+        },
+        "marketCap": 450548749
+      },
+      {
+        "tokenSymbol": "strk",
+        "tokenName": "Starknet",
+        "tokenAddress": "0xca14007eff0db1f8135f4c25b34de49ab0d42766",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "58930613843783350779072",
+          "token1": "2065088559876621530"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 450242554
+      },
+      {
+        "tokenSymbol": "axs",
+        "tokenName": "Axie Infinity",
+        "tokenAddress": "0xbb0e17ef65f82ab018d8edd776e8dd940327b28b",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "157576414787035406216",
+          "token1": "105135684933634495"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 411825302
+      },
+      {
+        "tokenSymbol": "dexe",
+        "tokenName": "DeXe",
+        "tokenAddress": "0xde4ee8057785a7e8e800db58f9784845a5c2cbd6",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "7637974105448296158",
+          "token1": "15205318714330822"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 410274663
+      },
+      {
+        "tokenSymbol": "chz",
+        "tokenName": "Chiliz",
+        "tokenAddress": "0x3506424f91fd33084466f402d5d97f05f8e3b4af",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "43470001238509526604273",
+          "token1": "500342492304786824"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 395569457
+      },
+      {
+        "tokenSymbol": "beam",
+        "tokenName": "Beam",
+        "tokenAddress": "0x62d0a8458ed7719fdaf978fe5929c6d342b0bfce",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "606908508417271966210208855",
+          "token1": "1291049948947861970616"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 392745581
+      },
+      {
+        "tokenSymbol": "cvx",
+        "tokenName": "Convex Finance",
+        "tokenAddress": "0x4e3fbd56cd56c3e72c1403e103b45db9da5b9d2b",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "1099029786716814358",
+          "token1": "1236670619891141"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 389036155
+      },
+      {
+        "tokenSymbol": "1inch",
+        "tokenName": "1inch",
+        "tokenAddress": "0x111111111117dc0aa78b770fa6a738034120c302",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "64273862556867127626421",
+          "token1": "4901774349503245014"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 379552146
+      },
+      {
+        "tokenSymbol": "move",
+        "tokenName": "Movement",
+        "tokenAddress": "0x3073f7aaa4db83f95e9fff17424f71d4751a3073",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "4025",
+          "token1": "1292"
+        },
+        "decimals": {
+          "token0": 8,
+          "token1": 18
+        },
+        "marketCap": 374370210
+      },
+      {
+        "tokenSymbol": "gno",
+        "tokenName": "Gnosis",
+        "tokenAddress": "0x6810e776880c02933d47db1b9fc05908e5386b96",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "279480712462423322994",
+          "token1": "11023913393504164605"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 374083202
+      },
+      {
+        "tokenSymbol": "ohm",
+        "tokenName": "Olympus",
+        "tokenAddress": "0x64aa3364f17a4d01c6f1751fd97c2bd3d7e7f1d5",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "523338",
+          "token1": "373215673212"
+        },
+        "decimals": {
+          "token0": 9,
+          "token1": 18
+        },
+        "marketCap": 359446063
+      },
+      {
+        "tokenSymbol": "ctc",
+        "tokenName": "Creditcoin",
+        "tokenAddress": "0xa3ee21c306a700e682abcdfe9baa6a08f3820419",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "17932391857603617318510",
+          "token1": "3753862610457093683"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 345562751
+      },
+      {
+        "tokenSymbol": "ath",
+        "tokenName": "Aethir",
+        "tokenAddress": "0xbe0ed4138121ecfc5c0e56b40517da27e6c5226b",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "74530757838213281",
+          "token1": "893"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 342428402
+      },
+      {
+        "tokenSymbol": "super",
+        "tokenName": "SuperVerse",
+        "tokenAddress": "0xe53ec727dbdeb9e2d5456c3be40cff031ab40a55",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "5460574074758473478505799",
+          "token1": "1155648646846647275423"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 341391220
+      },
+      {
+        "tokenSymbol": "turbo",
+        "tokenName": "Turbo",
+        "tokenAddress": "0xa35923162c49cf95e6bf26623385eb431ad920d3",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "1426706114028101650017",
+          "token1": "2093104273406814"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 339140469
+      },
+      {
+        "tokenSymbol": "matic",
+        "tokenName": "Polygon",
+        "tokenAddress": "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "1159789605355341672692732",
+          "token1": "72797389944583554261"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 327418713
+      },
+      {
+        "tokenSymbol": "amp",
+        "tokenName": "Amp",
+        "tokenAddress": "0xff20817765cb7f73d4bde2e66e067e58d11095c2",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "18534315957981795060210908",
+          "token1": "19400139658017129614"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 320144059
+      },
+      {
+        "tokenSymbol": "frax",
+        "tokenName": "Frax (prev. FXS)",
+        "tokenAddress": "0x3432b6a60d23ca0dfca7761b7ab56459d9c964d0",
+        "baseToken": "WETH",
+        "dex": "uniswapV2",
+        "reserves": {
+          "token0": "3183097976728437578027",
+          "token1": "3044070643305319973"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 305008470
+      }
+    ],
+    "sushiswap": [
+      {
+        "tokenSymbol": "usdt",
+        "tokenName": "Tether",
+        "tokenAddress": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "1033100642255",
+          "token1": "286968153698580289933"
+        },
+        "decimals": {
+          "token0": 6,
+          "token1": 18
+        },
+        "marketCap": 162590865312
+      },
+      {
+        "tokenSymbol": "bnb",
+        "tokenName": "BNB",
+        "tokenAddress": "0xb8c77482e45f1f44de1745f52c74426c631bdd52",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "32942619992381",
+          "token1": "11813464394409"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 105453347126
+      },
+      {
+        "tokenSymbol": "usdc",
+        "tokenName": "USDC",
+        "tokenAddress": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "1518731822094",
+          "token1": "421161052609194079548"
+        },
+        "decimals": {
+          "token0": 6,
+          "token1": 18
+        },
+        "marketCap": 64674321509
+      },
+      {
+        "tokenSymbol": "steth",
+        "tokenName": "Lido Staked Ether",
+        "tokenAddress": "0xae7ab96520de3a18e5e111b5eaab095312d7fe84",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "8898537894800467",
+          "token1": "8846884153372800"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 32741177933
+      },
+      {
+        "tokenSymbol": "wbtc",
+        "tokenName": "Wrapped Bitcoin",
+        "tokenAddress": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "15255113906",
+          "token1": "4992091712684850848313"
+        },
+        "decimals": {
+          "token0": 8,
+          "token1": 18
+        },
+        "marketCap": 15216829357
+      },
+      {
+        "tokenSymbol": "wsteth",
+        "tokenName": "Wrapped stETH",
+        "tokenAddress": "0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "3266455429090408",
+          "token1": "3938408478292585"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 14052895401
+      },
+      {
+        "tokenSymbol": "link",
+        "tokenName": "Chainlink",
+        "tokenAddress": "0x514910771af9ca656af840dff83e8264ecf986ca",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "55626149975995907636610",
+          "token1": "273388533512031219313"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 11984793411
+      },
+      {
+        "tokenSymbol": "shib",
+        "tokenName": "Shiba Inu",
+        "tokenAddress": "0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "145765470302617582037648475",
+          "token1": "543742443264049563"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 7887782791
+      },
+      {
+        "tokenSymbol": "uni",
+        "tokenName": "Uniswap",
+        "tokenAddress": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "17024468611603260622703",
+          "token1": "47078622823052292597"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 5978581420
+      },
+      {
+        "tokenSymbol": "aave",
+        "tokenName": "Aave",
+        "tokenAddress": "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "283610030994159056607",
+          "token1": "22420448013997665303"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 4320229612
+      },
+      {
+        "tokenSymbol": "cro",
+        "tokenName": "Cronos",
+        "tokenAddress": "0xa0b73e1ff0b80914ab6fe0444e65848c4c34450b",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "193651200561",
+          "token1": "66384722485636672"
+        },
+        "decimals": {
+          "token0": 8,
+          "token1": 18
+        },
+        "marketCap": 4075583835
+      },
+      {
+        "tokenSymbol": "dai",
+        "tokenName": "Dai",
+        "tokenAddress": "0x6b175474e89094c44da98b954eedeac495271d0f",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "5499816638466703780351706",
+          "token1": "1521331449356438548510"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 3710291744
+      },
+      {
+        "tokenSymbol": "near",
+        "tokenName": "NEAR Protocol",
+        "tokenAddress": "0x85f17cf997934a597031b2e18a9ab6ebd4b9f6a4",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "13208613039207477784411426385",
+          "token1": "9734192185086594981"
+        },
+        "decimals": {
+          "token0": 24,
+          "token1": 18
+        },
+        "marketCap": 3269614320
+      },
+      {
+        "tokenSymbol": "arb",
+        "tokenName": "Arbitrum",
+        "tokenAddress": "0xb50721bcf8d664c30412cfbc6cf7a15145234ad1",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "408549913224000055",
+          "token1": "31811962604817"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 2185285828
+      },
+      {
+        "tokenSymbol": "fet",
+        "tokenName": "Artificial Superintelligence Alliance",
+        "tokenAddress": "0xaea46a60368a7bd060eec7df8cba43b7ef41ad85",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "81567359014349737",
+          "token1": "21372086163499"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 1892726054
+      },
+      {
+        "tokenSymbol": "qnt",
+        "tokenName": "Quant",
+        "tokenAddress": "0x4a220e6096b25eadb88358cb44068a3248254675",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "45261055538211932",
+          "token1": "1734691468595411"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 1718867843
+      },
+      {
+        "tokenSymbol": "reth",
+        "tokenName": "Rocket Pool ETH",
+        "tokenAddress": "0xae78736cd615f374d3085123a210448e74fc6393",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "175630866625600",
+          "token1": "174033986725129"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 1693767843
+      },
+      {
+        "tokenSymbol": "crv",
+        "tokenName": "Curve DAO",
+        "tokenAddress": "0xd533a949740bb3306d119cc777fa900ba034cd52",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "187938161794528887298339",
+          "token1": "50530442018206018313"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 1328380805
+      },
+      {
+        "tokenSymbol": "inj",
+        "tokenName": "Injective",
+        "tokenAddress": "0xe28b3b32b6c345a34ff64674606124dd5aceca30",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "21631766256565051139497",
+          "token1": "80067191829687439040"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 1301494977
+      },
+      {
+        "tokenSymbol": "imx",
+        "tokenName": "Immutable",
+        "tokenAddress": "0xf57e7e7c23978c3caec3c3548e3d615c346e79ff",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "91217749419451890426404",
+          "token1": "13613513315685390752"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 1011950012
+      },
+      {
+        "tokenSymbol": "grt",
+        "tokenName": "The Graph",
+        "tokenAddress": "0xc944e90c64b2c07662a292be6244bdf05cda44a7",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "295968999316793842437028",
+          "token1": "8323786061032190080"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 997932464
+      },
+      {
+        "tokenSymbol": "ldo",
+        "tokenName": "Lido DAO",
+        "tokenAddress": "0x5a98fcbea516cf06857215779fd812ca3bef1b32",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "32018120053612244392283",
+          "token1": "9453295032054121564"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 950429023
+      },
+      {
+        "tokenSymbol": "paxg",
+        "tokenName": "PAX Gold",
+        "tokenAddress": "0x45804880de22913dafe09f4980848ece6ecbaf78",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "95169600969534934",
+          "token1": "88511143607833492"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 949907874
+      },
+      {
+        "tokenSymbol": "ens",
+        "tokenName": "Ethereum Name Service",
+        "tokenAddress": "0xc18360217d8f7ab5e7c516566761ea12ce7f9d72",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "5592815852703354324051",
+          "token1": "43734009952270749166"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 931343088
+      },
+      {
+        "tokenSymbol": "jasmy",
+        "tokenName": "JasmyCoin",
+        "tokenAddress": "0x7420b4b9a0110cdc71fb720908340c03f9bc03ec",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "3659284486448224298",
+          "token1": "17848875720582"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 823123987
+      },
+      {
+        "tokenSymbol": "eeth",
+        "tokenName": "ether.fi Staked ETH",
+        "tokenAddress": "0x35fa164735182de50811e8e2e824cfb9b6118ac2",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "16891891859209851290",
+          "token1": "16767476163000154591"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 754546082
+      },
+      {
+        "tokenSymbol": "sand",
+        "tokenName": "The Sandbox",
+        "tokenAddress": "0x3845badade8e6dff049820680d1f14bd3903a5d0",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "2791612779488385074",
+          "token1": "289141647194864"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 718515537
+      },
+      {
+        "tokenSymbol": "pendle",
+        "tokenName": "Pendle",
+        "tokenAddress": "0x808507121b80c02388fad14726482e061b8da827",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "15356065811304068442121",
+          "token1": "18349250620980201562"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 709898445
+      },
+      {
+        "tokenSymbol": "btt",
+        "tokenName": "BitTorrent",
+        "tokenAddress": "0xc669928185dbce49d2230cc9b0979be6dc797957",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "8866239663501278204618287",
+          "token1": "1673473141027579"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 666563225
+      },
+      {
+        "tokenSymbol": "mana",
+        "tokenName": "Decentraland",
+        "tokenAddress": "0x0f5d2fb29fb7d3cfee444a200298f468908cc942",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "108591934997535817117340",
+          "token1": "9196890714825196829"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 585591062
+      },
+      {
+        "tokenSymbol": "tel",
+        "tokenName": "Telcoin",
+        "tokenAddress": "0x467bccd9d29f223bce8043b84e8c8b282827790f",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "4823569",
+          "token1": "84437451657630701"
+        },
+        "decimals": {
+          "token0": 2,
+          "token1": 18
+        },
+        "marketCap": 583183240
+      },
+      {
+        "tokenSymbol": "ape",
+        "tokenName": "ApeCoin",
+        "tokenAddress": "0x4d224452801aced8b2f0aebe155379bb5d594381",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "2318369593093487115671",
+          "token1": "411031343256506338"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 510458301
+      },
+      {
+        "tokenSymbol": "tusd",
+        "tokenName": "TrueUSD",
+        "tokenAddress": "0x0000000000085d4780b73119b644ae5ecd22b376",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "7166201430957908602433",
+          "token1": "1978090424722162835"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 493443354
+      },
+      {
+        "tokenSymbol": "sweth",
+        "tokenName": "Swell Ethereum",
+        "tokenAddress": "0xf951e335afb289353dc249e82926178eac7ded78",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "9778367127800868",
+          "token1": "10539685306533616"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 477236419
+      },
+      {
+        "tokenSymbol": "comp",
+        "tokenName": "Compound",
+        "tokenAddress": "0xc00e94cb662c3520282e6f5717214004a7f26888",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "1626742016186457592256",
+          "token1": "21637785059373308702"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 451111432
+      },
+      {
+        "tokenSymbol": "axs",
+        "tokenName": "Axie Infinity",
+        "tokenAddress": "0xbb0e17ef65f82ab018d8edd776e8dd940327b28b",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "2821831339588996211760",
+          "token1": "1922545655397766651"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 411825302
+      },
+      {
+        "tokenSymbol": "cvx",
+        "tokenName": "Convex Finance",
+        "tokenAddress": "0x4e3fbd56cd56c3e72c1403e103b45db9da5b9d2b",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "54016680511527341076526",
+          "token1": "71557435748481415947"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 389036155
+      },
+      {
+        "tokenSymbol": "1inch",
+        "tokenName": "1inch",
+        "tokenAddress": "0x111111111117dc0aa78b770fa6a738034120c302",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "10883991156351485239461",
+          "token1": "836588165744045056"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 379552146
+      },
+      {
+        "tokenSymbol": "gno",
+        "tokenName": "Gnosis",
+        "tokenAddress": "0x6810e776880c02933d47db1b9fc05908e5386b96",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "1653400765327651688",
+          "token1": "68855262662057594"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 374083202
+      },
+      {
+        "tokenSymbol": "ohm",
+        "tokenName": "Olympus",
+        "tokenAddress": "0x64aa3364f17a4d01c6f1751fd97c2bd3d7e7f1d5",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "60529554597",
+          "token1": "368660081426234083"
+        },
+        "decimals": {
+          "token0": 9,
+          "token1": 18
+        },
+        "marketCap": 359446063
+      },
+      {
+        "tokenSymbol": "super",
+        "tokenName": "SuperVerse",
+        "tokenAddress": "0xe53ec727dbdeb9e2d5456c3be40cff031ab40a55",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "24666440922699466223734",
+          "token1": "5195479023719300607"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 341391220
+      },
+      {
+        "tokenSymbol": "matic",
+        "tokenName": "Polygon",
+        "tokenAddress": "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "33766720374055037272627",
+          "token1": "2117219157839081096"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 327418713
+      },
+      {
+        "tokenSymbol": "amp",
+        "tokenName": "Amp",
+        "tokenAddress": "0xff20817765cb7f73d4bde2e66e067e58d11095c2",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "28008229883350829053575521",
+          "token1": "29325212727053493175"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 320144059
+      },
+      {
+        "tokenSymbol": "frax",
+        "tokenName": "Frax (prev. FXS)",
+        "tokenAddress": "0x3432b6a60d23ca0dfca7761b7ab56459d9c964d0",
+        "baseToken": "WETH",
+        "dex": "sushiswap",
+        "reserves": {
+          "token0": "8477328646967342067",
+          "token1": "8041111058621160"
+        },
+        "decimals": {
+          "token0": 18,
+          "token1": 18
+        },
+        "marketCap": 305008470
+      }
+    ],
+    "PancakeSwap": []
+  }
+}

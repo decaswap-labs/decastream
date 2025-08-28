@@ -9,6 +9,7 @@ import "./interfaces/dex/IUniswapV2Router.sol";
 import "./interfaces/dex/IUniswapV3Router.sol";
 import "./interfaces/dex/IBalancerVault.sol";
 import "./interfaces/dex/ICurvePool.sol";
+import "forge-std/console.sol";
 
 contract Executor {
     using SafeERC20 for IERC20;
@@ -71,6 +72,8 @@ contract Executor {
         if (amountIn == 0) revert ZeroAmount();
 
         IERC20(tokenIn).forceApprove(router, amountIn);
+
+        console.log("block.timestamp", block.timestamp);
 
         IUniswapV3Router.ExactInputSingleParams memory swapParams = IUniswapV3Router.ExactInputSingleParams({
             tokenIn: tokenIn,

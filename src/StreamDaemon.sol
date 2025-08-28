@@ -182,6 +182,23 @@ contract StreamDaemon is Ownable {
         }
     }
 
+    /**
+     * @dev scaling requirements due to variable gas consumptions lead to requirement of alpha
+     * alpha represents a scalar variable which scales the sweet spot elementaries to
+     * eliminate shifts in algo output due to reserve differences
+     */
+    function computeAlpha(uint256 scaledReserveIn, uint256 scaledReserveOut) internal pure returns (uint256 alpha) {
+        // alpha = reserveOut / (reserveIn^2)
+        require(scaledReserveIn > 0, "Invalid reserve");
+        require(scaledReserveOut > 0, "Invalid reserve");
+
+        if (scaledReserveIn >= scaledReserveOut) {
+            alpha = (scaledReserveIn * 1e32) / (scaledReserveOut * scaledReserveOut);
+        } else {
+            alpha = (scaledReserveOut * 1e32) / (scaledReserveIn * scaledReserveIn);
+        }
+    }
+
     function _sweetSpotAlgo(
         address tokenIn,
         address tokenOut,
@@ -206,10 +223,6 @@ contract StreamDaemon is Ownable {
         uint256 scaledVolume = (volume * 1e8) / (10 ** decimalsIn);
         uint256 scaledReserveIn = (reserveIn * 1e8) / (10 ** decimalsIn);
         uint256 scaledReserveOut = (reserveOut * 1e8) / (10 ** decimalsOut);
-
-        require(scaledReserveIn > 0, "scaledReserveIn == 0");
-        require(scaledReserveOut > 0, "scaledReserveOut == 0");
-        require(scaledVolume > 0, "scaledVolume == 0");
 
         require(scaledReserveIn > 0, "scaledReserveIn == 0");
         require(scaledReserveOut > 0, "scaledReserveOut == 0");

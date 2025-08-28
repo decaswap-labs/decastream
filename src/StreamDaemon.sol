@@ -211,6 +211,10 @@ contract StreamDaemon is Ownable {
         require(scaledReserveOut > 0, "scaledReserveOut == 0");
         require(scaledVolume > 0, "scaledVolume == 0");
 
+        require(scaledReserveIn > 0, "scaledReserveIn == 0");
+        require(scaledReserveOut > 0, "scaledReserveOut == 0");
+        require(scaledVolume > 0, "scaledVolume == 0");
+
         sweetSpot = _sweetSpotAlgo_v1(scaledVolume, scaledReserveIn, scaledReserveOut);
 
         if (scaledReserveIn > scaledReserveOut && sweetSpot > 500) {

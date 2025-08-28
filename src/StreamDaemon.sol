@@ -108,9 +108,9 @@ contract StreamDaemon is Ownable {
         require(scaledReserveOut > 0, "Invalid reserve");
 
         if (scaledReserveIn >= scaledReserveOut) {
-            alpha = (scaledReserveIn * 1e24) / (scaledReserveOut * scaledReserveOut);
+            alpha = (scaledReserveIn * 1e32) / (scaledReserveOut * scaledReserveOut);
         } else {
-            alpha = (scaledReserveOut * 1e24) / (scaledReserveIn * scaledReserveIn);
+            alpha = (scaledReserveOut * 1e32) / (scaledReserveIn * scaledReserveIn);
         }
     }
 
@@ -134,10 +134,10 @@ contract StreamDaemon is Ownable {
         uint8 decimalsIn = IERC20Metadata(tokenIn).decimals();
         uint8 decimalsOut = IERC20Metadata(tokenOut).decimals();
 
-        // scale tokens to decimal zero
-        uint256 scaledVolume = volume / (10 ** decimalsIn);
-        uint256 scaledReserveIn = reserveIn / (10 ** decimalsIn);
-        uint256 scaledReserveOut = reserveOut / (10 ** decimalsOut);
+        // scale tokens to 8 decimal precision instead of unit precision
+        uint256 scaledVolume = (volume * 1e8) / (10 ** decimalsIn);
+        uint256 scaledReserveIn = (reserveIn * 1e8) / (10 ** decimalsIn);
+        uint256 scaledReserveOut = (reserveOut * 1e8) / (10 ** decimalsOut);
 
         require(scaledReserveIn > 0, "scaledReserveIn == 0");
         require(scaledReserveOut > 0, "scaledReserveOut == 0");
@@ -170,7 +170,7 @@ contract StreamDaemon is Ownable {
         returns (uint256 sweetSpot)
     {
         uint256 alpha = computeAlpha(scaledReserveIn, scaledReserveOut);
-        sweetSpot = sqrt((alpha * scaledVolume * scaledVolume) / 1e24);
+        sweetSpot = sqrt((alpha * scaledVolume * scaledVolume) / 1e32);
     }
 
     function _sweetSpotAlgo_v2(uint256 scaledVolume, uint256 scaledReserveIn) public pure returns (uint256 sweetSpot) {

@@ -20,14 +20,14 @@ contract SweetSpotAlgoTest is Deploys {
 
         // Deploy mock tokens with different decimals
         tokenIn = new MockERC20("Token In", "TKI", 18);
-        tokenOut = new MockERC20("Token Out", "TKO", 8);
+        tokenOut = new MockERC20("Token Out", "TKO", 18);
     }
 
     function test_SweetSpotAlgo_NormalCase() public {
         // Setup: 1M tokens in reserves, 100k volume
-        uint256 reserveIn = 5_000_000 * 10 ** 18;
-        uint256 reserveOut = 500_000 * 10 ** 8;
-        uint256 volume = 400_000 * 10 ** 18; // 100k tokens
+        uint256 reserveIn = 500_000_000 * 10 ** 18;
+        uint256 reserveOut = 500_000 * 10 ** 18;
+        uint256 volume = 4_000_000 * 10 ** 18; // 100k tokens
         uint256 effectiveGas = 1; // $1 gas
 
         uint256 sweetSpot = streamDaemon._sweetSpotAlgo(

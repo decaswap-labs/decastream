@@ -168,23 +168,6 @@ contract StreamDaemon is Ownable {
         require(scaledReserveOut > 0, "Invalid reserve");
 
         if (scaledReserveIn >= scaledReserveOut) {
-            alpha = (scaledReserveIn * 1e40) / (scaledReserveOut * scaledReserveOut);
-        } else {
-            alpha = (scaledReserveOut * 1e40) / (scaledReserveIn * scaledReserveIn);
-        }
-    }
-
-    /**
-     * @dev scaling requirements due to variable gas consumptions lead to requirement of alpha
-     * alpha represents a scalar variable which scales the sweet spot elementaries to
-     * eliminate shifts in algo output due to reserve differences
-     */
-    function computeAlpha(uint256 scaledReserveIn, uint256 scaledReserveOut) internal pure returns (uint256 alpha) {
-        // alpha = reserveOut / (reserveIn^2)
-        require(scaledReserveIn > 0, "Invalid reserve");
-        require(scaledReserveOut > 0, "Invalid reserve");
-
-        if (scaledReserveIn >= scaledReserveOut) {
             alpha = (scaledReserveIn * 1e32) / (scaledReserveOut * scaledReserveOut);
         } else {
             alpha = (scaledReserveOut * 1e32) / (scaledReserveIn * scaledReserveIn);
@@ -211,10 +194,10 @@ contract StreamDaemon is Ownable {
         uint8 decimalsIn = IERC20Metadata(tokenIn).decimals();
         uint8 decimalsOut = IERC20Metadata(tokenOut).decimals();
 
-        // scale tokens to 8 decimal precision instead of unit precision
+        // scale tokens to 1e16 precision instead of unit precision
         uint256 scaledVolume = (volume * 1e16) / (10 ** decimalsIn);
-        uint256 scaledReserveIn = (reserveIn * 1e16) / (10 ** decimalsIn);
-        uint256 scaledReserveOut = (reserveOut * 1e16) / (10 ** decimalsOut);
+        uint256 scaledReserveIn = (reserveIn) / (10 ** decimalsIn);
+        uint256 scaledReserveOut = (reserveOut) / (10 ** decimalsOut);
 
         require(scaledReserveIn > 0, "scaledReserveIn == 0");
         require(scaledReserveOut > 0, "scaledReserveOut == 0");
@@ -247,10 +230,12 @@ contract StreamDaemon is Ownable {
         returns (uint256 sweetSpot)
     {
         uint256 alpha = computeAlpha(scaledReserveIn, scaledReserveOut);
-        sweetSpot = sqrt((alpha * scaledVolume * scaledVolume) / 1e40);
+        // Compensate for 1e16 scaling: multiply by 1e4 to get back to original scale
+        sweetSpot = sqrt((alpha * scaledVolume * scaledVolume) / 1e64);
     }
 
     function _sweetSpotAlgo_v2(uint256 scaledVolume, uint256 scaledReserveIn) public pure returns (uint256 sweetSpot) {
-        sweetSpot = (scaledVolume) / sqrt(scaledReserveIn);
+        // Compensate for 1e16 scaling: divide by 1e8 to get back to original scale
+        sweetSpot = (scaledVolume) / sqrt(scaledReserveIn) / 1e16;
     }
 }

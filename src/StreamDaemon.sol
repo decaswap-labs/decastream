@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import { IUniversalDexInterface } from "./interfaces/IUniversalDexInterface.sol";
-import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
-import { IERC20Metadata } from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
+import {IUniversalDexInterface} from "./interfaces/IUniversalDexInterface.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 
 contract StreamDaemon is Ownable {
     IUniversalDexInterface public universalDexInterface;
@@ -74,12 +74,14 @@ contract StreamDaemon is Ownable {
 
         if (usePriceBased) {
             // Price-based DEX selection
-            (identifiedFetcher, maxReserveIn, maxReserveOut) = findBestPriceForTokenPair(tokenIn, tokenOut, volume);
+            (identifiedFetcher, maxReserveIn, maxReserveOut) =
+                findBestPriceForTokenPair(tokenIn, tokenOut, volume);
             bestFetcher = identifiedFetcher;
             router = dexToRouters[bestFetcher];
         } else {
             // Reserve-based DEX selection
-            (identifiedFetcher, maxReserveIn, maxReserveOut) = findHighestReservesForTokenPair(tokenIn, tokenOut);
+            (identifiedFetcher, maxReserveIn, maxReserveOut) =
+                findHighestReservesForTokenPair(tokenIn, tokenOut);
             bestFetcher = identifiedFetcher;
             router = dexToRouters[bestFetcher];
         }
@@ -92,27 +94,21 @@ contract StreamDaemon is Ownable {
         sweetSpot = _sweetSpotAlgo(tokenIn, tokenOut, volume, maxReserveIn, maxReserveOut, effectiveGas);
     }
 
-    function findLowestPriceForTokenPair(address tokenIn, address tokenOut) public view returns (uint256 lowestPrice) { }
 
-    function findBestPriceForTokenPair(
-        address tokenIn,
-        address tokenOut,
-        uint256 volume
-    )
-        public
-        view
-        returns (address bestFetcher, uint256 maxReserveIn, uint256 maxReserveOut)
-    {
+    function findLowestPriceForTokenPair(address tokenIn, address tokenOut) public view returns (uint256 lowestPrice) {}
+
+    function findBestPriceForTokenPair(address tokenIn, address tokenOut, uint256 volume) 
+        public view returns (address bestFetcher, uint256 maxReserveIn, uint256 maxReserveOut) {
+        
         uint256 bestPrice = type(uint256).max;
-
+        
         for (uint256 i = 0; i < dexs.length; i++) {
             IUniversalDexInterface fetcher = IUniversalDexInterface(dexs[i]);
-
+            
             try fetcher.getPrice(tokenIn, tokenOut, volume) returns (uint256 price) {
                 if (price < bestPrice) {
                     bestPrice = price;
                     bestFetcher = address(fetcher);
-
                     // Get reserves for sweet spot calculation
                     try fetcher.getReserves(tokenIn, tokenOut) returns (uint256 reserveIn, uint256 reserveOut) {
                         maxReserveIn = reserveIn;
@@ -173,6 +169,7 @@ contract StreamDaemon is Ownable {
             alpha = (scaledReserveOut * 1e32) / (scaledReserveIn * scaledReserveIn);
         }
     }
+
 
     function _sweetSpotAlgo(
         address tokenIn,

@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import {IUniversalDexInterface} from "./interfaces/IUniversalDexInterface.sol";
-import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
+import { IUniversalDexInterface } from "./interfaces/IUniversalDexInterface.sol";
+import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
+import { IERC20Metadata } from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 
 contract StreamDaemon is Ownable {
     IUniversalDexInterface public universalDexInterface;
@@ -24,18 +24,6 @@ contract StreamDaemon is Ownable {
         for (uint256 i = 0; i < _routers.length; i++) {
             dexToRouters[_dexs[i]] = _routers[i];
         } // @audit make sure to pass the routers in the appropriate order wrt how the dex's are inputted on deployment
-    }
-
-    function computeAlpha(uint256 scaledReserveIn, uint256 scaledReserveOut) internal pure returns (uint256 alpha) {
-        // alpha = reserveOut / (reserveIn^2)
-        require(scaledReserveIn > 0, "Invalid reserve");
-        require(scaledReserveOut > 0, "Invalid reserve");
-
-        if (scaledReserveIn >= scaledReserveOut) {
-            alpha = (scaledReserveIn * 1e24) / (scaledReserveOut * scaledReserveOut);
-        } else {
-            alpha = (scaledReserveOut * 1e24) / (scaledReserveIn * scaledReserveIn);
-        }
     }
 
     function sqrt(uint256 y) internal pure returns (uint256 z) {
@@ -83,17 +71,15 @@ contract StreamDaemon is Ownable {
         address identifiedFetcher;
         uint256 maxReserveIn;
         uint256 maxReserveOut;
-        
+
         if (usePriceBased) {
             // Price-based DEX selection
-            (identifiedFetcher, maxReserveIn, maxReserveOut) =
-                findBestPriceForTokenPair(tokenIn, tokenOut, volume);
+            (identifiedFetcher, maxReserveIn, maxReserveOut) = findBestPriceForTokenPair(tokenIn, tokenOut, volume);
             bestFetcher = identifiedFetcher;
             router = dexToRouters[bestFetcher];
         } else {
             // Reserve-based DEX selection
-            (identifiedFetcher, maxReserveIn, maxReserveOut) =
-                findHighestReservesForTokenPair(tokenIn, tokenOut);
+            (identifiedFetcher, maxReserveIn, maxReserveOut) = findHighestReservesForTokenPair(tokenIn, tokenOut);
             bestFetcher = identifiedFetcher;
             router = dexToRouters[bestFetcher];
         }
@@ -106,21 +92,27 @@ contract StreamDaemon is Ownable {
         sweetSpot = _sweetSpotAlgo(tokenIn, tokenOut, volume, maxReserveIn, maxReserveOut, effectiveGas);
     }
 
-    function findLowestPriceForTokenPair(address tokenIn, address tokenOut) public view returns (uint256 lowestPrice) {}
+    function findLowestPriceForTokenPair(address tokenIn, address tokenOut) public view returns (uint256 lowestPrice) { }
 
-    function findBestPriceForTokenPair(address tokenIn, address tokenOut, uint256 volume) 
-        public view returns (address bestFetcher, uint256 maxReserveIn, uint256 maxReserveOut) {
-        
+    function findBestPriceForTokenPair(
+        address tokenIn,
+        address tokenOut,
+        uint256 volume
+    )
+        public
+        view
+        returns (address bestFetcher, uint256 maxReserveIn, uint256 maxReserveOut)
+    {
         uint256 bestPrice = type(uint256).max;
-        
+
         for (uint256 i = 0; i < dexs.length; i++) {
             IUniversalDexInterface fetcher = IUniversalDexInterface(dexs[i]);
-            
+
             try fetcher.getPrice(tokenIn, tokenOut, volume) returns (uint256 price) {
                 if (price < bestPrice) {
                     bestPrice = price;
                     bestFetcher = address(fetcher);
-                    
+
                     // Get reserves for sweet spot calculation
                     try fetcher.getReserves(tokenIn, tokenOut) returns (uint256 reserveIn, uint256 reserveOut) {
                         maxReserveIn = reserveIn;
@@ -176,9 +168,9 @@ contract StreamDaemon is Ownable {
         require(scaledReserveOut > 0, "Invalid reserve");
 
         if (scaledReserveIn >= scaledReserveOut) {
-            alpha = (scaledReserveIn * 1e32) / (scaledReserveOut * scaledReserveOut);
+            alpha = (scaledReserveIn * 1e40) / (scaledReserveOut * scaledReserveOut);
         } else {
-            alpha = (scaledReserveOut * 1e32) / (scaledReserveIn * scaledReserveIn);
+            alpha = (scaledReserveOut * 1e40) / (scaledReserveIn * scaledReserveIn);
         }
     }
 
@@ -220,9 +212,9 @@ contract StreamDaemon is Ownable {
         uint8 decimalsOut = IERC20Metadata(tokenOut).decimals();
 
         // scale tokens to 8 decimal precision instead of unit precision
-        uint256 scaledVolume = (volume * 1e8) / (10 ** decimalsIn);
-        uint256 scaledReserveIn = (reserveIn * 1e8) / (10 ** decimalsIn);
-        uint256 scaledReserveOut = (reserveOut * 1e8) / (10 ** decimalsOut);
+        uint256 scaledVolume = (volume * 1e16) / (10 ** decimalsIn);
+        uint256 scaledReserveIn = (reserveIn * 1e16) / (10 ** decimalsIn);
+        uint256 scaledReserveOut = (reserveOut * 1e16) / (10 ** decimalsOut);
 
         require(scaledReserveIn > 0, "scaledReserveIn == 0");
         require(scaledReserveOut > 0, "scaledReserveOut == 0");
@@ -255,7 +247,7 @@ contract StreamDaemon is Ownable {
         returns (uint256 sweetSpot)
     {
         uint256 alpha = computeAlpha(scaledReserveIn, scaledReserveOut);
-        sweetSpot = sqrt((alpha * scaledVolume * scaledVolume) / 1e32);
+        sweetSpot = sqrt((alpha * scaledVolume * scaledVolume) / 1e40);
     }
 
     function _sweetSpotAlgo_v2(uint256 scaledVolume, uint256 scaledReserveIn) public pure returns (uint256 sweetSpot) {

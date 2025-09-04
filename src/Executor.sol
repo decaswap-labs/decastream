@@ -142,8 +142,10 @@ contract Executor {
 
     function executeCurveTrade(
         bytes memory params // @audit consider adding validation for params length
-    ) external returns (uint256) {
-        
+    )
+        external
+        returns (uint256)
+    {
         // Decode all parameters - Registry now encodes 8 parameters including tokenOut
         (
             address tokenIn,
@@ -155,7 +157,7 @@ contract Executor {
             address recipient, // @audit verify recipient is not zero address
             address router
         ) = abi.decode(params, (address, address, int128, int128, uint256, uint256, address, address));
-        
+
         if (amountIn == 0) revert ZeroAmount();
 
         console.log("Executor: Starting Curve trade");
@@ -167,7 +169,7 @@ contract Executor {
         console.log("router:", router);
 
         // Approve the token being traded, not the pool
-        IERC20(tokenIn).approve(router, amountIn); // @audit should we reset approval to 0 first?
+        IERC20(tokenIn).forceApprove(router, amountIn); // @audit should we reset approval to 0 first?
 
         // Get initial balance of output token to calculate difference
         uint256 initialBalance = IERC20(tokenOut).balanceOf(address(this));
@@ -175,27 +177,23 @@ contract Executor {
 
         // Execute the Curve exchange using low-level call to handle reverts
         // Some Curve pools revert after successful execution, so we need to check balances
-        (bool success, ) = router.call(
-            abi.encodeWithSelector(
-                ICurvePool.exchange.selector,
-                i, j, amountIn, amountOutMin
-            )
-        );
-        
+        (bool success,) =
+            router.call(abi.encodeWithSelector(ICurvePool.exchange.selector, i, j, amountIn, amountOutMin));
+
         // Don't check success - Curve pools can revert after successful execution
         // We'll verify success by checking if tokens were actually transferred
-        
+
         // Check final balance to get actual amount received
         uint256 finalBalance = IERC20(tokenOut).balanceOf(address(this));
         console.log("Final balance of tokenOut:", finalBalance);
-        
+
         uint256 actualAmountOut = finalBalance - initialBalance;
         console.log("Actual amount out calculated:", actualAmountOut);
 
         // Validate that tokens were actually transferred
         require(actualAmountOut > 0, "No tokens received from Curve exchange");
         console.log("Passed first require check");
-        
+
         require(actualAmountOut >= amountOutMin, "Insufficient output amount");
         console.log("Passed second require check");
 
@@ -207,32 +205,24 @@ contract Executor {
 
     function executePancakeSwapTrade(
         bytes memory params // @audit consider adding validation for params length
-    ) external returns (uint256) {
-        
+    )
+        external
+        returns (uint256)
+    {
         // Decode all parameters
-        (
-            address tokenIn,
-            address tokenOut,
-            uint256 amountIn,
-            uint256 amountOutMin,
-            address recipient,
-            address router
-        ) = abi.decode(params, (address, address, uint256, uint256, address, address));
-        
+        (address tokenIn, address tokenOut, uint256 amountIn, uint256 amountOutMin, address recipient, address router) =
+            abi.decode(params, (address, address, uint256, uint256, address, address));
+
         if (amountIn == 0) revert ZeroAmount();
-        
-        IERC20(tokenIn).approve(router, amountIn);
+
+        IERC20(tokenIn).forceApprove(router, amountIn);
 
         address[] memory path = new address[](2);
         path[0] = tokenIn;
         path[1] = tokenOut;
 
         uint256[] memory amounts = IUniswapV2Router(router).swapExactTokensForTokens(
-            amountIn,
-            amountOutMin,
-            path,
-            recipient,
-            block.timestamp + 300
+            amountIn, amountOutMin, path, recipient, block.timestamp + 300
         );
 
         emit TradeExecuted(tokenIn, tokenOut, amountIn, amounts[amounts.length - 1]);
@@ -241,8 +231,10 @@ contract Executor {
 
     function executeOneInchTrade(
         bytes memory params // @audit consider adding validation for params length
-    ) external returns (uint256) {
-        
+    )
+        external
+        returns (uint256)
+    {
         // Decode all parameters - now including 1inch-specific data
         (
             address tokenIn,
@@ -254,11 +246,11 @@ contract Executor {
             address executor,
             bytes memory swapData
         ) = abi.decode(params, (address, address, uint256, uint256, address, address, address, bytes));
-        
+
         if (amountIn == 0) revert ZeroAmount();
 
         // Approve the token being traded to the 1inch router
-        IERC20(tokenIn).approve(router, amountIn);
+        IERC20(tokenIn).forceApprove(router, amountIn);
 
         // Get initial balance of output token to calculate difference
         uint256 initialBalance = IERC20(tokenOut).balanceOf(address(this));
@@ -268,28 +260,26 @@ contract Executor {
             srcToken: tokenIn,
             dstToken: tokenOut,
             srcReceiver: address(this), // This contract receives the source tokens
-            dstReceiver: recipient,     // Recipient receives the output tokens
+            dstReceiver: recipient, // Recipient receives the output tokens
             amount: amountIn,
             minReturnAmount: amountOutMin,
             flags: 0 // Default flags
-        });
+         });
 
         // Execute the 1inch swap
         // Note: In a real implementation, the swapData would come from the 1inch API
         // For testing purposes, we'll use a simplified approach
         try IOneInchV5Router(router).swap(
-            executor,   // 1inch executor address (would come from API)
-            desc,       // Swap description
-            "",         // No permit data
-            swapData    // Encoded swap data (would come from 1inch API)
+            executor, // 1inch executor address (would come from API)
+            desc, // Swap description
+            "", // No permit data
+            swapData // Encoded swap data (would come from 1inch API)
         ) returns (uint256 returnAmount, uint256 spentAmount) {
-            
             // Check that we received the expected amount
             require(returnAmount >= amountOutMin, "Insufficient output amount");
-            
+
             emit TradeExecuted(tokenIn, tokenOut, spentAmount, returnAmount);
             return returnAmount;
-            
         } catch {
             // Fallback: If 1inch swap fails, we can't proceed
             revert("OneInch swap failed - invalid executor or swap data");

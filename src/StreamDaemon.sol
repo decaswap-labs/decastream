@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import {IUniversalDexInterface} from "./interfaces/IUniversalDexInterface.sol";
-import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
+import { IUniversalDexInterface } from "./interfaces/IUniversalDexInterface.sol";
+import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
+import { IERC20Metadata } from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 
 contract StreamDaemon is Ownable {
     IUniversalDexInterface public universalDexInterface;
@@ -74,14 +74,12 @@ contract StreamDaemon is Ownable {
 
         if (usePriceBased) {
             // Price-based DEX selection
-            (identifiedFetcher, maxReserveIn, maxReserveOut) =
-                findBestPriceForTokenPair(tokenIn, tokenOut, volume);
+            (identifiedFetcher, maxReserveIn, maxReserveOut) = findBestPriceForTokenPair(tokenIn, tokenOut, volume);
             bestFetcher = identifiedFetcher;
             router = dexToRouters[bestFetcher];
         } else {
             // Reserve-based DEX selection
-            (identifiedFetcher, maxReserveIn, maxReserveOut) =
-                findHighestReservesForTokenPair(tokenIn, tokenOut);
+            (identifiedFetcher, maxReserveIn, maxReserveOut) = findHighestReservesForTokenPair(tokenIn, tokenOut);
             bestFetcher = identifiedFetcher;
             router = dexToRouters[bestFetcher];
         }
@@ -94,17 +92,22 @@ contract StreamDaemon is Ownable {
         sweetSpot = _sweetSpotAlgo(tokenIn, tokenOut, volume, maxReserveIn, maxReserveOut, effectiveGas);
     }
 
+    function findLowestPriceForTokenPair(address tokenIn, address tokenOut) public view returns (uint256 lowestPrice) { }
 
-    function findLowestPriceForTokenPair(address tokenIn, address tokenOut) public view returns (uint256 lowestPrice) {}
-
-    function findBestPriceForTokenPair(address tokenIn, address tokenOut, uint256 volume) 
-        public view returns (address bestFetcher, uint256 maxReserveIn, uint256 maxReserveOut) {
-        
+    function findBestPriceForTokenPair(
+        address tokenIn,
+        address tokenOut,
+        uint256 volume
+    )
+        public
+        view
+        returns (address bestFetcher, uint256 maxReserveIn, uint256 maxReserveOut)
+    {
         uint256 bestPrice = type(uint256).max;
-        
+
         for (uint256 i = 0; i < dexs.length; i++) {
             IUniversalDexInterface fetcher = IUniversalDexInterface(dexs[i]);
-            
+
             try fetcher.getPrice(tokenIn, tokenOut, volume) returns (uint256 price) {
                 if (price < bestPrice) {
                     bestPrice = price;
@@ -170,7 +173,6 @@ contract StreamDaemon is Ownable {
         }
     }
 
-
     function _sweetSpotAlgo(
         address tokenIn,
         address tokenOut,
@@ -193,8 +195,8 @@ contract StreamDaemon is Ownable {
 
         // scale tokens to 1e16 precision instead of unit precision
         uint256 scaledVolume = (volume * 1e16) / (10 ** decimalsIn);
-        uint256 scaledReserveIn = (reserveIn) / (10 ** decimalsIn);
-        uint256 scaledReserveOut = (reserveOut) / (10 ** decimalsOut);
+        uint256 scaledReserveIn = (reserveIn * 1e16) / (10 ** decimalsIn);
+        uint256 scaledReserveOut = (reserveOut * 1e16) / (10 ** decimalsOut);
 
         require(scaledReserveIn > 0, "scaledReserveIn == 0");
         require(scaledReserveOut > 0, "scaledReserveOut == 0");
@@ -227,12 +229,14 @@ contract StreamDaemon is Ownable {
         returns (uint256 sweetSpot)
     {
         uint256 alpha = computeAlpha(scaledReserveIn, scaledReserveOut);
-        // Compensate for 1e16 scaling: multiply by 1e4 to get back to original scale
-        sweetSpot = sqrt((alpha * scaledVolume * scaledVolume) / 1e64);
+        // Avec les réserves scaled à 1e16, nous devons ajuster la compensation
+        // Le volume est aussi scaled à 1e16, donc nous devons diviser par 1e16 pour compenser
+        sweetSpot = sqrt((alpha * scaledVolume * scaledVolume) / 1e48);
     }
 
     function _sweetSpotAlgo_v2(uint256 scaledVolume, uint256 scaledReserveIn) public pure returns (uint256 sweetSpot) {
-        // Compensate for 1e16 scaling: divide by 1e8 to get back to original scale
-        sweetSpot = (scaledVolume) / sqrt(scaledReserveIn) / 1e16;
+        // Avec les réserves scaled à 1e16, nous devons ajuster la compensation
+        // Le volume est aussi scaled à 1e16, donc nous devons diviser par 1e8 pour compenser
+        sweetSpot = (scaledVolume) / sqrt(scaledReserveIn) / 1e8;
     }
 }

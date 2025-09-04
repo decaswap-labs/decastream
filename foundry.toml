@@ -1,9 +1,10 @@
 [profile.default]
 src = "src"
 out = "out"
-libs = ["lib"]
+libs = ["lib", "node_modules"]
 optimizer = true
-optimizer_runs = 200
+optimizer_runs = 1000
+solc = "0.8.30"
 via_ir = true
 fs_permissions = [{ access = "read", path = "./config/" }]
 
@@ -22,22 +23,23 @@ number_underscore = "thousands"
 quote_style = "double"
 tab_width = 4
 wrap_comments = true
-evm_version = "paris"
 
 [profile.via_ir]
 src = "src"
 out = "out"
-libs = ["lib"]
+libs = ["lib", "node_modules"]
 optimizer = true
 optimizer_runs = 200
 via_ir = true
 evm_version = "paris"
 
-[profile.networks.mainnet]
-url = "${ETH_RPC_URL}"
-accounts = ["${PRIVATE_KEY}"]
-
 [profile.networks.buildbear]
 url = "https://rpc.buildbear.io/foolish-darkphoenix-2fe074ec"
 accounts = ["${PRIVATE_KEY}"]
 chainId = 25875
+
+[etherscan]
+mainnet = { key = "${API_KEY_ETHERSCAN}" }
+
+[rpc_endpoints]
+mainnet = "https://mainnet.infura.io/v3/${INFURA_KEY}"

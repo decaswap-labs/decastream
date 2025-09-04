@@ -1,6 +1,6 @@
 {
   "description": "Paires WBTC avec liquidité sur UniswapV2, Sushiswap et PancakeSwap",
-  "totalCount": 20,
+  "totalCount": 19,
   "extractedAt": "2025-01-20T00:00:00.000Z",
   "filterCriteria": "Réserves non-nulles sur DEX spécifiés",
   "pairs": [
@@ -8,121 +8,115 @@
       "name": "usdt",
       "address": "0xdac17f958d2ee523a2206206994597c13d831ec7",
       "dex": "uniswapV2",
-      "marketCap": 162590865312
-    },
-    {
-      "name": "usdc",
-      "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-      "dex": "uniswapV2",
-      "marketCap": 64674321509
-    },
-    {
-      "name": "steth",
-      "address": "0xae7ab96520de3a18e5e111b5eaab095312d7fe84",
-      "dex": "uniswapV2",
-      "marketCap": 32741180000
-    },
-    {
-      "name": "link",
-      "address": "0x514910771af9ca656af840dff83e8264ecf986ca",
-      "dex": "uniswapV2",
-      "marketCap": 11984793411
-    },
-    {
-      "name": "weth",
-      "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-      "dex": "uniswapV2",
-      "marketCap": 7985996269
-    },
-    {
-      "name": "uni",
-      "address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
-      "dex": "uniswapV2",
-      "marketCap": 5978580000
-    },
-    {
-      "name": "aave",
-      "address": "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9",
-      "dex": "uniswapV2",
-      "marketCap": 4320230000
-    },
-    {
-      "name": "cro",
-      "address": "0xa0b73e1ff0b80914ab6fe0444e65848c4c34450b",
-      "dex": "uniswapV2",
-      "marketCap": 4075580000
-    },
-    {
-      "name": "dai",
-      "address": "0x6b175474e89094c44da98b954eedeac495271d0f",
-      "dex": "uniswapV2",
-      "marketCap": 3710290000
-    },
-    {
-      "name": "solvbtc",
-      "address": "0x7a56e1c57c7475ccf742a1832b028f0456652f97",
-      "dex": "uniswapV2",
-      "marketCap": 1193710000
-    },
-    {
-      "name": "grt",
-      "address": "0xc944e90c64b2c07662a292be6244bdf05cda44a7",
-      "dex": "uniswapV2",
-      "marketCap": 997930000
-    },
-    {
-      "name": "paxg",
-      "address": "0x45804880de22913dafe09f4980848ece6ecbaf78",
-      "dex": "uniswapV2",
-      "marketCap": 949910000
-    },
-    {
-      "name": "tusd",
-      "address": "0x0000000000085d4780b73119b644ae5ecd22b376",
-      "dex": "uniswapV2",
-      "marketCap": 493440000
-    },
-    {
-      "name": "chz",
-      "address": "0x3506424f91fd33084466f402d5d97f05f8e3b4af",
-      "dex": "uniswapV2",
-      "marketCap": 395570000
-    },
-    {
-      "name": "1inch",
-      "address": "0x111111111117dc0aa78b770fa6a738034120c302",
-      "dex": "uniswapV2",
-      "marketCap": 379550000
-    },
-    {
-      "name": "matic",
-      "address": "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0",
-      "dex": "uniswapV2",
-      "marketCap": 327420000
+      "marketCap": 168176946063
     },
     {
       "name": "usdt",
       "address": "0xdac17f958d2ee523a2206206994597c13d831ec7",
       "dex": "sushiswap",
-      "marketCap": 162590865312
+      "marketCap": 168176946063
+    },
+    {
+      "name": "usdc",
+      "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+      "dex": "uniswapV2",
+      "marketCap": 72006375403
+    },
+    {
+      "name": "steth",
+      "address": "0xae7ab96520de3a18e5e111b5eaab095312d7fe84",
+      "dex": "uniswapV2",
+      "marketCap": 38399132083
+    },
+    {
+      "name": "link",
+      "address": "0x514910771af9ca656af840dff83e8264ecf986ca",
+      "dex": "uniswapV2",
+      "marketCap": 16050088003
+    },
+    {
+      "name": "weth",
+      "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+      "dex": "uniswapV2",
+      "marketCap": 9933700141
     },
     {
       "name": "weth",
       "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
       "dex": "sushiswap",
-      "marketCap": 7985996269
+      "marketCap": 9933700141
+    },
+    {
+      "name": "cro",
+      "address": "0xa0b73e1ff0b80914ab6fe0444e65848c4c34450b",
+      "dex": "uniswapV2",
+      "marketCap": 9048598192
+    },
+    {
+      "name": "uni",
+      "address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+      "dex": "uniswapV2",
+      "marketCap": 5790653113
+    },
+    {
+      "name": "aave",
+      "address": "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9",
+      "dex": "uniswapV2",
+      "marketCap": 4956796115
+    },
+    {
+      "name": "dai",
+      "address": "0x6b175474e89094c44da98b954eedeac495271d0f",
+      "dex": "uniswapV2",
+      "marketCap": 4596818194
     },
     {
       "name": "dai",
       "address": "0x6b175474e89094c44da98b954eedeac495271d0f",
       "dex": "sushiswap",
-      "marketCap": 3710290000
+      "marketCap": 4596818194
+    },
+    {
+      "name": "solvbtc",
+      "address": "0x7a56e1c57c7475ccf742a1832b028f0456652f97",
+      "dex": "uniswapV2",
+      "marketCap": 1143221032
+    },
+    {
+      "name": "paxg",
+      "address": "0x45804880de22913dafe09f4980848ece6ecbaf78",
+      "dex": "uniswapV2",
+      "marketCap": 1008462285
     },
     {
       "name": "paxg",
       "address": "0x45804880de22913dafe09f4980848ece6ecbaf78",
       "dex": "sushiswap",
-      "marketCap": 949910000
+      "marketCap": 1008462285
+    },
+    {
+      "name": "grt",
+      "address": "0xc944e90c64b2c07662a292be6244bdf05cda44a7",
+      "dex": "uniswapV2",
+      "marketCap": 942398332
+    },
+    {
+      "name": "tusd",
+      "address": "0x0000000000085d4780b73119b644ae5ecd22b376",
+      "dex": "uniswapV2",
+      "marketCap": 493726977
+    },
+    {
+      "name": "chz",
+      "address": "0x3506424f91fd33084466f402d5d97f05f8e3b4af",
+      "dex": "uniswapV2",
+      "marketCap": 390605007
+    },
+    {
+      "name": "1inch",
+      "address": "0x111111111117dc0aa78b770fa6a738034120c302",
+      "dex": "uniswapV2",
+      "marketCap": 346249148
     }
   ]
 }

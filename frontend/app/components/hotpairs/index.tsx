@@ -19,6 +19,11 @@ import {
   normalizeAmount,
 } from '@/app/lib/gas-calculations'
 import { DexCalculatorFactory } from '@/app/lib/dex/calculators'
+import {
+  fetchSpecificPair,
+  useTokenEnhancer,
+} from '@/app/lib/hooks/hotpairs/useEnhancedTokens'
+import { useQueryClient } from '@tanstack/react-query'
 
 const HotPairs = () => {
   const router = useRouter()
@@ -35,6 +40,9 @@ const HotPairs = () => {
   const [slippageSavingsUsd, setSlippageSavingsUsd] = useState<any>(null)
 
   const controls = useAnimation()
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null)
+  const queryClient = useQueryClient()
+  const { enhanceTokenPair } = useTokenEnhancer()
 
   // Dynamic height for icons area (from top to cards section)
   const containerRef = useRef<HTMLDivElement | null>(null)
@@ -58,6 +66,15 @@ const HotPairs = () => {
     controls.start('visible')
   }, [controls])
 
+  // Cleanup debounce timer on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current)
+      }
+    }
+  }, [])
+
   const titleVariants: Variants = {
     hidden: { opacity: 0, y: 30 },
     visible: {
@@ -71,26 +88,59 @@ const HotPairs = () => {
     },
   }
 
-  const handleActiveHotPair = (pair: any) => {
+  const handleActiveHotPair = async (pair: any) => {
+    console.log('🔥 handleActiveHotPair called with pair:', pair)
     if (!pair) return
-    setActiveHotPair(pair)
-    setVolumeAmount(pair?.reserveAtotaldepth)
-    // setVolumeAmount(pair?.reserveAtotaldepthWei)
-    setWinAmount(pair?.percentageSavings || 0)
-    setSlippageSavingsUsd(pair?.slippageSavingsUsd)
+
+    // Check if the pair has individual DEX reserve fields
+    const hasDexReserves = pair.reservesAUniswapV2 !== undefined
+
+    let completePair = pair
+
+    // If the pair doesn't have DEX reserves, fetch the complete data
+    if (!hasDexReserves && pair.tokenAAddress && pair.tokenBAddress) {
+      try {
+        const result = await queryClient.fetchQuery({
+          queryKey: ['specificPair', pair.tokenAAddress, pair.tokenBAddress],
+          queryFn: () =>
+            fetchSpecificPair({
+              tokenA: pair.tokenAAddress,
+              tokenB: pair.tokenBAddress,
+            }),
+        })
+
+        if (result.data) {
+          const enhancedData = enhanceTokenPair(result.data)
+          completePair = {
+            ...enhancedData,
+            slippageSavingsUsd:
+              enhancedData.slippageSavings * (enhancedData.tokenBUsdPrice || 1),
+          }
+          console.log('✅ Complete pair data fetched with DEX reserves')
+        }
+      } catch (error) {
+        console.error('❌ Error fetching complete pair data:', error)
+        // Continue with original pair data if fetch fails
+      }
+    }
+
+    setActiveHotPair(completePair)
+    setVolumeAmount(completePair?.reserveAtotaldepth)
+    setWinAmount(completePair?.percentageSavings || 0)
+    setSlippageSavingsUsd(completePair?.slippageSavingsUsd)
 
     setVolumeActive(true)
     setWinActive(true)
 
     setSelectedBaseToken({
-      icon: pair.tokenAIcon,
-      symbol: pair.tokenASymbol,
-      tokenAddress: pair?.tokenAAddress,
+      icon: completePair.tokenAIcon,
+      symbol: completePair.tokenASymbol,
+      tokenAddress: completePair?.tokenAAddress,
     })
     setSelectedOtherToken({
-      icon: pair?.tokenBIcon,
-      symbol: pair?.tokenBSymbol,
-      tokenAddress: pair?.tokenBAddress,
+      icon: completePair?.tokenBIcon,
+      symbol: completePair?.tokenBSymbol,
+      tokenAddress: completePair?.tokenBAddress,
     })
   }
 
@@ -122,76 +172,135 @@ const HotPairs = () => {
   }
 
   const handleVolumeAmountChange = async (amount: number) => {
-    // if (!activeHotPair || amount === activeHotPair?.reserveAtotaldepthWei)
-    //   return
-    if (!activeHotPair || amount === activeHotPair?.reserveAtotaldepth) return
+    console.log('🔄 handleVolumeAmountChange called with amount:', amount)
 
+    if (!activeHotPair) {
+      console.log('⏹️ Skipping calculation - no active hotpair')
+      return
+    }
+
+    // Update the UI immediately for responsiveness
     setVolumeAmount(amount)
+
+    // If entering the original value, restore the stored backend values
+    if (amount === activeHotPair?.reserveAtotaldepth) {
+      console.log('✨ Restoring stored backend values')
+      setWinAmount(activeHotPair?.percentageSavings || 0)
+      setSlippageSavingsUsd(activeHotPair?.slippageSavingsUsd)
+      setWinLoading(false)
+      // Clear any pending debounce timer
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current)
+        debounceTimerRef.current = null
+      }
+      return
+    }
+
+    // Clear previous debounce timer
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current)
+    }
+
+    // Set loading state
     setWinLoading(true)
     setVolumeLoading(false)
 
-    const calculator = DexCalculatorFactory.createCalculator(
-      activeHotPair?.highestLiquidityADex || 'uniswap-v2',
-      undefined,
-      '1'
-    )
+    // Debounce the calculation - wait 300ms after user stops typing
+    debounceTimerRef.current = setTimeout(async () => {
+      const calculator = DexCalculatorFactory.createCalculator(
+        activeHotPair?.highestLiquidityADex || 'uniswap-v2',
+        undefined,
+        '1'
+      )
 
-    const tradeVolumeBN = normalizeAmount(
-      amount.toString(),
-      activeHotPair?.tokenADecimals
-    )
+      const tradeVolumeBN = normalizeAmount(
+        amount.toString(),
+        activeHotPair?.tokenADecimals
+      )
 
-    console.log('tradeVolumeBN ===>', tradeVolumeBN)
-    console.log(
-      'reserveAtotaldepthWei ===>',
-      activeHotPair?.reserveAtotaldepthWei
-    )
-    console.log(
-      'reserveBtotaldepthWei ===>',
-      activeHotPair?.reserveBtotaldepthWei
-    )
-    console.log('tokenADecimals ===>', activeHotPair?.tokenADecimals)
-    console.log('tokenBDecimals ===>', activeHotPair?.tokenBDecimals)
+      // Get the best DEX reserves based on highestLiquidityADex
+      const dexName = activeHotPair?.highestLiquidityADex || 'uniswap-v2'
+      let bestDexReserveA = activeHotPair?.reserveAtotaldepthWei
+      let bestDexReserveB = activeHotPair?.reserveBtotaldepthWei
 
-    const sweetSpot = calculateSweetSpot(
-      tradeVolumeBN,
-      BigInt(activeHotPair?.reserveAtotaldepthWei),
-      BigInt(activeHotPair?.reserveBtotaldepthWei),
-      activeHotPair?.tokenADecimals,
-      activeHotPair?.tokenBDecimals,
-      0
-    )
+      // Map DEX name to reserve fields
+      if (dexName === 'uniswap-v2') {
+        bestDexReserveA = activeHotPair?.reservesAUniswapV2 || bestDexReserveA
+        bestDexReserveB = activeHotPair?.reservesBUniswapV2 || bestDexReserveB
+      } else if (dexName === 'sushiswap') {
+        bestDexReserveA = activeHotPair?.reservesASushiswap || bestDexReserveA
+        bestDexReserveB = activeHotPair?.reservesBSushiswap || bestDexReserveB
+      } else if (dexName.startsWith('curve')) {
+        bestDexReserveA = activeHotPair?.reservesACurve || bestDexReserveA
+        bestDexReserveB = activeHotPair?.reservesBCurve || bestDexReserveB
+      } else if (dexName.startsWith('balancer')) {
+        bestDexReserveA = activeHotPair?.reservesABalancer || bestDexReserveA
+        bestDexReserveB = activeHotPair?.reservesBBalancer || bestDexReserveB
+      } else if (dexName === 'uniswap-v3-500') {
+        bestDexReserveA =
+          activeHotPair?.reservesAUniswapV3_500 || bestDexReserveA
+        bestDexReserveB =
+          activeHotPair?.reservesBUniswapV3_500 || bestDexReserveB
+      } else if (dexName === 'uniswap-v3-3000') {
+        bestDexReserveA =
+          activeHotPair?.reservesAUniswapV3_3000 || bestDexReserveA
+        bestDexReserveB =
+          activeHotPair?.reservesBUniswapV3_3000 || bestDexReserveB
+      } else if (dexName === 'uniswap-v3-10000') {
+        bestDexReserveA =
+          activeHotPair?.reservesAUniswapV3_10000 || bestDexReserveA
+        bestDexReserveB =
+          activeHotPair?.reservesBUniswapV3_10000 || bestDexReserveB
+      }
 
-    const feeTier = activeHotPair?.highestLiquidityADex
-      ? activeHotPair?.highestLiquidityADex?.startsWith('uniswap-v3')
-        ? parseInt(activeHotPair?.highestLiquidityADex.split('-')[2])
+      // Calculate sweet spot using the trade volume and best DEX reserves
+      const sweetSpot = calculateSweetSpot(
+        tradeVolumeBN, // Trade volume (user input)
+        BigInt(bestDexReserveA), // Best DEX reserve A
+        BigInt(bestDexReserveB), // Best DEX reserve B
+        activeHotPair?.tokenADecimals,
+        activeHotPair?.tokenBDecimals,
+        0
+      )
+
+      console.log('sweetSpot ===>', sweetSpot)
+
+      const feeTier = activeHotPair?.highestLiquidityADex
+        ? activeHotPair?.highestLiquidityADex?.startsWith('uniswap-v3')
+          ? parseInt(activeHotPair?.highestLiquidityADex.split('-')[2])
+          : activeHotPair?.highestLiquidityADex?.startsWith('balancer-') ||
+            activeHotPair?.highestLiquidityADex === 'balancer'
+          ? 0
+          : activeHotPair?.highestLiquidityADex?.startsWith('curve-') ||
+            activeHotPair?.highestLiquidityADex === 'curve'
+          ? 0
+          : 3000
         : 3000
-      : 3000
 
-    const { savings, percentageSavings } = await calculateSlippageSavings(
-      calculator.getProvider(),
-      tradeVolumeBN,
-      activeHotPair?.highestLiquidityADex || 'uniswap-v2',
-      feeTier,
-      BigInt(activeHotPair?.reserveAtotaldepthWei),
-      BigInt(activeHotPair?.reserveBtotaldepthWei),
-      activeHotPair?.tokenADecimals,
-      activeHotPair?.tokenBDecimals,
-      activeHotPair?.tokenAAddress,
-      activeHotPair?.tokenBAddress,
-      sweetSpot
-    )
-    console.log('savings ===>', savings)
+      // Calculate slippage savings using total reserves for trade volume
+      // but best DEX reserves for the quote calculations
+      const { savings, percentageSavings } = await calculateSlippageSavings(
+        calculator.getProvider(),
+        tradeVolumeBN,
+        activeHotPair?.highestLiquidityADex || 'uniswap-v2',
+        feeTier,
+        BigInt(bestDexReserveA),
+        BigInt(bestDexReserveB),
+        activeHotPair?.tokenADecimals,
+        activeHotPair?.tokenBDecimals,
+        activeHotPair?.tokenAAddress,
+        activeHotPair?.tokenBAddress,
+        sweetSpot,
+        activeHotPair?.pairAddress // Pool address for Curve/Balancer
+      )
+      console.log('savings ===>', savings)
+      console.log('percentageSavings ===>', percentageSavings)
 
-    const savingsInUSD = savings * (activeHotPair?.tokenBUsdPrice || 1)
-    setWinAmount(Number(percentageSavings.toFixed(2)) || 0)
-    setSlippageSavingsUsd(savingsInUSD)
-    setWinLoading(false)
-
-    // After one seond set volume loading to false
-    // setTimeout(() => {
-    //   setWinLoading(false)
-    // }, 1000)
+      const savingsInUSD = savings * (activeHotPair?.tokenBUsdPrice || 1)
+      setWinAmount(Number(percentageSavings.toFixed(2)) || 0)
+      setSlippageSavingsUsd(savingsInUSD)
+      setWinLoading(false)
+    }, 300) // 300ms debounce delay
   }
 
   const handleWinAmountChange = (amount: number) => {

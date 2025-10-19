@@ -1,7 +1,12 @@
 import { ethers, providers } from 'ethers'
 import { Contract } from 'ethers'
 import { CONTRACT_ADDRESSES } from './config/contracts'
-import { UniswapV2RouterABI, UniswapV3QuoterABI } from './config/abis'
+import {
+  UniswapV2RouterABI,
+  UniswapV3QuoterABI,
+  CurvePoolABI,
+  BalancerVaultABI,
+} from './config/abis'
 
 interface GasCalculationResult {
   botGasLimit: bigint
@@ -38,58 +43,62 @@ export function calculateSweetSpot(
   decimalsB: number,
   sellAmount: number
 ): number {
+  // Sweet spot formula: N = sqrt(alpha * V^2)
+  // where:
+  // N = number of streams
+  // V = trade volume
+  // alpha = reserveA/reserveB^2 (or reserveB/reserveA^2 depending on the magnitude of the reserves)
+
+  console.log('==========Calculating Sweet Spot (Frontend)==========')
+
   // Convert all values to ETH format (not wei)
   const scaledReserveA = Number(reserveA) / 10 ** decimalsA
   const scaledReserveB = Number(reserveB) / 10 ** decimalsB
   const scaledVolume = Number(tradeVolume) / 10 ** decimalsA
 
-  // console.log('Reserves: ==>', {
-  //   reserveA,
-  //   reserveB,
-  //   scaledReserveA,
-  //   scaledReserveB,
-  //   scaledVolume,
-  //   sellAmount,
-  // })
+  console.log('scaledReserveA', scaledReserveA)
+  console.log('scaledReserveB', scaledReserveB)
+  console.log('tradeVolume', scaledVolume)
 
   // Calculate alpha based on which reserve is larger
   const alpha =
     scaledReserveA > scaledReserveB
       ? scaledReserveA / (scaledReserveB * scaledReserveB)
       : scaledReserveB / (scaledReserveA * scaledReserveA)
+  console.log('alpha', alpha)
 
-  // const alpha = scaledReserveB / (scaledReserveA * scaledReserveA)
-
-  let streamCount = 0
   // Calculate V^2 using ETH format values
   const volumeSquared = scaledVolume * scaledVolume
-  streamCount = Math.sqrt(alpha * volumeSquared)
+  console.log('volumeSquared', volumeSquared)
+
+  let streamCount = 0
 
   // Check if reserve ratio is less than 0.001
-  // const reserveRatio = (scaledReserveB / scaledReserveA) * 100
-  // console.log('reserveRatio', reserveRatio)
-  // if (reserveRatio < 0.001) {
-  //   // Calculate N = sqrt(alpha * V^2)
-  //   streamCount = Math.sqrt(alpha * volumeSquared)
-  // } else {
-  //   // Calculate N = sqrt(V^2 / Rin)
-  //   streamCount = Math.sqrt(volumeSquared / scaledReserveA)
-  // }
+  const reserveRatio = (scaledReserveB / scaledReserveA) * 100
+  console.log('reserveRatio', reserveRatio)
 
-  // // If pool depth < 0.2%, set streamCount to 1
-  // let poolDepth = scaledVolume / scaledReserveA
-  // console.log('poolDepth%', poolDepth)
-  // if (poolDepth < 0.2) {
-  //   streamCount = 4
-  // }
+  if (reserveRatio < 0.001) {
+    // Calculate N = sqrt(alpha * V^2)
+    streamCount = Math.sqrt(alpha * volumeSquared)
+    console.log('Reserve ratio less than 0.001, streamCount = ', streamCount)
+  } else {
+    // Calculate N = sqrt(V^2 / Rin)
+    streamCount = Math.sqrt(volumeSquared / scaledReserveA)
+    console.log('Reserve ratio greater than 0.001, streamCount = ', streamCount)
+  }
 
-  // console.log('streamCount ====>', Math.max(4, Math.round(streamCount)))
+  // If pool depth < 0.2%, set streamCount to 4
+  let poolDepth = scaledVolume / scaledReserveA
+  console.log('poolDepth%', poolDepth)
+  if (poolDepth < 0.002) {
+    console.log('Pool depth less than 0.2%, streamCount = 4')
+    streamCount = 4
+  }
 
-  // Calculate N = sqrt(alpha * V^2)
-  // const streamCount = Math.sqrt(alpha * volumeSquared)
+  console.log('streamCount', streamCount)
 
-  // Round to nearest integer and ensure minimum value of 1
-  return Math.min(500, Math.max(4, Math.round(streamCount)))
+  // Round to nearest integer and ensure minimum value of 4
+  return Math.max(4, Math.round(streamCount))
 }
 
 // Cache for ETH price to avoid too many API calls
@@ -154,39 +163,28 @@ export async function getAverageBlockTime(
   numBlocks: number = 20
 ): Promise<number> {
   try {
-    // console.log('Getting average block time with provider:', provider)
     const now = Date.now()
     if (cachedBlockTime && now - lastBlockTimeFetch < BLOCK_TIME_CACHE_MS) {
       console.log('Using cached block time:', cachedBlockTime)
       return cachedBlockTime
     }
 
-    // console.log('Fetching latest block number...')
     const latestBlock = await provider.getBlockNumber()
-    // console.log('Latest block:', latestBlock)
-
-    // console.log('Fetching latest block details...')
     const latest = await provider.getBlock(latestBlock)
-    // console.log('Latest block details:', latest)
-
-    // console.log('Fetching earlier block details...')
     const first = await provider.getBlock(latestBlock - numBlocks)
-    // console.log('Earlier block details:', first)
 
     if (!latest || !first) {
       console.log('Missing block details, using fallback time of 12s')
-      return 12 // fallback to 12s
+      return 12
     }
 
     const avg = (latest.timestamp - first.timestamp) / numBlocks
-    // console.log('Calculated average block time:', avg)
-
     cachedBlockTime = avg
     lastBlockTimeFetch = now
     return avg
   } catch (error) {
     console.error('Error in getAverageBlockTime:', error)
-    return 12 // fallback to 12s on error
+    return 12
   }
 }
 
@@ -200,10 +198,8 @@ export async function calculateGasAndStreams(
     const reserve0 = BigInt(reserves.reserves.token0)
     const reserve1 = BigInt(reserves.reserves.token1)
 
-    // Convert trade volume to BigInt using token decimals
     const tradeVolumeBN = normalizeAmount(tradeVolume, reserves.decimals.token0)
 
-    // Calculate sweet spot
     const sweetSpot = calculateSweetSpot(
       tradeVolumeBN,
       reserve0,
@@ -214,7 +210,6 @@ export async function calculateGasAndStreams(
     )
     console.log('sweetSpot ===>', sweetSpot)
 
-    // Calculate gas allowance
     const gasAllowance = await calculateGasAllowance(provider, sweetSpot)
 
     return {
@@ -238,11 +233,11 @@ export async function calculateSlippageSavings(
   decimalsB: number,
   tokenIn: string,
   tokenOut: string,
-  sweetSpot: number
+  sweetSpot: number,
+  poolAddress?: string
 ): Promise<{ savings: number; percentageSavings: number }> {
   try {
     if (dex === 'uniswap-v2' || dex === 'sushiswap') {
-      // Calculate getAmountsOut from UniswapV2Router
       const routerAddress =
         dex === 'uniswap-v2'
           ? CONTRACT_ADDRESSES.UNISWAP_V2.ROUTER
@@ -250,7 +245,6 @@ export async function calculateSlippageSavings(
 
       const router = new Contract(routerAddress, UniswapV2RouterABI, provider)
 
-      // Get quote for full amount
       const amountOut = await router.getAmountOut(
         tradeVolume,
         reserveA,
@@ -258,7 +252,6 @@ export async function calculateSlippageSavings(
       )
       const amountOutInETH = Number(amountOut) / 10 ** decimalsB
 
-      // Get quote for (tradeVolume / sweetSpot)
       const sweetSpotAmountOut = await router.getAmountOut(
         tradeVolume / BigInt(sweetSpot),
         reserveA,
@@ -266,31 +259,24 @@ export async function calculateSlippageSavings(
       )
       const sweetSpotAmountOutInETH =
         Number(sweetSpotAmountOut) / 10 ** decimalsB
-
-      // Scale up the sweet spot quote
       const scaledSweetSpotAmountOutInETH = sweetSpotAmountOutInETH * sweetSpot
 
       const savings = scaledSweetSpotAmountOutInETH - amountOutInETH
-      // const percentageSavings = (savings / amountOutInETH) * 100
-      const raw = savings / amountOutInETH
+      const raw = amountOutInETH / scaledSweetSpotAmountOutInETH
       let percentageSavings = (1 - raw) * 100
-      // Clamp between 0–100
       percentageSavings = Math.max(0, Math.min(percentageSavings, 100))
-      // Format to 3 decimals
       percentageSavings = Number(percentageSavings.toFixed(3))
 
       return { savings, percentageSavings }
     }
 
     if (dex.startsWith('uniswap-v3')) {
-      // Calculate getAmountsOut from UniswapV3Quoter
       const quoter = new Contract(
         CONTRACT_ADDRESSES.UNISWAP_V3.QUOTER,
         UniswapV3QuoterABI,
         provider
       )
 
-      // Get quote for full amount
       const data = quoter.interface.encodeFunctionData(
         'quoteExactInputSingle',
         [tokenIn, tokenOut, feeTier, tradeVolume, 0]
@@ -308,7 +294,6 @@ export async function calculateSlippageSavings(
 
       const dexQuoteAmountOutInETH = Number(dexQuoteAmountOut) / 10 ** decimalsB
 
-      // Get quote for (tradeVolume / sweetSpot)
       const sweetSpotQuote = quoter.interface.encodeFunctionData(
         'quoteExactInputSingle',
         [tokenIn, tokenOut, feeTier, tradeVolume / BigInt(sweetSpot), 0]
@@ -331,18 +316,190 @@ export async function calculateSlippageSavings(
 
       const savings =
         scaledSweetSpotQuoteAmountOutInETH - dexQuoteAmountOutInETH
-      // const percentageSavings = (savings / dexQuoteAmountOutInETH) * 100
-
-      const raw = savings / dexQuoteAmountOutInETH
+      const raw = dexQuoteAmountOutInETH / scaledSweetSpotQuoteAmountOutInETH
       let percentageSavings = (1 - raw) * 100
-      // Clamp between 0–100
       percentageSavings = Math.max(0, Math.min(percentageSavings, 100))
-      // Format to 3 decimals
       percentageSavings = Number(percentageSavings.toFixed(3))
 
       return { savings, percentageSavings }
     }
 
+    // Handle Curve pools
+    if (dex.startsWith('curve') || dex === 'curve') {
+      console.log('Calculating Curve slippage savings')
+
+      if (!poolAddress) {
+        console.error('Pool address required for Curve')
+        return { savings: 0, percentageSavings: 0 }
+      }
+
+      try {
+        const poolContract = new Contract(poolAddress, CurvePoolABI, provider)
+
+        // Find token indices
+        let tokenInIndex = -1
+        let tokenOutIndex = -1
+
+        // Try to find token indices
+        for (let i = 0; i < 8; i++) {
+          try {
+            const coin = await poolContract.coins(i)
+            if (coin.toLowerCase() === tokenIn.toLowerCase()) tokenInIndex = i
+            if (coin.toLowerCase() === tokenOut.toLowerCase()) tokenOutIndex = i
+            if (tokenInIndex !== -1 && tokenOutIndex !== -1) break
+          } catch {
+            break
+          }
+        }
+
+        if (tokenInIndex === -1 || tokenOutIndex === -1) {
+          console.error('Could not find token indices in Curve pool')
+          return { savings: 0, percentageSavings: 0 }
+        }
+
+        // Get quote for full amount
+        let amountOut: bigint
+        try {
+          amountOut = await poolContract.get_dy(
+            tokenInIndex,
+            tokenOutIndex,
+            tradeVolume
+          )
+        } catch {
+          try {
+            amountOut = await poolContract.get_dy_underlying(
+              tokenInIndex,
+              tokenOutIndex,
+              tradeVolume
+            )
+          } catch (error) {
+            console.error('Error getting Curve quote:', error)
+            return { savings: 0, percentageSavings: 0 }
+          }
+        }
+
+        const amountOutInETH = Number(amountOut) / 10 ** decimalsB
+
+        // Get quote for sweet spot amount
+        let sweetSpotAmountOut: bigint
+        try {
+          sweetSpotAmountOut = await poolContract.get_dy(
+            tokenInIndex,
+            tokenOutIndex,
+            tradeVolume / BigInt(sweetSpot)
+          )
+        } catch {
+          try {
+            sweetSpotAmountOut = await poolContract.get_dy_underlying(
+              tokenInIndex,
+              tokenOutIndex,
+              tradeVolume / BigInt(sweetSpot)
+            )
+          } catch (error) {
+            console.error('Error getting Curve sweet spot quote:', error)
+            return { savings: 0, percentageSavings: 0 }
+          }
+        }
+
+        const sweetSpotAmountOutInETH =
+          Number(sweetSpotAmountOut) / 10 ** decimalsB
+        const scaledSweetSpotAmountOutInETH =
+          sweetSpotAmountOutInETH * sweetSpot
+
+        const savings = scaledSweetSpotAmountOutInETH - amountOutInETH
+        const raw = amountOutInETH / scaledSweetSpotAmountOutInETH
+        let percentageSavings = (1 - raw) * 100
+        percentageSavings = Math.max(0, Math.min(percentageSavings, 100))
+        percentageSavings = Number(percentageSavings.toFixed(3))
+
+        console.log('Curve - amountOut:', amountOutInETH)
+        console.log(
+          'Curve - scaledSweetSpotAmountOut:',
+          scaledSweetSpotAmountOutInETH
+        )
+        console.log('Curve - savings:', savings)
+        console.log('Curve - percentageSavings:', percentageSavings)
+
+        return { savings, percentageSavings }
+      } catch (error) {
+        console.error('Error in Curve calculation:', error)
+        return { savings: 0, percentageSavings: 0 }
+      }
+    }
+
+    // Handle Balancer pools
+    if (dex.startsWith('balancer') || dex === 'balancer') {
+      console.log('Calculating Balancer slippage savings')
+
+      if (!poolAddress) {
+        console.error('Pool ID required for Balancer')
+        return { savings: 0, percentageSavings: 0 }
+      }
+
+      try {
+        const vault = new Contract(
+          CONTRACT_ADDRESSES.BALANCER.VAULT,
+          BalancerVaultABI,
+          provider
+        )
+
+        // Helper to build swap query
+        const getQuote = async (amountIn: bigint): Promise<bigint> => {
+          const swaps = [
+            {
+              poolId: poolAddress,
+              assetInIndex: 0,
+              assetOutIndex: 1,
+              amount: amountIn.toString(),
+              userData: '0x',
+            },
+          ]
+
+          const assets = [tokenIn, tokenOut]
+          const funds = {
+            sender: ethers.constants.AddressZero,
+            fromInternalBalance: false,
+            recipient: ethers.constants.AddressZero,
+            toInternalBalance: false,
+          }
+
+          const result = await vault.queryBatchSwap(0, swaps, assets, funds)
+          return BigInt(result[1]) * BigInt(-1)
+        }
+
+        const amountOut = await getQuote(tradeVolume)
+        const amountOutInETH = Number(amountOut) / 10 ** decimalsB
+
+        const sweetSpotAmountOut = await getQuote(
+          tradeVolume / BigInt(sweetSpot)
+        )
+        const sweetSpotAmountOutInETH =
+          Number(sweetSpotAmountOut) / 10 ** decimalsB
+        const scaledSweetSpotAmountOutInETH =
+          sweetSpotAmountOutInETH * sweetSpot
+
+        const savings = scaledSweetSpotAmountOutInETH - amountOutInETH
+        const raw = amountOutInETH / scaledSweetSpotAmountOutInETH
+        let percentageSavings = (1 - raw) * 100
+        percentageSavings = Math.max(0, Math.min(percentageSavings, 100))
+        percentageSavings = Number(percentageSavings.toFixed(3))
+
+        console.log('Balancer - amountOut:', amountOutInETH)
+        console.log(
+          'Balancer - scaledSweetSpotAmountOut:',
+          scaledSweetSpotAmountOutInETH
+        )
+        console.log('Balancer - savings:', savings)
+        console.log('Balancer - percentageSavings:', percentageSavings)
+
+        return { savings, percentageSavings }
+      } catch (error) {
+        console.error('Error in Balancer calculation:', error)
+        return { savings: 0, percentageSavings: 0 }
+      }
+    }
+
+    console.warn(`Unsupported DEX: ${dex}`)
     return { savings: 0, percentageSavings: 0 }
   } catch (error) {
     console.error('Error calculating slippage savings:', error)

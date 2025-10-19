@@ -14,11 +14,21 @@ export type SushiSwapContracts = {
   FACTORY: string
 }
 
+export type CurveContracts = {
+  // Curve pools are identified by their pool addresses directly
+}
+
+export type BalancerContracts = {
+  VAULT: string
+}
+
 export type NetworkContractMap = {
   [chainId: string]: {
     UNISWAP_V2: UniswapV2Contracts
     UNISWAP_V3: UniswapV3Contracts
     SUSHISWAP: SushiSwapContracts
+    CURVE: CurveContracts
+    BALANCER: BalancerContracts
   }
 }
 
@@ -36,6 +46,10 @@ export const CONTRACT_ADDRESSES = {
     ROUTER: '0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F',
     FACTORY: '0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac',
   } as SushiSwapContracts,
+  CURVE: {} as CurveContracts,
+  BALANCER: {
+    VAULT: '0xBA12222222228d8Ba445958a75a0704d566BF2C8',
+  } as BalancerContracts,
 }
 
 // Chain IDs mapping
@@ -61,10 +75,14 @@ export const NETWORK_ADDRESSES: NetworkContractMap = {
       ROUTER: '0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F',
       FACTORY: '0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac',
     },
+    CURVE: {},
+    BALANCER: {
+      VAULT: '0xBA12222222228d8Ba445958a75a0704d566BF2C8',
+    },
   },
   [CHAIN_IDS.ARBITRUM]: {
     UNISWAP_V2: {
-      ROUTER: '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D', // Update with actual Arbitrum addresses
+      ROUTER: '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D',
       FACTORY: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f',
     },
     UNISWAP_V3: {
@@ -75,8 +93,11 @@ export const NETWORK_ADDRESSES: NetworkContractMap = {
       ROUTER: '0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F',
       FACTORY: '0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac',
     },
+    CURVE: {},
+    BALANCER: {
+      VAULT: '0xBA12222222228d8Ba445958a75a0704d566BF2C8',
+    },
   },
-  // Add more chains as needed
 }
 
 // Type guard functions to help with type safety

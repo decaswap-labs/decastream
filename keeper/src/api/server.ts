@@ -1,38 +1,43 @@
 // src/api/server.ts
-import express, { Request, Response, NextFunction } from 'express'
-import cors from 'cors'
-import helmet from 'helmet'
-import rateLimit from 'express-rate-limit'
-import DatabaseService from '../services/database-service'
-import * as dotenv from 'dotenv'
+import express, { Request, Response, NextFunction } from "express";
+import cors from "cors";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
+import DatabaseService from "../services/database-service";
+import * as dotenv from "dotenv";
+import {
+  calculateSlippageSavings,
+  calculateSweetSpot,
+} from "../tests/liquidity-analysis";
+import { createProvider } from "../utils/provider";
 
 // Load environment variables
-dotenv.config()
+dotenv.config();
 
-const app = express()
-const PORT = process.env.PORT || 3000
+const app = express();
+const PORT = process.env.PORT || 3000;
 
 // Middleware
-app.use(helmet()) // Security headers
-app.use(cors()) // Enable CORS
-app.use(express.json()) // Parse JSON bodies
+app.use(helmet()); // Security headers
+app.use(cors()); // Enable CORS
+app.use(express.json()); // Parse JSON bodies
 
 // Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // Limit each IP to 100 requests per windowMs
   message: {
-    error: 'Too many requests from this IP, please try again later.',
+    error: "Too many requests from this IP, please try again later.",
   },
-})
-app.use('/api/', limiter)
+});
+app.use("/api/", limiter);
 
 // Database connection
-let dbService: DatabaseService
+let dbService: DatabaseService;
 
 // Error handler interface
 interface ApiError extends Error {
-  statusCode?: number
+  statusCode?: number;
 }
 
 // Error handling middleware
@@ -42,89 +47,89 @@ const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  console.error('API Error:', err)
+  console.error("API Error:", err);
 
-  const statusCode = err.statusCode || 500
-  const message = err.message || 'Internal Server Error'
+  const statusCode = err.statusCode || 500;
+  const message = err.message || "Internal Server Error";
 
   res.status(statusCode).json({
     success: false,
     error: message,
     timestamp: new Date().toISOString(),
-  })
-}
+  });
+};
 
 // Async wrapper to handle promise rejections
 const asyncHandler =
   (fn: Function) => (req: Request, res: Response, next: NextFunction) => {
-    Promise.resolve(fn(req, res, next)).catch(next)
-  }
+    Promise.resolve(fn(req, res, next)).catch(next);
+  };
 
 // Validation helpers
 const validateEthereumAddress = (address: string): boolean => {
-  return /^0x[a-fA-F0-9]{40}$/.test(address)
-}
+  return /^0x[a-fA-F0-9]{40}$/.test(address);
+};
 
 const validatePagination = (
   page: string | undefined,
   limit: string | undefined
 ) => {
-  const pageNum = page ? parseInt(page) : 1
-  const limitNum = limit ? parseInt(limit) : 20
+  const pageNum = page ? parseInt(page) : 1;
+  const limitNum = limit ? parseInt(limit) : 20;
 
   if (pageNum < 1 || pageNum > 1000) {
-    throw { statusCode: 400, message: 'Page must be between 1 and 1000' }
+    throw { statusCode: 400, message: "Page must be between 1 and 1000" };
   }
 
   if (limitNum < 1 || limitNum > 100) {
-    throw { statusCode: 400, message: 'Limit must be between 1 and 100' }
+    throw { statusCode: 400, message: "Limit must be between 1 and 100" };
   }
 
-  return { page: pageNum, limit: limitNum }
-}
+  return { page: pageNum, limit: limitNum };
+};
 
 // API Routes
 
 // 1. Health Check
-app.get('/api/health', (req: Request, res: Response) => {
+app.get("/api/health", (req: Request, res: Response) => {
   res.json({
     success: true,
-    message: 'Liquidity Data API is running',
+    message: "Liquidity Data API is running",
     timestamp: new Date().toISOString(),
-    version: '1.0.0',
-  })
-})
+    version: "1.0.0",
+  });
+});
 
 // 2. Get all liquidity pairs with pagination
 app.get(
-  '/api/pairs',
+  "/api/pairs",
   asyncHandler(async (req: Request, res: Response) => {
     const { page, limit } = validatePagination(
       req.query.page as string,
       req.query.limit as string
-    )
-    const sortBy = (req.query.sortBy as string) || 'reserveAtotaldepth'
-    const sortOrder = (req.query.sortOrder as string) || 'desc'
+    );
+    const sortBy = (req.query.sortBy as string) || "reserveAtotaldepth";
+    const sortOrder = (req.query.sortOrder as string) || "desc";
     const minDepth = req.query.minDepth
       ? parseFloat(req.query.minDepth as string)
-      : 0
+      : 0;
 
     // Validate sort parameters
     const validSortFields = [
-      'reserveAtotaldepth',
-      'reserveBtotaldepth',
-      'marketCap',
-      'timestamp',
-    ]
+      "reserveAtotaldepth",
+      "reserveBtotaldepth",
+      "marketCap",
+      "timestamp",
+    ];
     if (!validSortFields.includes(sortBy)) {
-      throw { statusCode: 400, message: 'Invalid sortBy field' }
+      throw { statusCode: 400, message: "Invalid sortBy field" };
     }
 
-    if (!['asc', 'desc'].includes(sortOrder)) {
-      throw { statusCode: 400, message: 'sortOrder must be asc or desc' }
+    if (!["asc", "desc"].includes(sortOrder)) {
+      throw { statusCode: 400, message: "sortOrder must be asc or desc" };
     }
 
-    const skip = (page - 1) * limit
+    const skip = (page - 1) * limit;
 
     const [pairs, total] = await Promise.all([
       dbService.client.liquidityData.findMany({
@@ -146,7 +151,7 @@ app.get(
           },
         },
       }),
-    ])
+    ]);
 
     res.json({
       success: true,
@@ -165,25 +170,25 @@ app.get(
         sortOrder,
         minDepth,
       },
-    })
+    });
   })
-)
+);
 
 // 3. Get specific token pair data
 app.get(
-  '/api/pairs/:tokenA/:tokenB',
+  "/api/pairs/:tokenA/:tokenB",
   asyncHandler(async (req: Request, res: Response) => {
-    const { tokenA, tokenB } = req.params
+    const { tokenA, tokenB } = req.params;
 
     // Validate Ethereum addresses
     if (!validateEthereumAddress(tokenA) || !validateEthereumAddress(tokenB)) {
-      throw { statusCode: 400, message: 'Invalid Ethereum address format' }
+      throw { statusCode: 400, message: "Invalid Ethereum address format" };
     }
 
-    const pair = await dbService.getLiquidityData(tokenA, tokenB)
+    const pair = await dbService.getLiquidityData(tokenA, tokenB);
 
     if (!pair) {
-      throw { statusCode: 404, message: 'Liquidity pair not found' }
+      throw { statusCode: 404, message: "Liquidity pair not found" };
     }
 
     res.json({
@@ -192,25 +197,25 @@ app.get(
         ...pair,
         marketCap: pair.marketCap ? pair.marketCap.toString() : null,
       },
-    })
+    });
   })
-)
+);
 
 // 4. Get all pairs for a specific token
 app.get(
-  '/api/tokens/:address/pairs',
+  "/api/tokens/:address/pairs",
   asyncHandler(async (req: Request, res: Response) => {
-    const { address } = req.params
+    const { address } = req.params;
     const { page, limit } = validatePagination(
       req.query.page as string,
       req.query.limit as string
-    )
+    );
 
     if (!validateEthereumAddress(address)) {
-      throw { statusCode: 400, message: 'Invalid Ethereum address format' }
+      throw { statusCode: 400, message: "Invalid Ethereum address format" };
     }
 
-    const skip = (page - 1) * limit
+    const skip = (page - 1) * limit;
 
     const [pairs, total] = await Promise.all([
       dbService.client.liquidityData.findMany({
@@ -239,7 +244,7 @@ app.get(
       //     ],
       //   },
       // }),
-    ])
+    ]);
 
     res.json({
       success: true,
@@ -253,30 +258,30 @@ app.get(
         total: total || 0,
         pages: Math.ceil((total || 0) / limit),
       },
-    })
+    });
   })
-)
+);
 
 // 5. Get top tokens by liquidity depth
 app.get(
-  '/api/tokens/top',
+  "/api/tokens/top",
   asyncHandler(async (req: Request, res: Response) => {
-    const limit = req.query.limit ? parseInt(req.query.limit as string) : 1000
-    const metric = (req.query.metric as string) || 'reserveAtotaldepth'
+    const limit = req.query.limit ? parseInt(req.query.limit as string) : 1000;
+    const metric = (req.query.metric as string) || "reserveAtotaldepth";
 
     if (limit < 1 || limit > 2000) {
-      throw { statusCode: 400, message: 'Limit must be between 1 and 2000' }
+      throw { statusCode: 400, message: "Limit must be between 1 and 2000" };
     }
 
     const validMetrics = [
-      'reserveAtotaldepth',
-      'reserveBtotaldepth',
-      'marketCap',
-      'slippageSavings',
-    ]
+      "reserveAtotaldepth",
+      "reserveBtotaldepth",
+      "marketCap",
+      "slippageSavings",
+    ];
 
     if (!validMetrics.includes(metric)) {
-      throw { statusCode: 400, message: 'Invalid metric' }
+      throw { statusCode: 400, message: "Invalid metric" };
     }
 
     const topTokens = await dbService.client.liquidityData.findMany({
@@ -287,7 +292,7 @@ app.get(
         },
       },
       orderBy: {
-        [metric]: 'desc',
+        [metric]: "desc",
       },
       select: {
         tokenAAddress: true,
@@ -307,7 +312,7 @@ app.get(
         percentageSavings: true,
         highestLiquidityADex: true,
       },
-    })
+    });
 
     res.json({
       success: true,
@@ -318,55 +323,55 @@ app.get(
       total: topTokens.length,
       metric,
       limit,
-    })
+    });
   })
-)
+);
 
 // 6. Search tokens by symbol or name
 app.get(
-  '/api/tokens/search',
+  "/api/tokens/search",
   asyncHandler(async (req: Request, res: Response) => {
-    const query = req.query.q as string
+    const query = req.query.q as string;
     const { page, limit } = validatePagination(
       req.query.page as string,
       req.query.limit as string
-    )
+    );
 
     if (!query || query.length < 2) {
       throw {
         statusCode: 400,
-        message: 'Search query must be at least 2 characters',
-      }
+        message: "Search query must be at least 2 characters",
+      };
     }
 
-    const skip = (page - 1) * limit
-    const searchTerm = `%${query.toLowerCase()}%`
+    const skip = (page - 1) * limit;
+    const searchTerm = `%${query.toLowerCase()}%`;
 
     const [results, total] = await Promise.all([
       dbService.client.liquidityData.findMany({
         where: {
           OR: [
             { tokenASymbol: { contains: query.toUpperCase() } },
-            { tokenAName: { contains: query, mode: 'insensitive' } },
+            { tokenAName: { contains: query, mode: "insensitive" } },
             { tokenBSymbol: { contains: query.toUpperCase() } },
           ],
         },
         skip,
         take: limit,
         orderBy: {
-          reserveAtotaldepth: 'desc',
+          reserveAtotaldepth: "desc",
         },
       }),
       dbService.client.liquidityData.count({
         where: {
           OR: [
             { tokenASymbol: { contains: query.toUpperCase() } },
-            { tokenAName: { contains: query, mode: 'insensitive' } },
+            { tokenAName: { contains: query, mode: "insensitive" } },
             { tokenBSymbol: { contains: query.toUpperCase() } },
           ],
         },
       }),
-    ])
+    ]);
 
     res.json({
       success: true,
@@ -381,25 +386,25 @@ app.get(
         pages: Math.ceil((total || 0) / limit),
       },
       query,
-    })
+    });
   })
-)
+);
 
 // 7. Get liquidity statistics
 app.get(
-  '/api/stats',
+  "/api/stats",
   asyncHandler(async (req: Request, res: Response) => {
-    const stats = await dbService.getStats()
+    const stats = await dbService.getStats();
 
     // Additional statistics
     const [topPairByDepthA, topPairByDepthB, recentUpdates] = await Promise.all(
       [
         dbService.client.liquidityData.findFirst({
-          orderBy: { reserveAtotaldepth: 'desc' },
+          orderBy: { reserveAtotaldepth: "desc" },
           where: { reserveAtotaldepth: { gt: 0 } },
         }),
         dbService.client.liquidityData.findFirst({
-          orderBy: { reserveBtotaldepth: 'desc' },
+          orderBy: { reserveBtotaldepth: "desc" },
           where: { reserveBtotaldepth: { gt: 0 } },
         }),
         dbService.client.liquidityData.count({
@@ -410,7 +415,7 @@ app.get(
           },
         }),
       ]
-    )
+    );
 
     res.json({
       success: true,
@@ -431,42 +436,42 @@ app.get(
         recentUpdates,
         lastUpdated: new Date().toISOString(),
       },
-    })
+    });
   })
-)
+);
 
 // 8. Get DEX breakdown for a specific pair
 app.get(
-  '/api/pairs/:tokenA/:tokenB/dex-breakdown',
+  "/api/pairs/:tokenA/:tokenB/dex-breakdown",
   asyncHandler(async (req: Request, res: Response) => {
-    const { tokenA, tokenB } = req.params
+    const { tokenA, tokenB } = req.params;
 
     if (!validateEthereumAddress(tokenA) || !validateEthereumAddress(tokenB)) {
-      throw { statusCode: 400, message: 'Invalid Ethereum address format' }
+      throw { statusCode: 400, message: "Invalid Ethereum address format" };
     }
 
-    const pair = await dbService.getLiquidityData(tokenA, tokenB)
+    const pair = await dbService.getLiquidityData(tokenA, tokenB);
 
     if (!pair) {
-      throw { statusCode: 404, message: 'Liquidity pair not found' }
+      throw { statusCode: 404, message: "Liquidity pair not found" };
     }
 
     // Build DEX breakdown
     const dexBreakdown = [
       {
-        dex: 'UniswapV2',
+        dex: "UniswapV2",
         reserveA: pair.reservesAUniswapV2,
         reserveB: pair.reservesBUniswapV2,
         hasLiquidity: !!(pair.reservesAUniswapV2 && pair.reservesBUniswapV2),
       },
       {
-        dex: 'SushiSwap',
+        dex: "SushiSwap",
         reserveA: pair.reservesASushiswap,
         reserveB: pair.reservesBSushiswap,
         hasLiquidity: !!(pair.reservesASushiswap && pair.reservesBSushiswap),
       },
       {
-        dex: 'UniswapV3-500',
+        dex: "UniswapV3-500",
         reserveA: pair.reservesAUniswapV3_500,
         reserveB: pair.reservesBUniswapV3_500,
         hasLiquidity: !!(
@@ -474,7 +479,7 @@ app.get(
         ),
       },
       {
-        dex: 'UniswapV3-3000',
+        dex: "UniswapV3-3000",
         reserveA: pair.reservesAUniswapV3_3000,
         reserveB: pair.reservesBUniswapV3_3000,
         hasLiquidity: !!(
@@ -482,14 +487,14 @@ app.get(
         ),
       },
       {
-        dex: 'UniswapV3-10000',
+        dex: "UniswapV3-10000",
         reserveA: pair.reservesAUniswapV3_10000,
         reserveB: pair.reservesBUniswapV3_10000,
         hasLiquidity: !!(
           pair.reservesAUniswapV3_10000 && pair.reservesBUniswapV3_10000
         ),
       },
-    ].filter((dex) => dex.hasLiquidity)
+    ].filter((dex) => dex.hasLiquidity);
 
     res.json({
       success: true,
@@ -518,27 +523,151 @@ app.get(
         dexBreakdown,
         activeDEXes: dexBreakdown.length,
       },
-    })
+    });
   })
-)
+);
 
-// 9. Get recent updates
-app.get(
-  '/api/recent',
+// 9. Calculate slippage savings for a token pair
+app.post(
+  "/api/calculate",
   asyncHandler(async (req: Request, res: Response) => {
-    const hours = req.query.hours ? parseInt(req.query.hours as string) : 24
+    const { tokenFrom, tokenTo, volume } = req.body;
+
+    // Validate addresses
+    if (!validateEthereumAddress(tokenFrom)) {
+      throw { statusCode: 400, message: "Invalid tokenFrom address format" };
+    }
+
+    if (!validateEthereumAddress(tokenTo)) {
+      throw { statusCode: 400, message: "Invalid tokenTo address format" };
+    }
+
+    // Validate volume
+    if (!volume || isNaN(Number(volume))) {
+      throw { statusCode: 400, message: "Invalid volume amount" };
+    }
+
+    try {
+      // Get pair data from database
+      const pair = await dbService.getLiquidityData(tokenFrom, tokenTo);
+
+      if (!pair) {
+        throw {
+          statusCode: 404,
+          message: "Token pair not found in database",
+        };
+      }
+
+      // Get the best DEX reserves based on highestLiquidityADex
+      const dexName = pair.highestLiquidityADex || "uniswap-v2";
+      let bestDexReserveA = pair.reserveAtotaldepthWei;
+      let bestDexReserveB = pair.reserveBtotaldepthWei;
+
+      // Map DEX name to reserve fields
+      if (dexName === "uniswap-v2") {
+        bestDexReserveA = pair.reservesAUniswapV2 || bestDexReserveA;
+        bestDexReserveB = pair.reservesBUniswapV2 || bestDexReserveB;
+      } else if (dexName === "sushiswap") {
+        bestDexReserveA = pair.reservesASushiswap || bestDexReserveA;
+        bestDexReserveB = pair.reservesBSushiswap || bestDexReserveB;
+      } else if (dexName.startsWith("curve")) {
+        bestDexReserveA = pair.reservesACurve || bestDexReserveA;
+        bestDexReserveB = pair.reservesBCurve || bestDexReserveB;
+      } else if (dexName.startsWith("balancer")) {
+        bestDexReserveA = pair.reservesABalancer || bestDexReserveA;
+        bestDexReserveB = pair.reservesBBalancer || bestDexReserveB;
+      } else if (dexName === "uniswap-v3-500") {
+        bestDexReserveA = pair.reservesAUniswapV3_500 || bestDexReserveA;
+        bestDexReserveB = pair.reservesBUniswapV3_500 || bestDexReserveB;
+      } else if (dexName === "uniswap-v3-3000") {
+        bestDexReserveA = pair.reservesAUniswapV3_3000 || bestDexReserveA;
+        bestDexReserveB = pair.reservesBUniswapV3_3000 || bestDexReserveB;
+      } else if (dexName === "uniswap-v3-10000") {
+        bestDexReserveA = pair.reservesAUniswapV3_10000 || bestDexReserveA;
+        bestDexReserveB = pair.reservesBUniswapV3_10000 || bestDexReserveB;
+      }
+
+      // Convert volume to wei
+      const tradeVolumeBN = BigInt(
+        Math.floor(Number(volume) * 10 ** pair.tokenADecimals)
+      );
+
+      // Calculate sweet spot
+      const sweetSpot = calculateSweetSpot(
+        tradeVolumeBN,
+        BigInt(bestDexReserveA),
+        BigInt(bestDexReserveB),
+        pair.tokenADecimals,
+        pair.tokenBDecimals
+      );
+
+      // Determine fee tier
+      let feeTier = 3000;
+      if (dexName.startsWith("uniswap-v3")) {
+        feeTier = parseInt(dexName.split("-")[2]);
+      } else if (
+        dexName.startsWith("balancer-") ||
+        dexName === "balancer" ||
+        dexName.startsWith("curve-") ||
+        dexName === "curve"
+      ) {
+        feeTier = 0;
+      }
+
+      // Calculate slippage savings
+      const provider = createProvider();
+      const result = await calculateSlippageSavings(
+        tradeVolumeBN,
+        dexName,
+        feeTier,
+        BigInt(bestDexReserveA),
+        BigInt(bestDexReserveB),
+        pair.tokenADecimals,
+        pair.tokenBDecimals,
+        tokenFrom,
+        tokenTo,
+        sweetSpot,
+        pair.pairAddress
+      );
+
+      res.json({
+        success: true,
+        data: {
+          slippageSavings: result.slippageSavings,
+          percentageSavings: result.percentageSavings,
+          priceAccuracyNODECA: result.priceAccuracyNODECA,
+          priceAccuracyDECA: result.priceAccuracyDECA,
+          sweetSpot,
+          dex: dexName,
+        },
+      });
+    } catch (error: any) {
+      console.error("Error calculating slippage savings:", error);
+      throw {
+        statusCode: 500,
+        message: `Calculation failed: ${error.message || error}`,
+      };
+    }
+  })
+);
+
+// 10. Get recent updates
+app.get(
+  "/api/recent",
+  asyncHandler(async (req: Request, res: Response) => {
+    const hours = req.query.hours ? parseInt(req.query.hours as string) : 24;
     const { page, limit } = validatePagination(
       req.query.page as string,
       req.query.limit as string
-    )
+    );
 
     if (hours < 1 || hours > 168) {
       // Max 1 week
-      throw { statusCode: 400, message: 'Hours must be between 1 and 168' }
+      throw { statusCode: 400, message: "Hours must be between 1 and 168" };
     }
 
-    const skip = (page - 1) * limit
-    const since = new Date(Date.now() - hours * 60 * 60 * 1000)
+    const skip = (page - 1) * limit;
+    const since = new Date(Date.now() - hours * 60 * 60 * 1000);
 
     const [recentPairs, total] = await Promise.all([
       dbService.client.liquidityData.findMany({
@@ -550,7 +679,7 @@ app.get(
         skip,
         take: limit,
         orderBy: {
-          updatedAt: 'desc',
+          updatedAt: "desc",
         },
       }),
       dbService.client.liquidityData.count({
@@ -560,7 +689,7 @@ app.get(
           },
         },
       }),
-    ])
+    ]);
 
     res.json({
       success: true,
@@ -578,65 +707,65 @@ app.get(
         hours,
         since: since.toISOString(),
       },
-    })
+    });
   })
-)
+);
 
 // 404 handler (must be before error handler)
-app.use('/{*splat}', (req: Request, res: Response) => {
+app.use("/{*splat}", (req: Request, res: Response) => {
   res.status(404).json({
     success: false,
-    error: 'Endpoint not found',
+    error: "Endpoint not found",
     path: req.path,
     method: req.method,
     availableEndpoints: [
-      'GET /api/health',
-      'GET /api/pairs',
-      'GET /api/pairs/:tokenA/:tokenB',
-      'GET /api/tokens/:address/pairs',
-      'GET /api/tokens/top',
-      'GET /api/tokens/search',
-      'GET /api/stats',
-      'GET /api/pairs/:tokenA/:tokenB/dex-breakdown',
-      'GET /api/recent',
+      "GET /api/health",
+      "GET /api/pairs",
+      "GET /api/pairs/:tokenA/:tokenB",
+      "GET /api/tokens/:address/pairs",
+      "GET /api/tokens/top",
+      "GET /api/tokens/search",
+      "GET /api/stats",
+      "GET /api/pairs/:tokenA/:tokenB/dex-breakdown",
+      "GET /api/recent",
     ],
-  })
-})
+  });
+});
 
 // Error handling middleware (must be last)
-app.use(errorHandler)
+app.use(errorHandler);
 
 // Start server
 async function startServer() {
   try {
     // Initialize database
-    dbService = DatabaseService.getInstance()
-    await dbService.connect()
+    dbService = DatabaseService.getInstance();
+    await dbService.connect();
 
     app.listen(PORT, () => {
-      console.log(`🚀 Liquidity Data API server running on port ${PORT}`)
+      console.log(`🚀 Liquidity Data API server running on port ${PORT}`);
       console.log(
         `📊 API Documentation available at http://localhost:${PORT}/api/health`
-      )
-    })
+      );
+    });
   } catch (error) {
-    console.error('❌ Failed to start server:', error)
-    process.exit(1)
+    console.error("❌ Failed to start server:", error);
+    process.exit(1);
   }
 }
 
 // Graceful shutdown
-process.on('SIGINT', async () => {
-  console.log('\n🛑 Shutting down server gracefully...')
+process.on("SIGINT", async () => {
+  console.log("\n🛑 Shutting down server gracefully...");
   if (dbService) {
-    await dbService.disconnect()
+    await dbService.disconnect();
   }
-  process.exit(0)
-})
+  process.exit(0);
+});
 
-export default app
+export default app;
 
 // Start the server if this file is run directly
 if (require.main === module) {
-  startServer()
+  startServer();
 }

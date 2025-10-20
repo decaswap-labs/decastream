@@ -13,17 +13,18 @@ import WinSection from './WinSection'
 import { HeroBgImage } from './hotpairs-icons'
 import Button from '../button'
 import TokenPairsSection from './TokenPairsSection'
-import {
-  calculateSlippageSavings,
-  calculateSweetSpot,
-  normalizeAmount,
-} from '@/app/lib/gas-calculations'
+import { normalizeAmount } from '@/app/lib/gas-calculations'
 import { DexCalculatorFactory } from '@/app/lib/dex/calculators'
 import {
   fetchSpecificPair,
   useTokenEnhancer,
 } from '@/app/lib/hooks/hotpairs/useEnhancedTokens'
 import { useQueryClient } from '@tanstack/react-query'
+import {
+  calculateSlippageSavingsForHotPairs,
+  calculateSweetSpotForHotPairs,
+  getBestDexReserves,
+} from '@/app/lib/hotpairs-calculations'
 
 const HotPairs = () => {
   const router = useRouter()
@@ -172,10 +173,7 @@ const HotPairs = () => {
   }
 
   const handleVolumeAmountChange = async (amount: number) => {
-    console.log('🔄 handleVolumeAmountChange called with amount:', amount)
-
     if (!activeHotPair) {
-      console.log('⏹️ Skipping calculation - no active hotpair')
       return
     }
 
@@ -184,7 +182,6 @@ const HotPairs = () => {
 
     // If entering the original value, restore the stored backend values
     if (amount === activeHotPair?.reserveAtotaldepth) {
-      console.log('✨ Restoring stored backend values')
       setWinAmount(activeHotPair?.percentageSavings || 0)
       setSlippageSavingsUsd(activeHotPair?.slippageSavingsUsd)
       setWinLoading(false)
@@ -220,41 +217,13 @@ const HotPairs = () => {
 
       // Get the best DEX reserves based on highestLiquidityADex
       const dexName = activeHotPair?.highestLiquidityADex || 'uniswap-v2'
-      let bestDexReserveA = activeHotPair?.reserveAtotaldepthWei
-      let bestDexReserveB = activeHotPair?.reserveBtotaldepthWei
-
-      // Map DEX name to reserve fields
-      if (dexName === 'uniswap-v2') {
-        bestDexReserveA = activeHotPair?.reservesAUniswapV2 || bestDexReserveA
-        bestDexReserveB = activeHotPair?.reservesBUniswapV2 || bestDexReserveB
-      } else if (dexName === 'sushiswap') {
-        bestDexReserveA = activeHotPair?.reservesASushiswap || bestDexReserveA
-        bestDexReserveB = activeHotPair?.reservesBSushiswap || bestDexReserveB
-      } else if (dexName.startsWith('curve')) {
-        bestDexReserveA = activeHotPair?.reservesACurve || bestDexReserveA
-        bestDexReserveB = activeHotPair?.reservesBCurve || bestDexReserveB
-      } else if (dexName.startsWith('balancer')) {
-        bestDexReserveA = activeHotPair?.reservesABalancer || bestDexReserveA
-        bestDexReserveB = activeHotPair?.reservesBBalancer || bestDexReserveB
-      } else if (dexName === 'uniswap-v3-500') {
-        bestDexReserveA =
-          activeHotPair?.reservesAUniswapV3_500 || bestDexReserveA
-        bestDexReserveB =
-          activeHotPair?.reservesBUniswapV3_500 || bestDexReserveB
-      } else if (dexName === 'uniswap-v3-3000') {
-        bestDexReserveA =
-          activeHotPair?.reservesAUniswapV3_3000 || bestDexReserveA
-        bestDexReserveB =
-          activeHotPair?.reservesBUniswapV3_3000 || bestDexReserveB
-      } else if (dexName === 'uniswap-v3-10000') {
-        bestDexReserveA =
-          activeHotPair?.reservesAUniswapV3_10000 || bestDexReserveA
-        bestDexReserveB =
-          activeHotPair?.reservesBUniswapV3_10000 || bestDexReserveB
-      }
+      const { bestDexReserveA, bestDexReserveB } = getBestDexReserves(
+        dexName,
+        activeHotPair
+      )
 
       // Calculate sweet spot using the trade volume and best DEX reserves
-      const sweetSpot = calculateSweetSpot(
+      const sweetSpot = calculateSweetSpotForHotPairs(
         tradeVolumeBN, // Trade volume (user input)
         BigInt(bestDexReserveA), // Best DEX reserve A
         BigInt(bestDexReserveB), // Best DEX reserve B
@@ -262,8 +231,6 @@ const HotPairs = () => {
         activeHotPair?.tokenBDecimals,
         0
       )
-
-      console.log('sweetSpot ===>', sweetSpot)
 
       const feeTier = activeHotPair?.highestLiquidityADex
         ? activeHotPair?.highestLiquidityADex?.startsWith('uniswap-v3')
@@ -279,28 +246,27 @@ const HotPairs = () => {
 
       // Calculate slippage savings using total reserves for trade volume
       // but best DEX reserves for the quote calculations
-      const { savings, percentageSavings } = await calculateSlippageSavings(
-        calculator.getProvider(),
-        tradeVolumeBN,
-        activeHotPair?.highestLiquidityADex || 'uniswap-v2',
-        feeTier,
-        BigInt(bestDexReserveA),
-        BigInt(bestDexReserveB),
-        activeHotPair?.tokenADecimals,
-        activeHotPair?.tokenBDecimals,
-        activeHotPair?.tokenAAddress,
-        activeHotPair?.tokenBAddress,
-        sweetSpot,
-        activeHotPair?.pairAddress // Pool address for Curve/Balancer
-      )
-      console.log('savings ===>', savings)
-      console.log('percentageSavings ===>', percentageSavings)
+      const { savings, percentageSavings } =
+        await calculateSlippageSavingsForHotPairs(
+          calculator.getProvider(),
+          tradeVolumeBN,
+          activeHotPair?.highestLiquidityADex || 'uniswap-v2',
+          feeTier,
+          BigInt(bestDexReserveA),
+          BigInt(bestDexReserveB),
+          activeHotPair?.tokenADecimals,
+          activeHotPair?.tokenBDecimals,
+          activeHotPair?.tokenAAddress,
+          activeHotPair?.tokenBAddress,
+          sweetSpot
+          // activeHotPair?.pairAddress // Pool address for Curve/Balancer should go here
+        )
 
       const savingsInUSD = savings * (activeHotPair?.tokenBUsdPrice || 1)
       setWinAmount(Number(percentageSavings.toFixed(2)) || 0)
       setSlippageSavingsUsd(savingsInUSD)
       setWinLoading(false)
-    }, 300) // 300ms debounce delay
+    }, 400) // 400ms debounce delay
   }
 
   const handleWinAmountChange = (amount: number) => {
@@ -335,14 +301,6 @@ const HotPairs = () => {
     setVolumeActive(false)
     setWinActive(false)
   }
-
-  // console.log('activeHotPair ===>', activeHotPair)
-  // console.log('selectedBaseToken ===>', selectedBaseToken)
-  // console.log('selectedOtherToken ===>', selectedOtherToken)
-
-  // console.log('activeHotPair ===>', activeHotPair)
-  // console.log('winAmount ===>', winAmount)
-  // console.log('volumeAmount ===>', volumeAmount)
 
   return (
     <>

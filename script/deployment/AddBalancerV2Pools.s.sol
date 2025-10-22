@@ -47,6 +47,8 @@ contract AddBalancerV2Pools is Script {
     address constant ETHx = 0xA35b1B31Ce002FBF2058D22F30f95D405200A15b;
     address constant OSETH = 0xf1C9acDc66974dFB6dEcB12aA385b9cD01190E38;
     address constant GHO = 0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f;
+    address constant SYRUPUSDC = 0x80ac24aA929eaF5013f6436cdA2a7ba190f5Cc0b;
+    address constant AXS = 0xBB0E17EF65F82Ab018d8EDd776e8DD940327B28b;
 
     function run() public {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
@@ -66,7 +68,7 @@ contract AddBalancerV2Pools is Script {
     }
 
     function getPools() public pure returns (PoolInfo[] memory) {
-        PoolInfo[] memory pools = new PoolInfo[](77);
+        PoolInfo[] memory pools = new PoolInfo[](83);
 
         // 0xA0B86991c6218B36c1d19D4A2E9eb0ce3606Eb48-0xc02aaA39B223Fe8D0A0E5C4f27EAd9083C756cc2
         pools[0] = PoolInfo({
@@ -689,6 +691,56 @@ contract AddBalancerV2Pools is Script {
             tokenA: WETH,
             tokenB: stETH,
             name: "WETH-stETH",
+            verified: true
+        });
+
+        // 0x80ac24aA929eaF5013f6436cdA2a7ba190f5Cc0b-0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
+        pools[77] = PoolInfo({
+            pool: 0x0195538979e579D49999f780C04FC4bf68778B6f,
+            tokenA: SYRUPUSDC,
+            tokenB: USDC,
+            name: "SYRUPUSDC-USDC",
+            verified: true
+        });
+
+        // 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48-0x80ac24aA929eaF5013f6436cdA2a7ba190f5Cc0b
+        pools[78] = PoolInfo({
+            pool: 0x0195538979e579D49999f780C04FC4bf68778B6f,
+            tokenA: USDC,
+            tokenB: SYRUPUSDC,
+            name: "USDC-SYRUPUSDC",
+            verified: true
+        });
+
+        pools[79] = PoolInfo({
+            pool: 0xa33E376932b2c01323F0A7f9bBe0a53F7662B2E9,
+            tokenA: COMP,
+            tokenB: WBTC,
+            name: "COMP-WBTC",
+            verified: true
+        });
+
+        pools[80] = PoolInfo({
+            pool: 0xa33E376932b2c01323F0A7f9bBe0a53F7662B2E9,
+            tokenA: WBTC,
+            tokenB: COMP,
+            name: "WBTC-COMP",
+            verified: true
+        });
+
+        pools[81] = PoolInfo({
+            pool: 0xC3141fC45791CcA3F21F2A926Fd8598c39a4C6d2,
+            tokenA: AXS,
+            tokenB: USDC,
+            name: "AXS-USDC",
+            verified: true
+        });
+
+        pools[82] = PoolInfo({
+            pool: 0xC3141fC45791CcA3F21F2A926Fd8598c39a4C6d2,
+            tokenA: USDC,
+            tokenB: AXS,
+            name: "USDC-AXS",
             verified: true
         });
 

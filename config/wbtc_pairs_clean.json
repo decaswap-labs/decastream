@@ -1,6 +1,6 @@
 {
   "description": "All liquidity pairs containing WBTC token with non-zero reserves (including all base tokens)",
-  "totalCount": 30,
+  "totalCount": 25,
   "extractedAt": "2025-10-05T12:39:39.252Z",
   "filterCriteria": "Reserves token0 > 0 AND token1 > 0",
   "pairs": [
@@ -11,10 +11,6 @@
     {
       "name": "aave",
       "address": "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9"
-    },
-    {
-      "name": "axs",
-      "address": "0xbb0e17ef65f82ab018d8edd776e8dd940327b28b"
     },
     {
       "name": "cbbtc",
@@ -53,10 +49,6 @@
       "address": "0x8236a87084f8b84306f72007f36f2618a5634494"
     },
     {
-      "name": "ldo",
-      "address": "0x5a98fcbea516cf06857215779fd812ca3bef1b32"
-    },
-    {
       "name": "link",
       "address": "0x514910771af9ca656af840dff83e8264ecf986ca"
     },
@@ -71,10 +63,6 @@
     {
       "name": "qnt",
       "address": "0x4a220e6096b25eadb88358cb44068a3248254675"
-    },
-    {
-      "name": "shib",
-      "address": "0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce"
     },
     {
       "name": "snx",
@@ -109,16 +97,8 @@
       "address": "0xdac17f958d2ee523a2206206994597c13d831ec7"
     },
     {
-      "name": "wbtc",
-      "address": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599"
-    },
-    {
       "name": "weth",
       "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
-    },
-    {
-      "name": "wsteth",
-      "address": "0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0"
     },
     {
       "name": "xaut",

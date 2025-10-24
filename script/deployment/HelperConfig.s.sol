@@ -9,6 +9,7 @@ import { CurveFetcher } from "src/adapters/CurveFetcher.sol";
 import { BalancerV2Fetcher } from "src/adapters/BalancerV2Fetcher.sol";
 import { BalancerV2PoolRegistry } from "src/adapters/BalancerV2PoolRegistry.sol";
 import { MockFetcher1, MockFetcher2 } from "test/mock/MockFetcher.sol";
+import { CurveMetaFetcher } from "src/adapters/CurveMetaFetcher.sol";
 
 contract HelperConfig is Script {
     struct DexTypeRouter {
@@ -30,7 +31,7 @@ contract HelperConfig is Script {
             address UNISWAP_V3_ROUTER = 0xE592427A0AEce92De3Edee1F18E0157C05861564;
             address SUSHISWAP_ROUTER = 0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F;
             address BALANCER_VAULT = 0xBA12222222228d8Ba445958a75a0704d566BF2C8;
-            // address CURVE_POOL = 0x4eBdF703948ddCEA3B11f675B4D1Fba9d2414A14;
+            address curveMetaRegistry = 0xF98B45FA17DE75FB1aD0e7aFD971b0ca00e379fC;
 
             UniswapV2Fetcher uniswapV2Fetcher = new UniswapV2Fetcher(0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f); // UniswapV2
 
@@ -43,17 +44,15 @@ contract HelperConfig is Script {
                 new UniswapV3Fetcher(0x1F98431c8aD98523631AE4a59f267346ea31F984, 10_000); // UniswapV3 1%
 
             SushiswapFetcher sushiswapFetcher = new SushiswapFetcher(0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac); // Sushiswap
-            // CurveFetcher curveFetcher = new CurveFetcher(CURVE_POOL); // Curve
             balancerV2PoolRegistry = new BalancerV2PoolRegistry(owner);
             BalancerV2Fetcher balancerV2Fetcher = new BalancerV2Fetcher(BALANCER_VAULT, address(balancerV2PoolRegistry));
+            CurveMetaFetcher curveFetcher = new CurveMetaFetcher(curveMetaRegistry);
 
             activeDexTypesRouters.push(DexTypeRouter({ dexType: "UniswapV2", router: UNISWAP_V2_ROUTER }));
             activeDexTypesRouters.push(DexTypeRouter({ dexType: "UniswapV3", router: UNISWAP_V3_ROUTER }));
             activeDexTypesRouters.push(DexTypeRouter({ dexType: "Sushiswap", router: SUSHISWAP_ROUTER }));
-            // activeDexTypesRouters.push(DexTypeRouter({ dexType: "Curve", router: CURVE_POOL }));
+            activeDexTypesRouters.push(DexTypeRouter({ dexType: "CurveMeta", router: address(curveFetcher) }));
             activeDexTypesRouters.push(DexTypeRouter({ dexType: "BalancerV2", router: address(balancerV2Fetcher) }));
-
-            
 
             // StreamDaemon.sol
             activeDexes.push(address(uniswapV2Fetcher));
@@ -61,7 +60,7 @@ contract HelperConfig is Script {
             activeDexes.push(address(uniswapV3Fetcher3000));
             activeDexes.push(address(uniswapV3Fetcher10000));
             activeDexes.push(address(sushiswapFetcher));
-            // activeDexes.push(address(curveFetcher));
+            activeDexes.push(address(curveFetcher));
             activeDexes.push(address(balancerV2Fetcher));
 
             activeRouters.push(UNISWAP_V2_ROUTER);
@@ -69,7 +68,7 @@ contract HelperConfig is Script {
             activeRouters.push(UNISWAP_V3_ROUTER); // for 3000 fee tier
             activeRouters.push(UNISWAP_V3_ROUTER); // for 10000 fee tier
             activeRouters.push(SUSHISWAP_ROUTER);
-            // activeRouters.push(CURVE_POOL);
+            activeRouters.push(address(curveFetcher));
             activeRouters.push(address(balancerV2Fetcher));
         } else if (block.chainid == 31_337) {
             console.log("Deploying on anvil");

@@ -15,6 +15,7 @@
  *   - usdt_pairs_clean.json
  *   - wbtc_pairs_clean.json
  *   - weth_pairs_clean.json
+ *   - dai_pairs_clean.json
  */
 
 const fs = require('fs');
@@ -25,7 +26,8 @@ const BASE_TOKENS = {
   usdc: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
   usdt: '0xdac17f958d2ee523a2206206994597c13d831ec7',
   wbtc: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
-  weth: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
+  weth: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+  dai: '0x6B175474E89094C44Da98b954EedeAC495271d0F'
 };
 
 // Source file
@@ -67,11 +69,7 @@ function extractPairsForBaseToken(liquidityData, baseSymbol, baseAddress) {
   const normalizedBase = normalizeAddress(baseAddress);
   const tokensMap = new Map();
   
-  // Add the base token itself
-  tokensMap.set(normalizedBase, {
-    name: baseSymbol,
-    address: baseAddress
-  });
+  // Don't add the base token itself - we only want pairs with other tokens
   
   // Iterate through all liquidity entries
   liquidityData.forEach(entry => {
@@ -80,27 +78,27 @@ function extractPairsForBaseToken(liquidityData, baseSymbol, baseAddress) {
     
     // Check if the entry itself is the base token
     if (entryTokenAddr === normalizedBase) {
-      // Add all tokens that the base token has pairs with
+      // Add all tokens that the base token has pairs with (as baseToken)
       entry.liquidityPairs.forEach(pair => {
         if (hasNonZeroReserves(pair.reserves)) {
-          const pairTokenAddr = normalizeAddress(pair.tokenAddress);
-          const pairTokenSymbol = pair.tokenSymbol.toLowerCase();
+          const pairTokenAddr = normalizeAddress(pair.baseToken);
+          const pairTokenSymbol = pair.baseTokenSymbol.toLowerCase();
           
           if (!tokensMap.has(pairTokenAddr)) {
             tokensMap.set(pairTokenAddr, {
               name: pairTokenSymbol,
-              address: pair.tokenAddress
+              address: pair.baseToken
             });
           }
         }
       });
     }
     
-    // Check if the entry has pairs with the base token
+    // Check if the entry has pairs with the base token as baseToken
     entry.liquidityPairs.forEach(pair => {
-      const pairTokenAddr = normalizeAddress(pair.tokenAddress);
+      const pairBaseTokenAddr = normalizeAddress(pair.baseToken);
       
-      if (pairTokenAddr === normalizedBase && hasNonZeroReserves(pair.reserves)) {
+      if (pairBaseTokenAddr === normalizedBase && hasNonZeroReserves(pair.reserves)) {
         // Add the entry token
         if (!tokensMap.has(entryTokenAddr)) {
           tokensMap.set(entryTokenAddr, {
@@ -123,7 +121,7 @@ function extractPairsForBaseToken(liquidityData, baseSymbol, baseAddress) {
  */
 function generatePairsFile(baseSymbol, pairs) {
   const output = {
-    description: `All liquidity pairs containing ${baseSymbol.toUpperCase()} token with non-zero reserves (including all base tokens)`,
+    description: `All tokens that have liquidity pairs with ${baseSymbol.toUpperCase()} token (excluding ${baseSymbol.toUpperCase()} itself)`,
     totalCount: pairs.length,
     extractedAt: new Date().toISOString(),
     filterCriteria: 'Reserves token0 > 0 AND token1 > 0',

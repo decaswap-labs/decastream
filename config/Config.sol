@@ -23,6 +23,7 @@ contract Config is Script {
     address[] internal _usdtPairAddresses;
     address[] internal _wethPairAddresses;
     address[] internal _wbtcPairAddresses;
+    address[] internal _daiPairAddresses;
 
     // Global mappings for token names and addresses
     mapping(address => string) internal _tokenNames;
@@ -33,6 +34,7 @@ contract Config is Script {
     bool internal _usdtLoaded = false;
     bool internal _wethLoaded = false;
     bool internal _wbtcLoaded = false;
+    bool internal _daiLoaded = false;
 
     // ===== LOADING FUNCTIONS =====
 
@@ -177,6 +179,41 @@ contract Config is Script {
     }
 
     /**
+     * @dev Load DAI pair addresses from JSON file
+     */
+    function loadDAIPairAddresses() public {
+        if (_daiLoaded) {
+            return; // Already loaded
+        }
+
+        try this.readTokenPairsFromJSON("config/dai_pairs_clean.json") returns (TokenPair[] memory pairs) {
+            console.log("Successfully loaded", pairs.length, "DAI pair addresses from JSON");
+
+            // Clear existing DAI data
+            delete _daiPairAddresses;
+
+            // Store the loaded data
+            for (uint256 i = 0; i < pairs.length; i++) {
+                address tokenAddress = pairs[i].addr;
+                string memory tokenName = pairs[i].name;
+
+                _daiPairAddresses.push(tokenAddress);
+                _tokenNames[tokenAddress] = tokenName;
+                _nameToAddress[tokenName] = tokenAddress;
+            }
+
+            _daiLoaded = true;
+            console.log("DAI pair addresses loaded successfully");
+        } catch Error(string memory reason) {
+            console.log("Failed to load DAI addresses from JSON:", reason);
+            revert("Failed to load DAI pair addresses from JSON");
+        } catch {
+            console.log("Failed to load DAI addresses from JSON: Unknown error");
+            revert("Failed to load DAI pair addresses from JSON");
+        }
+    }
+
+    /**
      * @dev Load all token pair addresses
      */
     function loadAllTokenPairAddresses() public {
@@ -184,6 +221,7 @@ contract Config is Script {
         loadUSDTPairAddresses();
         loadWETHPairAddresses();
         loadWBTCPairAddresses();
+        loadDAIPairAddresses();
     }
 
     /**
@@ -278,6 +316,23 @@ contract Config is Script {
         return _isInArray(_wbtcPairAddresses, tokenAddress);
     }
 
+    // ===== GETTER FUNCTIONS FOR DAI =====
+
+    function getDAIPairAddresses() external view returns (address[] memory) {
+        require(_daiLoaded, "DAI addresses not loaded. Call loadDAIPairAddresses() first");
+        return _daiPairAddresses;
+    }
+
+    function getDAIPairAddressesCount() external view returns (uint256) {
+        require(_daiLoaded, "DAI addresses not loaded. Call loadDAIPairAddresses() first");
+        return _daiPairAddresses.length;
+    }
+
+    function isDAIPairAddress(address tokenAddress) external view returns (bool) {
+        require(_daiLoaded, "DAI addresses not loaded. Call loadDAIPairAddresses() first");
+        return _isInArray(_daiPairAddresses, tokenAddress);
+    }
+
     // ===== GLOBAL UTILITY FUNCTIONS =====
 
     /**
@@ -297,8 +352,8 @@ contract Config is Script {
     /**
      * @dev Check loading status
      */
-    function getLoadingStatus() external view returns (bool usdc, bool usdt, bool weth, bool wbtc) {
-        return (_usdcLoaded, _usdtLoaded, _wethLoaded, _wbtcLoaded);
+    function getLoadingStatus() external view returns (bool usdc, bool usdt, bool weth, bool wbtc, bool dai) {
+        return (_usdcLoaded, _usdtLoaded, _wethLoaded, _wbtcLoaded, _daiLoaded);
     }
 
     // ===== INTERNAL HELPER FUNCTIONS =====

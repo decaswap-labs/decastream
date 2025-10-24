@@ -17,6 +17,7 @@ contract CoreForkTest is Fork_Test {
     address constant USDT_WHALE = 0x5754284f345afc66a98fbB0a0Afe71e0F007B949;
     address constant WETH_WHALE = 0x8EB8a3b98659Cce290402893d0123abb75E3ab28;
     address constant WBTC_WHALE = 0xBF72Da2Bd84c5170618Fbe5914B0ECA9638d5eb5;
+    address constant DAI_WHALE = 0x47ac0Fb4F2D84898e4D9E7b4DaB3C24507a6D503;
 
     // Event for tracking individual token results
     event TokenTestResult(string indexed baseToken, string tokenName, address tokenAddress, bool success);
@@ -27,6 +28,7 @@ contract CoreForkTest is Fork_Test {
     address[] public usdtPairAddresses;
     address[] public wethPairAddresses;
     address[] public wbtcPairAddresses;
+    address[] public daiPairAddresses;
 
     function setUp() public virtual override {
         super.setUp();
@@ -41,11 +43,13 @@ contract CoreForkTest is Fork_Test {
         usdtPairAddresses = config.getUSDTPairAddresses();
         wethPairAddresses = config.getWETHPairAddresses();
         wbtcPairAddresses = config.getWBTCPairAddresses();
+        daiPairAddresses = config.getDAIPairAddresses();
 
         console.log("Number of USDC addresses loaded:", usdcPairAddresses.length);
         console.log("Number of USDT addresses loaded:", usdtPairAddresses.length);
         console.log("Number of WETH addresses loaded:", wethPairAddresses.length);
         console.log("Number of WBTC addresses loaded:", wbtcPairAddresses.length);
+        console.log("Number of DAI addresses loaded:", daiPairAddresses.length);
         console.log("Setup complete with all token pairs loaded");
     }
 
@@ -105,6 +109,20 @@ contract CoreForkTest is Fork_Test {
 
     function isWBTCPair(address tokenAddress) public view returns (bool) {
         return config.isWBTCPairAddress(tokenAddress);
+    }
+
+    // DAI functions
+    function getDAIPairAddress(uint256 index) public view returns (address) {
+        require(index < daiPairAddresses.length, "Index out of bounds");
+        return daiPairAddresses[index];
+    }
+
+    function getDAIPairAddressesCount() public view returns (uint256) {
+        return daiPairAddresses.length;
+    }
+
+    function isDAIPair(address tokenAddress) public view returns (bool) {
+        return config.isDAIPairAddress(tokenAddress);
     }
 
     // Global functions
@@ -402,9 +420,24 @@ contract CoreForkTest is Fork_Test {
         _testTradesForTokenRange("WBTC", wbtcPairAddresses, wbtc, WBTC_WHALE, 1 * 10 ** 6, start, end);
     }
 
+    function test_PlaceTradeWithDAITokens() public {
+        address dai = getTokenByName("dai");
+        uint256 start = 0;
+        uint256 end = daiPairAddresses.length;
+
+        try vm.envUint("START_INDEX") returns (uint256 s) {
+            start = s;
+        } catch { }
+        try vm.envUint("END_INDEX") returns (uint256 e) {
+            end = e;
+        } catch { }
+
+        _testTradesForTokenRange("DAI", daiPairAddresses, dai, DAI_WHALE, formatTokenAmount(dai, 1000), start, end);
+    }
+
     function test_singleTrade() public {
-        address fromToken = getTokenByName("usdt");
-        address toToken = getTokenByName("arb");
+        address fromToken = getTokenByName("usdc");
+        address toToken = getTokenByName("usdt");
         uint256 amountIn = formatTokenAmount(fromToken, 1000);
         address whale = USDC_WHALE;
         _executeSpecificTrade(fromToken, toToken, amountIn, whale);
@@ -461,6 +494,7 @@ contract CoreForkTest is Fork_Test {
         if (_compareStrings(tokenName, "usdt")) return USDT_WHALE;
         if (_compareStrings(tokenName, "weth")) return WETH_WHALE;
         if (_compareStrings(tokenName, "wbtc")) return WBTC_WHALE;
+        if (_compareStrings(tokenName, "dai")) return DAI_WHALE;
 
         // For other tokens, default to USDC whale
         return USDC_WHALE;

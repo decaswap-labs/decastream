@@ -1,7 +1,7 @@
 {
-  "description": "All tokens that have liquidity pairs with USDT token (excluding USDT itself)",
-  "totalCount": 32,
-  "extractedAt": "2025-10-24T08:36:36.400Z",
+  "description": "All tokens that have liquidity pairs with DAI token (excluding DAI itself)",
+  "totalCount": 25,
+  "extractedAt": "2025-10-24T08:36:36.403Z",
   "filterCriteria": "Reserves token0 > 0 AND token1 > 0",
   "pairs": [
     {
@@ -13,40 +13,28 @@
       "address": "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9"
     },
     {
-      "name": "ape",
-      "address": "0x4d224452801aced8b2f0aebe155379bb5d594381"
-    },
-    {
-      "name": "chz",
-      "address": "0x3506424f91fd33084466f402d5d97f05f8e3b4af"
-    },
-    {
       "name": "comp",
       "address": "0xc00e94cb662c3520282e6f5717214004a7f26888"
-    },
-    {
-      "name": "cro",
-      "address": "0xa0b73e1ff0b80914ab6fe0444e65848c4c34450b"
     },
     {
       "name": "crv",
       "address": "0xd533a949740bb3306d119cc777fa900ba034cd52"
     },
     {
-      "name": "dai",
-      "address": "0x6b175474e89094c44da98b954eedeac495271d0f"
+      "name": "ens",
+      "address": "0xc18360217d8f7ab5e7c516566761ea12ce7f9d72"
+    },
+    {
+      "name": "fdusd",
+      "address": "0xc5f0f7b66764f6ec8c8dff7ba683102295e16409"
     },
     {
       "name": "grt",
       "address": "0xc944e90c64b2c07662a292be6244bdf05cda44a7"
     },
     {
-      "name": "gt",
-      "address": "0xe66747a101bff2dba3697199dcce5b743b454759"
-    },
-    {
-      "name": "jasmy",
-      "address": "0x7420b4b9a0110cdc71fb720908340c03f9bc03ec"
+      "name": "ldo",
+      "address": "0x5a98fcbea516cf06857215779fd812ca3bef1b32"
     },
     {
       "name": "link",
@@ -55,10 +43,6 @@
     {
       "name": "mana",
       "address": "0x0f5d2fb29fb7d3cfee444a200298f468908cc942"
-    },
-    {
-      "name": "move",
-      "address": "0x3073f7aaa4db83f95e9fff17424f71d4751a3073"
     },
     {
       "name": "nexo",
@@ -73,16 +57,8 @@
       "address": "0x45804880de22913dafe09f4980848ece6ecbaf78"
     },
     {
-      "name": "pepe",
-      "address": "0x6982508145454ce325ddbe47a25d4ec3d2311933"
-    },
-    {
       "name": "qnt",
       "address": "0x4a220e6096b25eadb88358cb44068a3248254675"
-    },
-    {
-      "name": "render",
-      "address": "0x6de037ef9ad2725eb40118bb1702ebb27e4aeb24"
     },
     {
       "name": "sand",
@@ -93,16 +69,8 @@
       "address": "0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce"
     },
     {
-      "name": "super",
-      "address": "0xe53ec727dbdeb9e2d5456c3be40cff031ab40a55"
-    },
-    {
-      "name": "tkx",
-      "address": "0x667102bd3413bfeaa3dffb48fa8288819e480a88"
-    },
-    {
-      "name": "ton",
-      "address": "0x582d872a1b094fc48f5de31d3b73f2d9be47def1"
+      "name": "sky",
+      "address": "0x56072c95faa701256059aa122697b133aded9279"
     },
     {
       "name": "tusd",
@@ -117,20 +85,24 @@
       "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
     },
     {
-      "name": "usde",
-      "address": "0x4c9edd5852cd905f086c759e8383e09bff1e68b3"
+      "name": "usds",
+      "address": "0xdc035d45d973e3ec169d2276ddab16f1e407384f"
     },
     {
-      "name": "virtual",
-      "address": "0x44ff8620b8ca30902395a7bd3f2407e1a091bf73"
+      "name": "usdt",
+      "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7"
     },
     {
       "name": "wbtc",
-      "address": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599"
+      "address": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599"
     },
     {
       "name": "weth",
-      "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+      "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+    },
+    {
+      "name": "wsteth",
+      "address": "0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0"
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
-  "description": "All liquidity pairs containing WBTC token with non-zero reserves (including all base tokens)",
-  "totalCount": 25,
-  "extractedAt": "2025-10-05T12:39:39.252Z",
+  "description": "All tokens that have liquidity pairs with WBTC token (excluding WBTC itself)",
+  "totalCount": 15,
+  "extractedAt": "2025-10-24T08:36:36.400Z",
   "filterCriteria": "Reserves token0 > 0 AND token1 > 0",
   "pairs": [
     {
@@ -13,40 +13,20 @@
       "address": "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9"
     },
     {
-      "name": "cbbtc",
-      "address": "0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf"
-    },
-    {
       "name": "chz",
       "address": "0x3506424f91fd33084466f402d5d97f05f8e3b4af"
-    },
-    {
-      "name": "comp",
-      "address": "0xc00e94cb662c3520282e6f5717214004a7f26888"
     },
     {
       "name": "cro",
       "address": "0xa0b73e1ff0b80914ab6fe0444e65848c4c34450b"
     },
     {
-      "name": "crv",
-      "address": "0xd533a949740bb3306d119cc777fa900ba034cd52"
-    },
-    {
       "name": "dai",
       "address": "0x6b175474e89094c44da98b954eedeac495271d0f"
     },
     {
-      "name": "fet",
-      "address": "0xaea46a60368a7bd060eec7df8cba43b7ef41ad85"
-    },
-    {
       "name": "grt",
       "address": "0xc944e90c64b2c07662a292be6244bdf05cda44a7"
-    },
-    {
-      "name": "lbtc",
-      "address": "0x8236a87084f8b84306f72007f36f2618a5634494"
     },
     {
       "name": "link",
@@ -57,28 +37,12 @@
       "address": "0x45804880de22913dafe09f4980848ece6ecbaf78"
     },
     {
-      "name": "pepe",
-      "address": "0x6982508145454ce325ddbe47a25d4ec3d2311933"
-    },
-    {
-      "name": "qnt",
-      "address": "0x4a220e6096b25eadb88358cb44068a3248254675"
-    },
-    {
-      "name": "snx",
-      "address": "0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f"
-    },
-    {
       "name": "solvbtc",
       "address": "0x7a56e1c57c7475ccf742a1832b028f0456652f97"
     },
     {
       "name": "steth",
       "address": "0xae7ab96520de3a18e5e111b5eaab095312d7fe84"
-    },
-    {
-      "name": "tbtc",
-      "address": "0x18084fba666a33d37592fa2633fd49a74dd93a88"
     },
     {
       "name": "tusd",
@@ -90,19 +54,15 @@
     },
     {
       "name": "usdc",
-      "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+      "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
     },
     {
       "name": "usdt",
-      "address": "0xdac17f958d2ee523a2206206994597c13d831ec7"
+      "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7"
     },
     {
       "name": "weth",
-      "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
-    },
-    {
-      "name": "xaut",
-      "address": "0x68749665ff8d2d112fa859aa293f07a622782f38"
+      "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
     }
   ]
 }

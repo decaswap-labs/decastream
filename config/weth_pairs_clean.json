@@ -1,7 +1,7 @@
 {
-  "description": "All liquidity pairs containing WETH token with non-zero reserves (including all base tokens)",
-  "totalCount": 99,
-  "extractedAt": "2025-10-05T12:39:39.257Z",
+  "description": "All tokens that have liquidity pairs with WETH token (excluding WETH itself)",
+  "totalCount": 77,
+  "extractedAt": "2025-10-24T08:36:36.401Z",
   "filterCriteria": "Reserves token0 > 0 AND token1 > 0",
   "pairs": [
     {
@@ -11,6 +11,14 @@
     {
       "name": "aave",
       "address": "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9"
+    },
+    {
+      "name": "aioz",
+      "address": "0x626e8036deb333b408be468f951bdb42433cbf18"
+    },
+    {
+      "name": "ape",
+      "address": "0x4d224452801aced8b2f0aebe155379bb5d594381"
     },
     {
       "name": "arb",
@@ -37,24 +45,8 @@
       "address": "0xb8c77482e45f1f44de1745f52c74426c631bdd52"
     },
     {
-      "name": "bonk",
-      "address": "0x1151cb3d861920e07a38e03eead12c32178567f6"
-    },
-    {
-      "name": "borg",
-      "address": "0x64d0f55cd8c7133a9d7102b13987235f486f2224"
-    },
-    {
       "name": "btt",
       "address": "0xc669928185dbce49d2230cc9b0979be6dc797957"
-    },
-    {
-      "name": "cake",
-      "address": "0x152649ea73beab28c5b49b26eb48f7ead6d4c898"
-    },
-    {
-      "name": "cbbtc",
-      "address": "0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf"
     },
     {
       "name": "cbeth",
@@ -89,10 +81,6 @@
       "address": "0x35fa164735182de50811e8e2e824cfb9b6118ac2"
     },
     {
-      "name": "eigen",
-      "address": "0xec53bf9167f50cdeb3ae105f56099aaab9061f83"
-    },
-    {
       "name": "ena",
       "address": "0x57e114b691db790c35207b2e685d4a43181e6061"
     },
@@ -101,16 +89,8 @@
       "address": "0xc18360217d8f7ab5e7c516566761ea12ce7f9d72"
     },
     {
-      "name": "eth+",
-      "address": "0xe72b141df173b999ae7c1adcbf60cc9833ce56a8"
-    },
-    {
       "name": "ethfi",
       "address": "0xfe0c30065b384f05761f15d0cc899d4f9f9cc0eb"
-    },
-    {
-      "name": "ethx",
-      "address": "0xa35b1b31ce002fbf2058d22f30f95d405200a15b"
     },
     {
       "name": "ezeth",
@@ -129,10 +109,6 @@
       "address": "0x6f40d4a6237c257fff2db00fa0510deeecd303eb"
     },
     {
-      "name": "frxeth",
-      "address": "0x5e8422345238f34275888049021821e8e08caa1f"
-    },
-    {
       "name": "gala",
       "address": "0xd1d2eb1b1e90b638588728b4130137d262c87cae"
     },
@@ -149,10 +125,6 @@
       "address": "0xe66747a101bff2dba3697199dcce5b743b454759"
     },
     {
-      "name": "icp",
-      "address": "0x00f3c42833c3170159af4e92dbb451fb3f708917"
-    },
-    {
       "name": "imx",
       "address": "0xf57e7e7c23978c3caec3c3548e3d615c346e79ff"
     },
@@ -165,10 +137,6 @@
       "address": "0x7420b4b9a0110cdc71fb720908340c03f9bc03ec"
     },
     {
-      "name": "lbtc",
-      "address": "0x8236a87084f8b84306f72007f36f2618a5634494"
-    },
-    {
       "name": "ldo",
       "address": "0x5a98fcbea516cf06857215779fd812ca3bef1b32"
     },
@@ -177,16 +145,8 @@
       "address": "0x2af5d2ad76741191d15dfe7bf6ac92d4bd912ca3"
     },
     {
-      "name": "linea",
-      "address": "0x1789e0043623282d5dcc7f213d703c6d8bafbb04"
-    },
-    {
       "name": "link",
       "address": "0x514910771af9ca656af840dff83e8264ecf986ca"
-    },
-    {
-      "name": "lseth",
-      "address": "0x8c1bed5b9a0928467c9b1341da1d7bd5e10b6549"
     },
     {
       "name": "mana",
@@ -197,12 +157,12 @@
       "address": "0xd5f7838f5c461feff7fe49ea5ebaf7728bb0adfa"
     },
     {
-      "name": "mnt",
-      "address": "0x3c3a81e81dc49a522a592e7622a7e711c06bf354"
+      "name": "mog",
+      "address": "0xaaee1a9723aadb7afa2810263653a34ba2c21c7a"
     },
     {
-      "name": "morpho",
-      "address": "0x58d97b57bb95320f9a05dc918aef65434969c2b2"
+      "name": "move",
+      "address": "0x3073f7aaa4db83f95e9fff17424f71d4751a3073"
     },
     {
       "name": "near",
@@ -229,20 +189,12 @@
       "address": "0xfaba6f8e4a5e8ab82f62fe7c39859fa577269be3"
     },
     {
-      "name": "oseth",
-      "address": "0xf1c9acdc66974dfb6decb12aa385b9cd01190e38"
-    },
-    {
       "name": "paxg",
       "address": "0x45804880de22913dafe09f4980848ece6ecbaf78"
     },
     {
       "name": "pendle",
       "address": "0x808507121b80c02388fad14726482e061b8da827"
-    },
-    {
-      "name": "pengu",
-      "address": "0x6418c0dd099a9fda397c766304cdd918233e8847"
     },
     {
       "name": "pepe",
@@ -281,20 +233,12 @@
       "address": "0x3845badade8e6dff049820680d1f14bd3903a5d0"
     },
     {
-      "name": "sdai",
-      "address": "0x83f20f44975d03b1b09e64809b757c47f942beea"
-    },
-    {
       "name": "shib",
       "address": "0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce"
     },
     {
       "name": "sky",
       "address": "0x56072c95faa701256059aa122697b133aded9279"
-    },
-    {
-      "name": "snx",
-      "address": "0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f"
     },
     {
       "name": "spx",
@@ -317,16 +261,12 @@
       "address": "0xf951e335afb289353dc249e82926178eac7ded78"
     },
     {
-      "name": "syrup",
-      "address": "0x643c4e15d7d62ad0abec4a9bd4b001aa3ef52d66"
-    },
-    {
-      "name": "tbtc",
-      "address": "0x18084fba666a33d37592fa2633fd49a74dd93a88"
-    },
-    {
       "name": "tel",
       "address": "0x467bccd9d29f223bce8043b84e8c8b282827790f"
+    },
+    {
+      "name": "tkx",
+      "address": "0x667102bd3413bfeaa3dffb48fa8288819e480a88"
     },
     {
       "name": "ton",
@@ -341,12 +281,8 @@
       "address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984"
     },
     {
-      "name": "usd1",
-      "address": "0x8d0d000ee44948fc98c9b98a4fa4921476f08b0d"
-    },
-    {
       "name": "usdc",
-      "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+      "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
     },
     {
       "name": "usds",
@@ -354,51 +290,27 @@
     },
     {
       "name": "usdt",
-      "address": "0xdac17f958d2ee523a2206206994597c13d831ec7"
+      "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7"
     },
     {
       "name": "virtual",
       "address": "0x44ff8620b8ca30902395a7bd3f2407e1a091bf73"
     },
     {
-      "name": "w",
-      "address": "0xb0ffa8000886e57f86dd5264b9582b2ad87b2b91"
-    },
-    {
       "name": "wbtc",
-      "address": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599"
-    },
-    {
-      "name": "weeth",
-      "address": "0xcd5fe23c85820f7b72d0926fc9b05b43e359b7ee"
-    },
-    {
-      "name": "weth",
-      "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+      "address": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599"
     },
     {
       "name": "wld",
       "address": "0x163f8c2467924be0ae7b5347228cabf260318753"
     },
     {
-      "name": "wlfi",
-      "address": "0xda5e1988097297dcdc1f90d4dfe7909e847cbef6"
-    },
-    {
       "name": "wsteth",
       "address": "0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0"
     },
     {
-      "name": "xaut",
-      "address": "0x68749665ff8d2d112fa859aa293f07a622782f38"
-    },
-    {
       "name": "xcn",
       "address": "0xa2cd3d43c775978a96bdbf12d733d5a1ed94fb18"
-    },
-    {
-      "name": "zk",
-      "address": "0x66a5cfb2e9c529f14fe6364ad1075df3a649c0a5"
     }
   ]
 }

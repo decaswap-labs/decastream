@@ -398,7 +398,8 @@ contract Core is Ownable, ReentrancyGuard /*, UUPSUpgradeable */ {
         uint256 targetAmountOut;
         uint256 streamVolume;
         if (trade.targetAmountOut > trade.realisedAmountOut) {
-            targetAmountOut = (trade.targetAmountOut - trade.realisedAmountOut) / sweetSpot * 996 / 1000; // dropping 0.4% to allow for DEX fees
+            targetAmountOut = ((trade.targetAmountOut - trade.realisedAmountOut) * 996) / (sweetSpot * 1000); // dropping 0.4% to allow for DEX fees
+            
             streamVolume = trade.amountRemaining / sweetSpot;
         } else {
             targetAmountOut = trade.realisedAmountOut - trade.targetAmountOut;

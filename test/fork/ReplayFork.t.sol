@@ -14,7 +14,7 @@ import "forge-std/console.sol";
 
 contract ReplayForkTest is Test {
     function setUp() public virtual {
-        vm.createSelectFork({ blockNumber: 23_690_366, urlOrAlias: "mainnet" });
+        vm.createSelectFork({ blockNumber: 23_698_241, urlOrAlias: "mainnet" });
     }
 
     function test_ReplayFork() public {
@@ -22,6 +22,6 @@ contract ReplayForkTest is Test {
         Core core = Core(0xDe054C37000a639d33b886df0E48B011c2092474);
 
         vm.prank(from);
-        core.executeTrades(bytes32(0x035ee9a7a96e0a604e4cd290b6a6ce387f27240bc665911c3f6e49f90055b016));
+        core.executeTrades(bytes32(0x96e50e0e17d065e8070c5511096fbb18939595495b63c76f2e97af7a5bf13155));
     }
 }

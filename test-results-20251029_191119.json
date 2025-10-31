@@ -1,0 +1,49 @@
+{
+  "timestamp": "2025-10-29T18:31:22Z",
+  "testResults": [
+    {
+      "baseToken": "DAI",
+      "totalTests": 25,
+      "successCount": 25,
+      "failureCount": 0,
+      "successTokens": ["1inch","aave","comp","crv","ens","fdusd","grt","ldo","link","mana","nexo","ohm","paxg","qnt","sand","shib","sky","tusd","uni","usdc","usds","usdt","wbtc","weth","wsteth"],
+      "failedTokens": []
+    }
+,
+    {
+      "baseToken": "USDC",
+      "totalTests": 43,
+      "successCount": 43,
+      "failureCount": 0,
+      "successTokens": ["1inch","aave","ape","cbbtc","cbeth","comp","cro","crv","dai","dexe","ens","fdusd","fet","fluid","grt","imx","link","mana","near","nexo","ondo","paxg","pendle","pepe","pyusd","qnt","render","sand","shib","spx","steth","super","susde","tel","tkx","tusd","uni","usd0","usde","usdt","wbtc","weth","xcn"],
+      "failedTokens": []
+    }
+,
+    {
+      "baseToken": "USDT",
+      "totalTests": 32,
+      "successCount": 32,
+      "failureCount": 0,
+      "successTokens": ["1inch","aave","ape","chz","comp","cro","crv","dai","grt","gt","jasmy","link","mana","move","nexo","ohm","paxg","pepe","qnt","render","sand","shib","super","tkx","ton","tusd","uni","usdc","usde","virtual","wbtc","weth"],
+      "failedTokens": []
+    }
+,
+    {
+      "baseToken": "WBTC",
+      "totalTests": 15,
+      "successCount": 15,
+      "failureCount": 0,
+      "successTokens": ["1inch","aave","chz","cro","dai","grt","link","paxg","solvbtc","steth","tusd","uni","usdc","usdt","weth"],
+      "failedTokens": []
+    }
+,
+    {
+      "baseToken": "WETH",
+      "totalTests": 77,
+      "successCount": 76,
+      "failureCount": 1,
+      "successTokens": ["1inch","aave","aioz","ape","arb","ath","axs","beam","bgb","bnb","btt","cbeth","chz","comp","cro","dai","dexe","eeth","ena","ens","ethfi","ezeth","fet","floki","fluid","gala","gno","grt","gt","imx","inj","jasmy","ldo","leo","link","mana","meth","mog","move","near","nexo","nft","ohm","okb","ondo","paxg","pendle","pepe","pol","pyusd","qnt","render","reth","rseth","rsr","sand","shib","sky","spx","steth","strk","super","sweth","tel","tkx","ton","tusd","uni","usdc","usds","usdt","virtual","wbtc","wld","wsteth","xcn"],
+      "failedTokens": [{"token":"crv","reason":"DEX trade failed: �y� &No tokens received from Curve exchange"}]
+    }
+  ]
+}

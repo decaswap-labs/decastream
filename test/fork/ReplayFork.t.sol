@@ -14,14 +14,14 @@ import "forge-std/console.sol";
 
 contract ReplayForkTest is Test {
     function setUp() public virtual {
-        vm.createSelectFork({ blockNumber: 23_647_628, urlOrAlias: "mainnet" });
+        vm.createSelectFork({ blockNumber: 23_690_366, urlOrAlias: "mainnet" });
     }
 
     function test_ReplayFork() public {
         address from = address(0x8eE0E5d5FEfD3F0F6Ef9cb8C4bcb65B37f2484E6);
-        Core core = Core(0x3875b8b82E58733C1667224eB8bF5f449d7dbB74);
+        Core core = Core(0xDe054C37000a639d33b886df0E48B011c2092474);
 
         vm.prank(from);
-        core.executeStream(24);
+        core.executeTrades(bytes32(0x035ee9a7a96e0a604e4cd290b6a6ce387f27240bc665911c3f6e49f90055b016));
     }
 }

@@ -437,7 +437,7 @@ contract CoreForkTest is Fork_Test {
 
     function test_singleTrade() public {
         address fromToken = getTokenByName("usdc");
-        address toToken = getTokenByName("usdt");
+        address toToken = getTokenByName("uni");
         uint256 amountIn = formatTokenAmount(fromToken, 1000);
         address whale = USDC_WHALE;
         _executeSpecificTrade(fromToken, toToken, amountIn, whale);

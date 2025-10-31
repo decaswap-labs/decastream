@@ -9,7 +9,7 @@ import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 /// @notice Common logic needed by all fork tests.
 abstract contract Fork_Test is Deploys {
     function setUp() public virtual override {
-        vm.createSelectFork({ blockNumber: 23_640_197, urlOrAlias: "mainnet" });
+        vm.createSelectFork({ blockNumber: 23_684_745, urlOrAlias: "mainnet" });
         super.setUp();
     }
 

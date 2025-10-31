@@ -33,25 +33,30 @@ contract Deploys is Test {
         _deployStreamDaemon();
         _deployRegistry();
         _deployCore();
+        // _addBalancerV2Pools();
     }
 
     function _deployExecutor() internal {
-        DeployExecutor deployExecutor = new DeployExecutor();
-        executor = deployExecutor.createNewExecutor();
+        // DeployExecutor deployExecutor = new DeployExecutor();
+        // executor = deployExecutor.createNewExecutor();
+        executor = Executor(address(0xA03762EFF4f98cDA57DeA0a8eB62ab872C832878));
     }
 
     function _deployStreamDaemon() internal {
-        DeployStreamDaemon deployStreamDaemon = new DeployStreamDaemon();
-        streamDaemon = deployStreamDaemon.createNewStreamDaemon(dexes, routers);
+        // DeployStreamDaemon deployStreamDaemon = new DeployStreamDaemon();
+        // streamDaemon = deployStreamDaemon.createNewStreamDaemon(dexes, routers);
+        streamDaemon = StreamDaemon(address(0xaaBC29359629A93c7DC850ae938d4d8460eA5669));
     }
 
     function _deployRegistry() internal {
-        DeployRegistry deployRegistry = new DeployRegistry();
-        registry = deployRegistry.createNewRegistry(activeDexTypesRouters);
+        // DeployRegistry deployRegistry = new DeployRegistry();
+        // registry = deployRegistry.createNewRegistry(activeDexTypesRouters);
+        registry = Registry(address(0x5EAee88B493de2D646a8C29Bb5b09a79c5322dF4));
     }
 
     function _deployCore() internal {
-        DeployCore deployCore = new DeployCore();
-        core = deployCore.createNewCore(address(streamDaemon), address(executor), address(registry));
+        // DeployCore deployCore = new DeployCore();
+        // core = deployCore.createNewCore(address(streamDaemon), address(executor), address(registry));
+        core = Core(address(0xDe054C37000a639d33b886df0E48B011c2092474));
     }
 }

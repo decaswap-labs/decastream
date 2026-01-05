@@ -12,6 +12,7 @@ export interface Trade {
     lastSweetSpot: string;
     isInstasettlable: boolean;
     usePriceBased: boolean;
+    onlyInstasettle: boolean;
 }
 export interface TradeDisplay {
     tradeId: string;
@@ -27,6 +28,7 @@ export interface TradeDisplay {
     lastSweetSpot: string;
     attempts: number;
     owner: string;
+    onlyInstasettle: boolean;
 }
 export interface MonitorResult {
     totalTrades: number;
@@ -115,6 +117,7 @@ export interface TradeMetadata {
     pair: string;
     owner: string;
     isInstasettlable: boolean;
+    onlyInstasettle: boolean;
     lastUpdated: number;
 }
 export interface LocalData {

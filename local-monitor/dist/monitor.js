@@ -95,6 +95,7 @@ class TradeMonitor {
             pair: trade.pair,
             owner: trade.owner,
             isInstasettlable: trade.isInstasettlable,
+            onlyInstasettle: trade.onlyInstasettle,
             lastUpdated: currentTime,
         }));
         const localData = {
@@ -169,6 +170,7 @@ class TradeMonitor {
             lastSweetSpot: trade.lastSweetSpot,
             attempts: trade.attempts,
             owner: trade.owner.slice(0, 6) + "..." + trade.owner.slice(-4),
+            onlyInstasettle: trade.onlyInstasettle,
         };
     }
     /**
@@ -204,6 +206,7 @@ class TradeMonitor {
                 lastSweetSpot: trade.lastSweetSpot.toString(),
                 isInstasettlable: trade.isInstasettlable,
                 usePriceBased: trade.usePriceBased,
+                onlyInstasettle: trade.onlyInstasettle,
             };
         }
         catch (error) {
@@ -572,6 +575,7 @@ class TradeMonitor {
                         createdEvent.lastSweetSpot.toString(),
                     attempts: actualAttempts,
                     owner: createdEvent.user.slice(0, 6) + "..." + createdEvent.user.slice(-4),
+                    onlyInstasettle: createdEvent.onlyInstasettle,
                 });
             }
         }
@@ -689,7 +693,7 @@ class TradeMonitor {
             "Progress".padEnd(10) +
             "Attempts".padEnd(10) +
             "Owner".padEnd(12) +
-            "Insta");
+            "OnlyInsta");
         console.log("-".repeat(120));
         // Rows
         ongoingTrades.forEach((trade) => {
@@ -702,7 +706,7 @@ class TradeMonitor {
                 trade.progress.padEnd(10) +
                 trade.attempts.toString().padEnd(10) +
                 trade.owner.padEnd(12) +
-                (trade.isInstasettlable ? "✓" : "✗"));
+                (trade.onlyInstasettle ? "✓" : "✗"));
         });
         console.log("=".repeat(120));
     }

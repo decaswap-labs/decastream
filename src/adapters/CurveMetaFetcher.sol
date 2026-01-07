@@ -91,6 +91,15 @@ contract CurveMetaFetcher is IUniversalDexInterface {
         }
     }
 
+    function getQuote(address tokenIn, address tokenOut, uint256 amountIn)
+        external
+        override
+        returns (uint256 amountOut, bytes memory aux)
+    {
+        amountOut = this.getPrice(tokenIn, tokenOut, amountIn);
+        aux = ""; // no auxiliary data returned for CurveMeta fetcher
+    }
+
     // ============== Internals ==============
 
     /**

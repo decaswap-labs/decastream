@@ -82,4 +82,20 @@ contract SushiswapFetcher is IUniversalDexInterface {
 
         return numerator / denominator;
     }
+
+    function getQuote(address tokenIn, address tokenOut, uint256 amountIn)
+        external
+        override
+        returns (uint256 amountOut, bytes memory aux)
+    {
+        (uint256 reserveIn, uint256 reserveOut) = this.getReserves(tokenIn, tokenOut);
+        if (amountIn == 0 || reserveIn == 0 || reserveOut == 0) {
+            return (0, "");
+        }
+        uint256 amountInWithFee = amountIn * 997;
+        uint256 numerator = amountInWithFee * reserveOut;
+        uint256 denominator = (reserveIn * 1000) + amountInWithFee;
+        amountOut = numerator / denominator;
+        aux = ""; // No auxiliary data for Sushi (v2-style)
+    }
 }

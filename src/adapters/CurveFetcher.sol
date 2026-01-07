@@ -102,4 +102,13 @@ contract CurveFetcher is IUniversalDexInterface {
         // This is a simplified version - Curve has more complex pricing
         return (amountIn * reserveOut) / reserveIn;
     }
+
+    function getQuote(address tokenIn, address tokenOut, uint256 amountIn)
+        external
+        override
+        returns (uint256 amountOut, bytes memory aux)
+    {
+        amountOut = this.getPrice(tokenIn, tokenOut, amountIn);
+        aux = ""; // no auxiliary data for Curve legacy fetcher
+    }
 }

@@ -17,6 +17,7 @@ contract StreamDaemon is Ownable {
     // uint256 public constant MIN_EFFECTIVE_GAS_DOLLARS = 1; // i.e $1 minimum @audit this should be valuated against
         // TOKEN-USDC value during execution in production
     uint256 public DEFAULT_SWEET_SPOT = 4;
+    uint256 public MAXIMUM_SWEET_SPOT = 500;
 
     constructor(address[] memory _dexs, address[] memory _routers) Ownable(msg.sender) {
         for (uint256 i = 0; i < _dexs.length; i++) {
@@ -29,6 +30,10 @@ contract StreamDaemon is Ownable {
 
     function setDefaultSweetSpot(uint256 _defaultSweetSpot) external onlyOwner {
         DEFAULT_SWEET_SPOT = _defaultSweetSpot;
+    }
+
+    function setMaximumSweetSpot(uint256 _maximumSweetSpot) external onlyOwner {
+        MAXIMUM_SWEET_SPOT = _maximumSweetSpot;
     }
 
     function sqrt(uint256 y) internal pure returns (uint256 z) {
@@ -202,8 +207,8 @@ contract StreamDaemon is Ownable {
         uint256 lastSweetSpot = sweetSpot;
         uint256 lastSlippage = slippage;
 
-        while (slippage > 10 && sweetSpot < 1000) {
-            // cap at 1000 to prevent infinite loops
+        while (slippage > 10 && sweetSpot < MAXIMUM_SWEET_SPOT) {
+            // cap at MAXIMUM_SWEET_SPOT to prevent infinite loops
             lastSweetSpot = sweetSpot;
             lastSlippage = slippage;
 
@@ -242,13 +247,13 @@ contract StreamDaemon is Ownable {
             }
         }
 
-        // @audit for alpha testing purposes, we regulate sweet spot between 4 and 500. In production, this  should be
-        // removed
+        // @audit for alpha testing purposes, we regulate sweet spot between DEFAULT_SWEET_SPOT and MAXIMUM_SWEET_SPOT.
+        // In production, these constraints should be configurable or removed
         if (sweetSpot <= 4) {
             sweetSpot = DEFAULT_SWEET_SPOT;
         }
-        if (sweetSpot > 500) {
-            sweetSpot = 500;
+        if (sweetSpot > MAXIMUM_SWEET_SPOT) {
+            sweetSpot = MAXIMUM_SWEET_SPOT;
         }
     }
 

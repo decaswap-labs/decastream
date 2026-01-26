@@ -347,13 +347,21 @@ const TradesTable = ({
       }
     })
 
-    // Apply token filter (only if both tokens are selected and not chart filtered)
-    if (tokenFromAddress && tokenToAddress && !isChartFiltered) {
-      filteredTrades = filteredTrades.filter(
-        (trade) =>
-          trade.tokenIn?.toLowerCase() === tokenFromAddress &&
-          trade.tokenOut?.toLowerCase() === tokenToAddress
-      )
+    // Apply token filter based on selection state (if not chart filtered)
+    // - Both null: show all trades
+    // - Only from selected: filter by tokenIn
+    // - Only to selected: filter by tokenOut
+    // - Both selected: filter by both tokenIn and tokenOut
+    if ((tokenFromAddress || tokenToAddress) && !isChartFiltered) {
+      filteredTrades = filteredTrades.filter((trade) => {
+        const matchesFrom = tokenFromAddress
+          ? trade.tokenIn?.toLowerCase() === tokenFromAddress
+          : true
+        const matchesTo = tokenToAddress
+          ? trade.tokenOut?.toLowerCase() === tokenToAddress
+          : true
+        return matchesFrom && matchesTo
+      })
     }
 
     // Apply ownership filter

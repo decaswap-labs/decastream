@@ -1,3 +1,4 @@
+
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
@@ -48,29 +49,25 @@ contract SetupBalancerV2Pools is Script {
     }
 
     function run() external {
-        // Use a default private key for dry runs if PRIVATE_KEY is not set
-        uint256 deployerPrivateKey;
-        try vm.envUint("PRIVATE_KEY") returns (uint256 pk) {
-            deployerPrivateKey = pk;
-        } catch {
-            deployerPrivateKey = 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80; // Default anvil private key
-        }
-        vm.startBroadcast(deployerPrivateKey);
+        vm.startBroadcast();
+        address deployer = msg.sender;
 
-        // Deploy BalancerV2PoolRegistry with deployer as owner
-        address deployer = vm.addr(deployerPrivateKey);
-        BalancerV2PoolRegistry balancerRegistry = new BalancerV2PoolRegistry(deployer);
-        console.log("BalancerV2PoolRegistry deployed at:", address(balancerRegistry));
+        // Use existing BalancerV2PoolRegistry from v1.0.3 deployment
+        // Deployed at: 0xDDbBF78B2bf532D1637551a0186B26fBc9bfB5b1
+        BalancerV2PoolRegistry balancerRegistry = BalancerV2PoolRegistry(0xDDbBF78B2bf532D1637551a0186B26fBc9bfB5b1);
+        console.log("Using existing BalancerV2PoolRegistry at:", address(balancerRegistry));
+
+        // Use existing BalancerV2Fetcher from v1.0.3 deployment
+        // Deployed at: 0xF9abe8A26EcF289b7e16Ccf88D67252DdA2215A6
+        BalancerV2Fetcher balancerFetcher = BalancerV2Fetcher(0xF9abe8A26EcF289b7e16Ccf88D67252DdA2215A6);
+        console.log("Using existing BalancerV2Fetcher at:", address(balancerFetcher));
+
+        // Ensure deployer is keeper (should already be set, but safe to call again)
+        balancerRegistry.setKeeper(deployer, true);
+        console.log("Deployer set as keeper");
         
-        // Set the script as keeper so it can add pools
-        balancerRegistry.setKeeper(address(this), true);
-
-        // Deploy BalancerV2Fetcher
-        BalancerV2Fetcher balancerFetcher = new BalancerV2Fetcher(BALANCER_VAULT, address(balancerRegistry));
-        console.log("BalancerV2Fetcher deployed at:", address(balancerFetcher));
-
-        // Initialize pools in the registry
-        initializePools(balancerRegistry);
+        // Initialize pools (all pools)
+        initializePools(balancerRegistry, 0, 69);
 
         // Update your main Registry.sol to include the new BalancerV2Fetcher
         // This assumes your main Registry.sol has an `addDexFetcher` or similar function
@@ -82,8 +79,127 @@ contract SetupBalancerV2Pools is Script {
         vm.stopBroadcast();
     }
 
-    function initializePools(BalancerV2PoolRegistry _registry) internal {
-        console.log("Initializing Balancer V2 pools in the registry...");
+    // Batched deployment functions - deploy fresh registry and add pools in batches
+    // Batch 1: Deploys fresh registry + fetcher + adds pools 0-22
+    function runBatch1() external {
+        vm.startBroadcast();
+        address deployer = msg.sender;
+        
+        // Deploy fresh contracts
+        BalancerV2PoolRegistry balancerRegistry = new BalancerV2PoolRegistry(address(0));
+        console.log("BalancerV2PoolRegistry deployed at:", address(balancerRegistry));
+        
+        BalancerV2Fetcher balancerFetcher = new BalancerV2Fetcher(BALANCER_VAULT, address(balancerRegistry));
+        console.log("BalancerV2Fetcher deployed at:", address(balancerFetcher));
+        
+        // Set deployer as keeper
+        balancerRegistry.setKeeper(deployer, true);
+        console.log("Deployer set as keeper");
+        console.log("=== SAVE THIS REGISTRY ADDRESS FOR BATCHES 2 & 3 ===");
+        console.log("Registry:", address(balancerRegistry));
+        
+        console.log("Batch 1: Pools 0-22");
+        initializePools(balancerRegistry, 0, 23);
+        vm.stopBroadcast();
+    }
+    
+    // Batch 2 & 3: IMPORTANT - Update REGISTRY_ADDRESS constant below after Batch 1 completes!
+    // You'll see the address printed when Batch 1 completes
+    address constant REGISTRY_ADDRESS = address(0); // UPDATE THIS after Batch 1!
+    
+    function runBatch2() external {
+        vm.startBroadcast();
+        require(REGISTRY_ADDRESS != address(0), "Must set REGISTRY_ADDRESS after Batch 1 completes!");
+        
+        BalancerV2PoolRegistry balancerRegistry = BalancerV2PoolRegistry(REGISTRY_ADDRESS);
+        console.log("Using BalancerV2PoolRegistry at:", address(balancerRegistry));
+        
+        console.log("Batch 2: Pools 23-45");
+        initializePools(balancerRegistry, 23, 23);
+        vm.stopBroadcast();
+    }
+    
+    function runBatch3() external {
+        vm.startBroadcast();
+        require(REGISTRY_ADDRESS != address(0), "Must set REGISTRY_ADDRESS after Batch 1 completes!");
+        
+        BalancerV2PoolRegistry balancerRegistry = BalancerV2PoolRegistry(REGISTRY_ADDRESS);
+        console.log("Using BalancerV2PoolRegistry at:", address(balancerRegistry));
+        
+        console.log("Batch 3: Pools 46-68");
+        initializePools(balancerRegistry, 46, 23);
+        vm.stopBroadcast();
+    }
+
+    // Test function: Add a single pool (USDC-WETH) for debugging
+    function addSinglePool() external {
+        vm.startBroadcast();
+        address deployer = msg.sender;
+        
+        // Use existing BalancerV2PoolRegistry from v1.0.3 deployment
+        BalancerV2PoolRegistry balancerRegistry = BalancerV2PoolRegistry(0xDDbBF78B2bf532D1637551a0186B26fBc9bfB5b1);
+        console.log("Using existing BalancerV2PoolRegistry at:", address(balancerRegistry));
+        
+        // Ensure deployer is keeper
+        balancerRegistry.setKeeper(deployer, true);
+        console.log("Deployer set as keeper");
+        
+        // Add single pool: USDC-WETH
+        console.log("Adding single pool: USDC-WETH");
+        balancerRegistry.addPool(USDC, WETH, 0x96646936b91d6B9D7D0c47C496AfBF3D6ec7B6f8, true);
+        console.log("Pool added successfully!");
+        
+        vm.stopBroadcast();
+    }
+
+    // Batch functions: Add pools in batches of 3
+    // Each batch adds 3 pools (6 addPool calls total: 3 pools x 2 directions)
+    
+    function addBatch1() external { addPoolBatch(0, 3); }
+    function addBatch2() external { addPoolBatch(3, 3); }
+    function addBatch3() external { addPoolBatch(6, 3); }
+    function addBatch4() external { addPoolBatch(9, 3); }
+    function addBatch5() external { addPoolBatch(12, 3); }
+    function addBatch6() external { addPoolBatch(15, 3); }
+    function addBatch7() external { addPoolBatch(18, 3); }
+    function addBatch8() external { addPoolBatch(21, 3); }
+    function addBatch9() external { addPoolBatch(24, 3); }
+    function addBatch10() external { addPoolBatch(27, 3); }
+    function addBatch11() external { addPoolBatch(30, 3); }
+    function addBatch12() external { addPoolBatch(33, 3); }
+    function addBatch13() external { addPoolBatch(36, 3); }
+    function addBatch14() external { addPoolBatch(39, 3); }
+    function addBatch15() external { addPoolBatch(42, 3); }
+    function addBatch16() external { addPoolBatch(45, 3); }
+    function addBatch17() external { addPoolBatch(48, 3); }
+    function addBatch18() external { addPoolBatch(51, 3); }
+    function addBatch19() external { addPoolBatch(54, 3); }
+    function addBatch20() external { addPoolBatch(57, 3); }
+    function addBatch21() external { addPoolBatch(60, 3); }
+    function addBatch22() external { addPoolBatch(63, 3); }
+    function addBatch23() external { addPoolBatch(66, 3); } // Last batch: 66, 67, 68 (3 pools)
+    
+    // Internal function to add a batch of pools
+    function addPoolBatch(uint256 startIndex, uint256 count) internal {
+        vm.startBroadcast();
+        address deployer = msg.sender;
+        
+        // Use existing BalancerV2PoolRegistry from v1.0.3 deployment
+        BalancerV2PoolRegistry balancerRegistry = BalancerV2PoolRegistry(0xDDbBF78B2bf532D1637551a0186B26fBc9bfB5b1);
+        console.log("Using existing BalancerV2PoolRegistry at:", address(balancerRegistry));
+        
+        // Ensure deployer is keeper (safe to call multiple times)
+        balancerRegistry.setKeeper(deployer, true);
+        
+        // Initialize pools in this batch
+        initializePools(balancerRegistry, startIndex, count);
+        
+        vm.stopBroadcast();
+    }
+
+    function initializePools(BalancerV2PoolRegistry _registry, uint256 startIndex, uint256 count) internal {
+        require(startIndex + count <= 69, "Invalid batch range");
+        console.log("Initializing Balancer V2 pools batch:", startIndex, "to", startIndex + count - 1);
 
         PoolInfo[] memory pools = new PoolInfo[](69);
 
@@ -640,12 +756,12 @@ contract SetupBalancerV2Pools is Script {
             verified: true
         });
 
-        for (uint256 i = 0; i < pools.length; i++) {
+        for (uint256 i = startIndex; i < startIndex + count; i++) {
             PoolInfo memory p = pools[i];
             _registry.addPool(p.tokenA, p.tokenB, p.pool, p.verified);
             _registry.addPool(p.tokenB, p.tokenA, p.pool, p.verified); // Add in reverse direction
             console.log("Added pool:", p.name, "Address:", p.pool);
         }
-        console.log("Balancer V2 pools initialized.");
+        console.log("Balancer V2 pools batch initialized:", startIndex, "to", startIndex + count - 1);
     }
 }

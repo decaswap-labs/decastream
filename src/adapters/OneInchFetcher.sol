@@ -163,4 +163,14 @@ contract OneInchFetcher is IUniversalDexInterface {
             return amountIn; // Fallback to input amount
         }
     }
+
+    function getQuote(address tokenIn, address tokenOut, uint256 amountIn)
+        external
+        override
+        returns (uint256 amountOut, bytes memory aux)
+    {
+        // On-chain quote not supported for 1inch; return 0 and empty aux
+        amountOut = 0;
+        aux = "";
+    }
 }

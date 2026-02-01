@@ -8,6 +8,7 @@ import "./StreamDaemon.sol";
 import "./Executor.sol";
 import "./Utils.sol";
 import "./interfaces/IRegistry.sol";
+import "./interfaces/IUniversalDexInterface.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 // import interface for @ethsupport
@@ -26,6 +27,8 @@ contract Core is Ownable, ReentrancyGuard /*, UUPSUpgradeable */ {
     address public constant WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
 
     error ToxicTrade(uint256 tradeId);
+
+    event AttemptsIncremented(uint256 indexed tradeId, uint8 attempts);
 
     event TradeCreated(
         uint256 indexed tradeId,
@@ -70,12 +73,14 @@ contract Core is Ownable, ReentrancyGuard /*, UUPSUpgradeable */ {
     // Fees state
     // =========================
     uint16 public constant MAX_BPS = 10_000;
+    uint16 public constant MIN_BPS = 10; 
     uint16 public constant MAX_FEE_CAP_BPS = 100; // 1%
     uint16 public streamProtocolFeeBps = 10; // 10 bps
     uint16 public streamBotFeeBps = 10; // 10 bps
     uint16 public instasettleProtocolFeeBps = 10; // 10 bps
 
     uint256 public EXECUTE_STREAM_TRADE_CAP = 20; // 20 stream execution cap on executeTrades set at deployment
+    uint256 public BPS_SLIPPAGE = 1; // 0.01% slippage
 
     // Protocol fee balances by token
     mapping(address => uint256) public protocolFees;
@@ -139,6 +144,17 @@ contract Core is Ownable, ReentrancyGuard /*, UUPSUpgradeable */ {
         tradeIndicies[lastTradeId] = tradeIndex; 
         delete tradeIndicies[tradeId];
         delete trades[tradeId];
+    }
+
+
+    /**
+     * @notice Set the BPS slippage
+     * @dev Only callable by owner, needed to resolve circular dependency during deployment
+     * @param _bps The actual basis points of slippage allowed for each trade
+     */
+    function setBPSSlippage(uint256 _bps) external onlyOwner {
+        require(_bps <= MAX_BPS && _bps >= MIN_BPS, "bps must be less than or equal to 10000 and greater than 10");
+        BPS_SLIPPAGE = _bps / 10;
     }
 
     /**
@@ -406,9 +422,11 @@ contract Core is Ownable, ReentrancyGuard /*, UUPSUpgradeable */ {
                 } catch Error(string memory reason) {
                     trade.attempts++;
                     emit LowLevelError(reason);
+                    emit AttemptsIncremented(trade.tradeId, trade.attempts);
                 } catch (bytes memory lowLevelData) {
                     trade.attempts++;
                     emit DataError(lowLevelData);
+                    emit AttemptsIncremented(trade.tradeId, trade.attempts);
                 }
             }
         }
@@ -459,17 +477,35 @@ contract Core is Ownable, ReentrancyGuard /*, UUPSUpgradeable */ {
         require(sweetSpot > 0, "Invalid sweet spot");
         uint256 targetAmountOut;
         uint256 streamVolume;
+        address quoteTokenOut = trade.tokenOut;
+        if (
+            quoteTokenOut == 0x0000000000000000000000000000000000000000
+                || quoteTokenOut == address(0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE)
+        ) {
+            quoteTokenOut = WETH;
+        }
+
         if (trade.targetAmountOut > trade.realisedAmountOut) {
-            targetAmountOut = (trade.targetAmountOut - trade.realisedAmountOut) / sweetSpot * 996 / 1000; // dropping 0.4% to allow for DEX fees
             streamVolume = trade.amountRemaining / sweetSpot;
         } else {
-            targetAmountOut = trade.realisedAmountOut - trade.targetAmountOut;
-
-            // ! @audit maybe we need to do some smart maths here to determine the exchange rate at time of trade placement and propogate that
-            // if the amount remaining is really tiny and the target amount out is large the tradde will fail, esp due to changing market conditions?
+            // Over-achieved already: take the full remaining amount in one go
             sweetSpot = 1;
             streamVolume = trade.amountRemaining;
         }
+
+        require(streamVolume > 0, "Invalid stream volume");
+
+        IUniversalDexInterface dex = IUniversalDexInterface(bestDex);
+        (uint256 quotedOut,) = dex.getQuote(trade.tokenIn, quoteTokenOut, streamVolume);
+        if (quotedOut == 0) {
+            quotedOut = dex.getPrice(trade.tokenIn, quoteTokenOut, streamVolume);
+        }
+        require(quotedOut > 0, "Quote unavailable");
+
+        uint256 slippageCoefficient = 1000 - BPS_SLIPPAGE;
+
+        // Apply 10 bps slack to improve execution reliability
+        targetAmountOut = (quotedOut * slippageCoefficient) / 1000;
 
         // Declare tradeData outside the if-else block so it's in scope
         IRegistry.TradeData memory tradeData;

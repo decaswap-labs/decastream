@@ -112,6 +112,17 @@ contract CustomTradePlacement is Test {
         testCustomTradePlacement();
     }
 
+    function test_USDC_to_WETH_only() public {
+        console.log("=== USDC -> WETH (focused) ===");
+        uint256 tradeId = placeUSDCTrade(WETH, 100);
+
+        Utils.Trade memory trade = core.getTrade(tradeId);
+        bytes32 pairId = keccak256(abi.encode(trade.tokenIn, trade.tokenOut));
+
+        console.log("Executing once for gas visibility...");
+        core.executeTrades(pairId);
+    }
+
     function placeUSDCTrade(address tokenOut, uint256 usdAmount) public returns (uint256 tradeId) {
         console.log("\n--- Placing $%d USDC Trade ---", usdAmount);
         

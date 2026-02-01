@@ -9,19 +9,28 @@ contract SetETHSupport is Script {
     // Mainnet WETH
     address constant WETH_MAINNET = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
 
+    // v1.0.5 Core (from deployment-addresses-mainnet-1.0.5.json); override with CORE_ADDRESS in .env if needed
+    address constant CORE_V1_0_5 = 0x62A1e4DC903F0677Ba4E06494af0a74D8A1205be;
+
+    // Existing ETHSupport (v1.0.4 / reused in v1.0.5); override with ETHSUPPORT_ADDRESS in .env, or set to address(0) to deploy new
+    address constant ETHSUPPORT_EXISTING = 0xB970aF8dA1909230a32819602d97a0C0d44C5FB5;
+
     address public coreAddress;
     address public ethSupportAddress;
 
     function setUp() public {
-        // Required: existing Core address
-        coreAddress = vm.envAddress("CORE_ADDRESS");
-
-        // Optional: pre-deployed ETHSupport address (if any)
-        // If not provided or 0x0, we will deploy a new ETHSupport
-        try this._readETHSupportEnv() returns (address a) {
-            ethSupportAddress = a;
+        // Core: use CORE_ADDRESS from env if set, otherwise v1.0.5 deployment
+        try vm.envAddress("CORE_ADDRESS") returns (address a) {
+            coreAddress = a != address(0) ? a : CORE_V1_0_5;
         } catch {
-            ethSupportAddress = address(0);
+            coreAddress = CORE_V1_0_5;
+        }
+
+        // ETHSupport: use ETHSUPPORT_ADDRESS from env if set, otherwise existing deployment (no new deploy)
+        try this._readETHSupportEnv() returns (address a) {
+            ethSupportAddress = a != address(0) ? a : ETHSUPPORT_EXISTING;
+        } catch {
+            ethSupportAddress = ETHSUPPORT_EXISTING;
         }
     }
 

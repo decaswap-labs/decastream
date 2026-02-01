@@ -64,21 +64,12 @@ contract DeployBarebones is Script {
     address constant USDC_WETH_POOL = 0x96646936b91d6B9D7D0c47C496AfBF3D6ec7B6f8;
 
     function run() external {
-        // Use a default private key for dry runs if no account is specified
-        uint256 deployerPrivateKey;
-        try vm.envUint("PRIVATE_KEY") returns (uint256 pk) {
-            deployerPrivateKey = pk;
-        } catch {
-            deployerPrivateKey = 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80; // Default anvil private key
-        }
-        address deployer = vm.addr(deployerPrivateKey);
-        
         console.log("Deploying 1SLiquidity Protocol...");
+        vm.startBroadcast();
+        address deployer = tx.origin;
         console.log("Deployer:", deployer);
         console.log("Deployer balance:", deployer.balance);
         console.log("Chain ID:", block.chainid);
-
-        vm.startBroadcast(deployerPrivateKey);
 
         // Deploy core protocol contracts
         console.log("Deploying Executor...");
@@ -157,6 +148,15 @@ contract DeployBarebones is Script {
         uniswapV3Fetcher3000.setQuoterV2(UNISWAP_V3_QUOTER_V2);
         uniswapV3Fetcher10000.setQuoterV2(UNISWAP_V3_QUOTER_V2);
         console.log("QuoterV2 configured for all UniswapV3 fetchers");
+
+        // Configure routers in Registry for each DEX type
+        console.log("Configuring routers in Registry...");
+        registry.setRouter("UniswapV2", UNISWAP_V2_ROUTER);
+        registry.setRouter("UniswapV3", UNISWAP_V3_ROUTER);
+        registry.setRouter("Sushiswap", SUSHISWAP_ROUTER);
+        registry.setRouter("BalancerV2", address(balancerFetcher)); // Balancer uses fetcher as router
+        registry.setRouter("CurveMeta", address(curveFetcher)); // CurveMeta uses fetcher as router
+        console.log("Routers configured in Registry for all DEX types");
 
         vm.stopBroadcast();
 

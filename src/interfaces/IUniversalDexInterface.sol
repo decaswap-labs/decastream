@@ -7,4 +7,7 @@ interface IUniversalDexInterface {
     function getDexType() external pure returns (string memory);
     function getDexVersion() external pure returns (string memory);
     function getPrice(address tokenIn, address tokenOut, uint256 amountIn) external view returns (uint256);
+    function getQuote(address tokenIn, address tokenOut, uint256 amountIn)
+        external
+        returns (uint256 amountOut, bytes memory aux);
 }

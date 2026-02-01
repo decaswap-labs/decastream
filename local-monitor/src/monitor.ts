@@ -135,6 +135,7 @@ export class TradeMonitor {
       pair: trade.pair,
       owner: trade.owner,
       isInstasettlable: trade.isInstasettlable,
+      onlyInstasettle: trade.onlyInstasettle,
       lastUpdated: currentTime,
     }));
 
@@ -223,6 +224,7 @@ export class TradeMonitor {
       lastSweetSpot: trade.lastSweetSpot,
       attempts: trade.attempts,
       owner: trade.owner.slice(0, 6) + "..." + trade.owner.slice(-4),
+      onlyInstasettle: trade.onlyInstasettle,
     };
   }
 
@@ -259,6 +261,7 @@ export class TradeMonitor {
         lastSweetSpot: trade.lastSweetSpot.toString(),
         isInstasettlable: trade.isInstasettlable,
         usePriceBased: trade.usePriceBased,
+        onlyInstasettle: trade.onlyInstasettle,
       };
     } catch (error: any) {
       // Only log non-"Trade not found" errors since those are handled upstream
@@ -702,6 +705,7 @@ export class TradeMonitor {
           attempts: actualAttempts,
           owner:
             createdEvent.user.slice(0, 6) + "..." + createdEvent.user.slice(-4),
+          onlyInstasettle: createdEvent.onlyInstasettle,
         });
       }
     }
@@ -848,7 +852,7 @@ export class TradeMonitor {
         "Progress".padEnd(10) +
         "Attempts".padEnd(10) +
         "Owner".padEnd(12) +
-        "Insta"
+        "OnlyInsta"
     );
     console.log("-".repeat(120));
 
@@ -864,7 +868,7 @@ export class TradeMonitor {
           trade.progress.padEnd(10) +
           trade.attempts.toString().padEnd(10) +
           trade.owner.padEnd(12) +
-          (trade.isInstasettlable ? "✓" : "✗")
+          (trade.onlyInstasettle ? "✓" : "✗")
       );
     });
 

@@ -125,8 +125,9 @@ contract UniswapV3TradePlacement is SingleDexProtocol {
         
         // Test 3: Price-based selection (when usePriceBased = true)
         console.log("Testing price-based pool selection (usePriceBased = true)...");
-        (uint256 amountOut, uint24 feeTier, address pool) = fetcher.getQuote(WETH, USDC, amountIn);
+        (uint256 amountOut, bytes memory aux) = fetcher.getQuote(WETH, USDC, amountIn);
         assertTrue(amountOut > 0, "Should get accurate quote from QuoterV2");
+        (uint24 feeTier, address pool) = abi.decode(aux, (uint24, address));
         // Note: Quote uses best price across all fee tiers (different from deepest liquidity)
         assertTrue(feeTier == 100 || feeTier == 500 || feeTier == 3000 || feeTier == 10000, "Quote should use valid fee tier");
         assertTrue(pool != address(0), "Quote should find a valid pool");

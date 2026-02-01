@@ -40,7 +40,8 @@ contract TradePlacement is Protocol {
         console.log("TradePlacement: testPlaceTradeWETHUSDC() start");
 
         uint256 amountIn = formatTokenAmount(WETH, 1);
-        uint256 amountOutMin = formatTokenAmount(USDC, 4000);
+        // Use a conservative min-out to avoid revert on fork price drift
+        uint256 amountOutMin = formatTokenAmount(USDC, 1800);
 
         approveToken(WETH, address(core), amountIn);
 
@@ -110,7 +111,8 @@ contract TradePlacement is Protocol {
     function placeTradeWETHUSDC(bool isInstasettlable) public virtual returns (uint256 tradeId) {
         // Setup initial balances
         uint256 amountIn = formatTokenAmount(WETH, 1); // 1 WETH
-        uint256 amountOutMin = formatTokenAmount(USDC, 4000); // Reduced minimum USDC output to allow for slippage
+        // Align with conservative min-out used in testPlaceTradeWETHUSDC
+        uint256 amountOutMin = formatTokenAmount(USDC, 1800); // Reduced minimum USDC output to allow for slippage
         uint256 botGasAllowance = 0.0005 ether;
 
         // Log WETH balance before approval

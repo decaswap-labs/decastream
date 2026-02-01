@@ -283,42 +283,46 @@ contract UniswapV3Fetcher is IUniversalDexInterface {
 
     function getQuote(address tokenIn, address tokenOut, uint256 amountIn)
         external
-        returns (uint256 amountOut, uint24 feeTier, address pool)
+        override
+        returns (uint256 amountOut, bytes memory aux)
     {
         address q = quoterV2;
         if (q == address(0) || amountIn == 0) {
-            return (0, 0, address(0));
+            return (0, "");
         }
 
-        uint24[4] memory C = [uint24(100), uint24(500), uint24(3000), uint24(10000)];
-        for (uint256 i = 0; i < C.length; i++) {
-            address p = IUniswapV3Factory(factory).getPool(tokenIn, tokenOut, C[i]);
-            if (p == address(0)) continue;
-            (uint160 sqrtPriceX96,,,,,,) = IUniswapV3Pool(p).slot0();
-            if (sqrtPriceX96 == 0) continue;
-            if (IUniswapV3Pool(p).liquidity() == 0) continue;
-
-            IQuoterV2.QuoteExactInputSingleParams memory params = IQuoterV2.QuoteExactInputSingleParams({
-                tokenIn: tokenIn,
-                tokenOut: tokenOut,
-                amountIn: amountIn,
-                fee: C[i],
-                sqrtPriceLimitX96: 0
-            });
-
-            try IQuoterV2(q).quoteExactInputSingle(params) returns (
-                uint256 out,
-                uint160 /*sqrtAfter*/,
-                uint32 /*ticksCrossed*/,
-                uint256 /*gasEstimate*/
-            ) {
-                if (out > amountOut) {
-                    amountOut = out;
-                    feeTier = C[i];
-                    pool = p;
-                }
-            } catch {}
+        address pool = IUniswapV3Factory(factory).getPool(tokenIn, tokenOut, fee);
+        if (pool == address(0)) {
+            return (0, "");
         }
+        (uint160 sqrtPriceX96,,,,,,) = IUniswapV3Pool(pool).slot0();
+        if (sqrtPriceX96 == 0) {
+            return (0, "");
+        }
+        if (IUniswapV3Pool(pool).liquidity() == 0) {
+            return (0, "");
+        }
+
+        IQuoterV2.QuoteExactInputSingleParams memory params = IQuoterV2.QuoteExactInputSingleParams({
+            tokenIn: tokenIn,
+            tokenOut: tokenOut,
+            amountIn: amountIn,
+            fee: fee,
+            sqrtPriceLimitX96: 0
+        });
+
+        try IQuoterV2(q).quoteExactInputSingle(params) returns (
+            uint256 out,
+            uint160 /*sqrtAfter*/,
+            uint32 /*ticksCrossed*/,
+            uint256 /*gasEstimate*/
+        ) {
+            amountOut = out;
+        } catch {
+            // Fallback to heuristic price if quoter fails
+            amountOut = this.getPrice(tokenIn, tokenOut, amountIn);
+        }
+        aux = abi.encode(fee, pool);
     }
 
     /// @notice Exact-out quote using QuoterV2 across fee tiers; picks the lowest amountIn.

@@ -193,7 +193,8 @@ contract Instasettle is TradePlacement {
 
         // Setup initial balances
         uint256 amountIn = formatTokenAmount(WETH, 1); // 1 WETH
-        uint256 amountOutMin = formatTokenAmount(USDC, 4000); // Reduced minimum USDC output to allow for slippage
+        // Align with conservative min-out used in TradePlacement to reduce fork slippage reverts
+        uint256 amountOutMin = formatTokenAmount(USDC, 1800);
 
         // Log WETH balance before approval
         uint256 wethBalance = getTokenBalance(WETH, tradeOwner);

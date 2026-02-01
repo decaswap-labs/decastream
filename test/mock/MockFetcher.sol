@@ -25,6 +25,17 @@ abstract contract AMockFetcher is IUniversalDexInterface {
         // Return a mock price - simple 1:1 ratio for testing
         return amountIn;
     }
+
+    function getQuote(address tokenIn, address tokenOut, uint256 amountIn)
+        external
+        pure
+        override
+        returns (uint256 amountOut, bytes memory aux)
+    {
+        // Mirror getPrice for simplicity in tests
+        amountOut = amountIn;
+        aux = "";
+    }
 }
 
 contract MockFetcher1 is AMockFetcher {

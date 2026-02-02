@@ -915,7 +915,7 @@ export class TradeMonitor {
    */
   async executeTrades(
     pairId: string
-  ): Promise<ethers.ContractTransactionResponse> {
+  ): Promise<ethers.TransactionResponse> {
     try {
       if (!this.coreContractWithSigner) {
         throw new Error("Private key not available - cannot execute trades");
@@ -946,11 +946,21 @@ export class TradeMonitor {
       }
       console.log(`⛽ Gas estimate: ${gasLimitEst}, using limit: ${gasLimit}`);
 
-      // Call the executeTrades function on the contract using signer
-      const tx = await this.coreContractWithSigner.executeTrades(pairId, {
+      // Build tx explicitly so gasLimit is included in signed EIP-1559 payload (some RPCs
+      // reject "gas required exceeds allowance" when gasLimit is omitted from serialization)
+      const iface = this.coreContract.interface;
+      const data = iface.encodeFunctionData("executeTrades", [pairId]);
+      const maxFeePerGas =
+        feeData.maxFeePerGas ?? feeData.gasPrice ?? BigInt(50_000_000_000);
+      const maxPriorityFeePerGas =
+        feeData.maxPriorityFeePerGas ?? maxFeePerGas / BigInt(2);
+      const tx = await this.signer.sendTransaction({
+        to: CONTRACT_ADDRESSES.core,
+        data,
         gasLimit,
-        maxFeePerGas: feeData.maxFeePerGas ?? undefined,
-        maxPriorityFeePerGas: feeData.maxPriorityFeePerGas ?? undefined,
+        maxFeePerGas,
+        maxPriorityFeePerGas,
+        type: 2,
       });
       console.log(`📝 Transaction submitted: ${tx.hash}`);
 
@@ -991,6 +1001,32 @@ export class TradeMonitor {
         );
         console.log(`  ${index + 1}. ${pairId} (${trades.length} trades)`);
       });
+
+      // Preflight: check executor wallet has enough ETH for gas (avoids cryptic "gas required exceeds allowance")
+      if (this.coreContractWithSigner) {
+        const feeData = await this.provider.getFeeData();
+        const balance = await this.signer.provider!.getBalance(
+          this.signer.address
+        );
+        // ~1.2M gas per executeTrades, maxFeePerGas for EIP-1559
+        const gasPerTx = BigInt(1_200_000);
+        const maxFee =
+          feeData.maxFeePerGas ?? feeData.gasPrice ?? BigInt(50_000_000_000);
+        const requiredWei = gasPerTx * maxFee * BigInt(uniquePairIds.length);
+        if (balance < requiredWei) {
+          console.warn(
+            `\n⚠️ Executor wallet has insufficient ETH for gas.\n` +
+              `   Address: ${this.signer.address}\n` +
+              `   Balance: ${ethers.formatEther(balance)} ETH\n` +
+              `   Required (approx): ${ethers.formatEther(requiredWei)} ETH for ${uniquePairIds.length} tx(s)\n` +
+              `   Fund this wallet on mainnet to run executeTrades. Skipping execution this round.\n`
+          );
+          return;
+        }
+        console.log(
+          `💰 Executor balance: ${ethers.formatEther(balance)} ETH (sufficient for gas)\n`
+        );
+      }
 
       // Sequential execution: submit and wait for each transaction
       let successCount = 0;
@@ -1034,14 +1070,14 @@ export class TradeMonitor {
             await new Promise((res) => setTimeout(res, 2000));
           }
         } catch (error: any) {
-          // Check if it's a gas-related error
+          // Check if it's a gas/funds error (node "allowance" = max gas affordable from balance)
           if (
             error.message?.includes("gas required exceeds") ||
             error.message?.includes("out of gas") ||
             error.code === "INSUFFICIENT_FUNDS"
           ) {
             console.warn(
-              `⚠️ Gas/funds insufficient for pairId ${pairId}, skipping this round`
+              `⚠️ Insufficient ETH for gas (executor wallet needs more ETH). PairId ${pairId}, skipping this round.`
             );
             failCount++;
             failedPairIds.push(pairId);

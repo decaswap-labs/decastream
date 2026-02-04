@@ -141,6 +141,33 @@ interface InstasettleTokenSelectorProps {
   onTokenToChange: (token: TOKENS_TYPE | null) => void
 }
 
+// Clear button component for token selectors
+const ClearTokenButton = ({ onClick }: { onClick: () => void }) => (
+  <button
+    onClick={(e) => {
+      e.stopPropagation()
+      onClick()
+    }}
+    className="ml-2 p-1 hover:bg-white/10 rounded-full transition-colors"
+    title="Clear selection"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <line x1="18" y1="6" x2="6" y2="18"></line>
+      <line x1="6" y1="6" x2="18" y2="18"></line>
+    </svg>
+  </button>
+)
+
 const InstasettleTokenSelector: React.FC<InstasettleTokenSelectorProps> = ({
   onTokenFromChange,
   onTokenToChange,
@@ -168,37 +195,7 @@ const InstasettleTokenSelector: React.FC<InstasettleTokenSelectorProps> = ({
   console.log('availableTokens ==>', availableTokens)
   console.log('jsonTokens ==>', jsonTokens)
 
-  // Auto-select first trade tokens on mount
-  useEffect(() => {
-    if (firstTrade && !fromToken && !toToken && availableTokens.length > 0) {
-      const tokenInAddress = firstTrade.tokenIn.toLowerCase()
-      const tokenOutAddress = firstTrade.tokenOut.toLowerCase()
-
-      const fromTokenMatch = availableTokens.find(
-        (token) => token.token_address.toLowerCase() === tokenInAddress
-      )
-      const toTokenMatch = availableTokens.find(
-        (token) => token.token_address.toLowerCase() === tokenOutAddress
-      )
-
-      if (fromTokenMatch) {
-        setFromToken(fromTokenMatch)
-        onTokenFromChange(fromTokenMatch)
-      }
-
-      if (toTokenMatch) {
-        setToToken(toTokenMatch)
-        onTokenToChange(toTokenMatch)
-      }
-    }
-  }, [
-    firstTrade,
-    availableTokens,
-    fromToken,
-    toToken,
-    onTokenFromChange,
-    onTokenToChange,
-  ])
+  // No longer auto-select tokens on mount - start with no filters to show all trades
 
   const handleTokenSelect = (token: TOKENS_TYPE) => {
     if (currentInputField === 'from') {
@@ -208,6 +205,16 @@ const InstasettleTokenSelector: React.FC<InstasettleTokenSelectorProps> = ({
       setToToken(token)
       onTokenToChange(token)
     }
+  }
+
+  const handleClearFromToken = () => {
+    setFromToken(null)
+    onTokenFromChange(null)
+  }
+
+  const handleClearToToken = () => {
+    setToToken(null)
+    onTokenToChange(null)
   }
 
   const showSelectTokenModal = (isOpen: boolean, field: 'from' | 'to') => {
@@ -248,8 +255,6 @@ const InstasettleTokenSelector: React.FC<InstasettleTokenSelectorProps> = ({
       setBoltConfig(defaultBoltConfig)
     }
   }, [fromToken, toToken])
-
-  const bothTokensSelected = fromToken && toToken
 
   return (
     <>
@@ -314,13 +319,7 @@ const InstasettleTokenSelector: React.FC<InstasettleTokenSelectorProps> = ({
                       </div>
                       <p>{fromToken.symbol || ''}</p>
                     </div>
-                    <Image
-                      src="/icons/arrow-down-white.svg"
-                      alt="close"
-                      className="w-fit h-fit mr-0 sm:mr-4"
-                      width={20}
-                      height={20}
-                    />
+                    <ClearTokenButton onClick={handleClearFromToken} />
                   </div>
                 </div>
               ) : (
@@ -507,13 +506,7 @@ const InstasettleTokenSelector: React.FC<InstasettleTokenSelectorProps> = ({
                       </div>
                       <p>{toToken.symbol || ''}</p>
                     </div>
-                    <Image
-                      src="/icons/arrow-down-white.svg"
-                      alt="close"
-                      className="w-fit h-fit mr-4"
-                      width={20}
-                      height={20}
-                    />
+                    <ClearTokenButton onClick={handleClearToToken} />
                   </div>
                 </div>
               ) : (

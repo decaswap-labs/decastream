@@ -106,6 +106,7 @@ export default function TradesChart({
     if (!trades || trades.length === 0) return []
 
     // Filter trades based on selected tokens
+    // Start with base filter for instasettlable trades
     let filteredTrades = trades.filter(
       (trade) =>
         (trade.isInstasettlable || trade.onlyInstasettle) &&
@@ -113,17 +114,23 @@ export default function TradesChart({
         trade.cancellations.length === 0
     )
 
-    if (selectedTokenFrom && selectedTokenTo) {
-      filteredTrades = trades.filter(
-        (trade) =>
-          trade.isInstasettlable &&
-          trade.instasettlements.length === 0 &&
-          trade.cancellations.length === 0 &&
-          trade.tokenIn?.toLowerCase() ===
-            selectedTokenFrom.token_address?.toLowerCase() &&
-          trade.tokenOut?.toLowerCase() ===
+    // Apply token filters based on selection state
+    // - Both null: show all trades
+    // - Only from selected: filter by tokenIn
+    // - Only to selected: filter by tokenOut
+    // - Both selected: filter by both tokenIn and tokenOut
+    if (selectedTokenFrom || selectedTokenTo) {
+      filteredTrades = filteredTrades.filter((trade) => {
+        const matchesFrom = selectedTokenFrom
+          ? trade.tokenIn?.toLowerCase() ===
+            selectedTokenFrom.token_address?.toLowerCase()
+          : true
+        const matchesTo = selectedTokenTo
+          ? trade.tokenOut?.toLowerCase() ===
             selectedTokenTo.token_address?.toLowerCase()
-      )
+          : true
+        return matchesFrom && matchesTo
+      })
     }
 
     // Combine real and mock trades
@@ -611,7 +618,19 @@ export default function TradesChart({
 
   // Show no data state
   if (!trades || trades.length === 0 || sortedChartData.length === 0) {
-    const hasTokenFilter = selectedTokenFrom && selectedTokenTo
+    const hasTokenFilter = selectedTokenFrom || selectedTokenTo
+    const getFilterDescription = () => {
+      if (selectedTokenFrom && selectedTokenTo) {
+        return `${selectedTokenFrom.symbol} → ${selectedTokenTo.symbol}`
+      }
+      if (selectedTokenFrom) {
+        return `${selectedTokenFrom.symbol} → Any`
+      }
+      if (selectedTokenTo) {
+        return `Any → ${selectedTokenTo.symbol}`
+      }
+      return ''
+    }
     return (
       <div className="mt-32 mb-16">
         <div className="dark">
@@ -619,7 +638,7 @@ export default function TradesChart({
             <div className="mb-6 flex flex-col md:flex-row gap-4 md:gap-0 justify-between items-center">
               <h2 className="text-2xl font-bold">
                 {hasTokenFilter
-                  ? `No Trades Found for ${selectedTokenFrom.symbol}/${selectedTokenTo.symbol}`
+                  ? `No Trades Found for ${getFilterDescription()}`
                   : 'No Trades Available'}
               </h2>
               <div className="flex gap-2">
@@ -689,7 +708,7 @@ export default function TradesChart({
                 </h3>
                 <p className="text-muted-foreground">
                   {hasTokenFilter
-                    ? `No trades found for the selected token pair ${selectedTokenFrom.symbol}/${selectedTokenTo.symbol}`
+                    ? `No trades found for the selected filter: ${getFilterDescription()}`
                     : 'There are currently no trades to display. Check back later or try selecting different tokens.'}
                 </p>
               </div>
@@ -1008,9 +1027,19 @@ export default function TradesChart({
                       content={({ active, payload, label }) => {
                         if (active && payload && payload.length) {
                           const dataPoint = indexedChartData[Number(label)]
+                          const trade = dataPoint?.trade
+                          const tokenInSymbol =
+                            trade?.tokenInDetails?.symbol || 'Unknown'
+                          const tokenOutSymbol =
+                            trade?.tokenOutDetails?.symbol || 'Unknown'
                           return (
-                            <div className="rounded-lg border border-white005 bg-black p-3 shadow-md">
+                            <div className="rounded-lg border border-white005 bg-black p-3 shadow-md min-w-[180px]">
                               <div className="grid gap-2">
+                                <div className="flex items-center justify-center gap-2 pb-2 border-b border-white005">
+                                  <span className="text-sm font-bold text-primary">
+                                    {tokenInSymbol} → {tokenOutSymbol}
+                                  </span>
+                                </div>
                                 <div className="flex items-center justify-between gap-2">
                                   <span className="text-sm font-medium text-muted-foreground">
                                     Cost:
@@ -1028,6 +1057,25 @@ export default function TradesChart({
                                   </span>
                                   <span className="text-sm font-bold">
                                     ${Number(payload[0].value).toFixed(2)}
+                                  </span>
+                                </div>
+                                <div className="flex items-center justify-between gap-2">
+                                  <span className="text-sm font-medium text-muted-foreground">
+                                    Volume:
+                                  </span>
+                                  <span className="text-sm font-bold">
+                                    {dataPoint
+                                      ? Number(dataPoint.volume).toFixed(4)
+                                      : '0'}{' '}
+                                    {tokenInSymbol}
+                                  </span>
+                                </div>
+                                <div className="flex items-center justify-between gap-2">
+                                  <span className="text-sm font-medium text-muted-foreground">
+                                    BPS:
+                                  </span>
+                                  <span className="text-sm font-bold">
+                                    {trade?.instasettleBps || '0'}
                                   </span>
                                 </div>
                               </div>

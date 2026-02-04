@@ -99,12 +99,9 @@ const GatewaySection = () => {
     hover: {
       scale: 1.2,
       transition: {
-        duration: 0.3,
-        ease: 'easeOut',
-        spring: {
-          damping: 10,
-          stiffness: 100,
-        },
+        type: 'spring',
+        damping: 10,
+        stiffness: 100,
       },
     },
   }
